@@ -1,0 +1,7 @@
+{
+    "MOD_LIST":{"api":"apiman", "hello":"hello", "task":"task"},
+    "DB_HOST":"192.168.122.165",
+    "DB_PORT":"27017",
+    "DB_NAME":"devops",
+    "HTTP_PORT":"8080"
+}

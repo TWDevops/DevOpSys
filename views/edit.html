@@ -1,0 +1,111 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ pagename|title }}{% endblock %}
+
+{% block content %}
+<h1>{{pagename}}</h1>
+
+<form action="/mod/api/edit" method="post" name="apiUpdate">
+<!-- <input type="hidden" name="apiId" value="{{ apiIdHex }}"> -->
+<table border="0" cellpadding="0" cellspacing="1">
+	<tbody>
+		<tr>
+			<td>API Key:</td>
+			<td>{{ apiKey }}</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>Name:&nbsp;</td>
+			<td><input name="apiName" type="text" value="{{ api.apiName }}" /></td>
+			<td>Owner:&nbsp;</td>
+			<td><input name="apiOwner" type="text" value="{{ api.apiOwner}}" /></td>
+		</tr>
+		<tr>
+			<td>Callee:&nbsp;</td>
+			<td><input name="apiCallee" type="text" value="{{ api.apiCallee}}" /></td>
+			<td>URL:&nbsp;</td>
+			<td><input name="apiUrl" type="text" value="{{ api.apiUrl}}" /></td>
+		</tr>
+		<tr>
+			<td>Doc:&nbsp;</td>
+			<td><input name="apiDocUrl" type="text" value="{{api.apiDocUrl}}" /></td>
+			<td>Endpoint:&nbsp;</td>
+			<td><input name="apiEndPoint" type="text" value="{{api.apiEndPoint}}" /></td>
+		</tr>
+		<tr>
+			<td>Protocol:&nbsp;</td>
+			<td><input name="apiProto" type="text" value="{{api.apiProto}}" /></td>
+			<td>apiCDate:&nbsp;</td>
+			<td>{{api.apiCDate.toString()}}</td>
+		</tr>
+		<tr>
+			<td>Location:&nbsp;</td>
+			<td><input name="apiLocation" type="text" value="{{api.apiLocation}}" /></td>
+			<td>DB:&nbsp;</td>
+			<td><input name="dataSource" type="text" value="{{api.dataSource}}" /></td>
+		</tr>
+		<tr>
+			<td>Activated:&nbsp;</td>
+			<td>
+				<input {% if api.apiActivated %}checked="checked"{% endif %} name="apiActivated" type="radio" value="true" />
+				<input {% if !api.apiActivated %}checked="checked"{% endif %} name="apiActivated" type="radio" value="false" />
+			</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+	</tbody>
+</table>
+
+<div>
+<table  border="0" cellpadding="0" cellspacing="1">
+	<tbody>
+		<tr>
+			<td style="vertical-align: top;">Descript:&nbsp;</td>
+			<td style="vertical-align: top;"><textarea name="apiDesc" style="margin: 0px; width: 343px; height: 62px;">{{ api.apiDesc}}</textarea></td>
+		</tr>
+	</tbody>
+</table>
+</div>
+
+<table cellpadding="2" rules="all" style="border:1px #22ACDD solid;padding:2px;">
+	<thead>
+		<tr>
+			<th scope="col">編號</th>
+			<th scope="col">Update Date</th>
+			<th scope="col">版本控制</th>
+			<th scope="col">Source</th>
+			<th scope="col">Deploy</th>
+		</tr>
+		{% for ver in api.apiVer %}
+		<tr>
+			<th scope="col"><input name="verNo" readonly="readonly" size="2" type="text" value="{{ver.no}}" /></th>
+			<th scope="col"><input name="verApiUDate" readonly="readonly" size="18" type="text" value="{{ver.apiUDate.toString()}}" /></th>
+			<th scope="col"><input name="verCtrlType" readonly="readonly" size="5" type="text" value="{{ver.verCtrlType}}" /></th>
+			<th scope="col"><input name="verSrcUrl" readonly="readonly" size="30" type="text" value="{{ver.srcUrl}}"/></th>
+			<th scope="col">
+				<input {% if ver.deploy == 0 %}checked="checked"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="0" /><label>Disable</label>&nbsp;&nbsp;
+				<input {% if ver.deploy == 3 %}checked="checked"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="3" /><label>Dev</label>&nbsp;&nbsp;
+				<input {% if ver.deploy == 2 %}checked="checked"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="2" /><label>Test</label>&nbsp;&nbsp;
+				<input {% if ver.deploy == 1 %}checked="checked"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="1" /><label>On</label>&nbsp;
+				<input name="Deploy" type="button" value="Deploy" onclick="javascript:location.href='/mod/task/setdeploy/{{ver.no}}'" />
+			</th>
+		</tr>
+		{% endfor %}
+		<tr>
+			<th scope="col"><input name="verNo" size="2" type="text"  /></th>
+			<th scope="col"><input name="verApiUDate" size="18" type="text" /></th>
+			<th scope="col"><input name="verCtrlType" size="5" type="text" /></th>
+			<th scope="col"><input name="verSrcUrl" size="30" type="text" /></th>
+			<th>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
+<br/>
+<input name="確認" type="submit" value="submit" />
+<input name="重設" type="reset" value="reset" />
+</form>
+{% endblock %}

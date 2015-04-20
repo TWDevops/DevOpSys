@@ -1,0 +1,75 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ pagename|title }}{% endblock %}
+
+{% block content %}
+<h1>{{ pagename|title }}</h1>
+
+<table cellpadding="5" rules="all" style="border:3px #FFAC55 double;padding:5px;">
+	<tbody>
+		<tr>
+			<td>Name</td>
+			<td>Owner</td>
+			<td>說明</td>
+			<td>版本</td>
+			<td>API Call</td>
+			<td>URL</td>
+			<td>Doc URL</td>
+			<td>Endpoint</td>
+			<td>Protocol</td>
+			<td>Create Date</td>
+			<td>Location</td>
+			<td>Database</td>
+			<td>Activated</td>
+		</tr>
+		 {% for apiKey, api in apiList %}
+		<tr>
+			<td><a href="/mod/api/edit?apiId={{apiKey}}">{{ api.apiName }}</a></td>
+			<td>{{ api.apiOwner}}</td>
+			<td>{{ api.apiDesc}}</td>
+			<td>
+			<table cellpadding="2" rules="all" style="border:1px #22ACDD solid;padding:2px;">
+				<tbody>
+					<tr>
+						<td>編號</td>
+						<td>Update Date</td>
+						<td>版本控制</td>
+						<td>Source</td>
+						<td>Deploy</td>
+					</tr>
+					{% for ver in api.apiVer %}
+					<tr>
+						<td>{{ver.no}}</td>
+						<td>{{ver.apiUDate}}</td>
+						<td>{{ver.verCtrlType}}</td>
+						<td>{{ver.srcUrl}}</td>
+						<td>
+							{% if  ver.deploy == 0 %}
+								Disable
+							{% elif ver.deploy == 1 %}
+								On
+							{% elif ver.deploy == 2 %}
+								Test
+							{% else %}
+								Dev
+							{% endif %}
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			</td>
+			<td>{{ api.apiCallee}}</td>
+			<td>{{ api.apiUrl}}</td>
+			<td>{{api.apiDocUrl}}</td>
+			<td>{{api.apiEndPoint}}</td>
+			<td>{{api.apiProto}}</td>
+			<td>{{api.apiCDate.toString()}}</td>
+			<td>{{api.apiLocation}}</td>
+			<td>{{api.dataSource}}</td>
+			<td>{{api.apiActivated}}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock %}
