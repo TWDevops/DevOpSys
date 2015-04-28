@@ -36,6 +36,7 @@ function setDeploy(req, res, next) {
 				//apiOid = dbase.ObjectID(req.session.apiId);
 				collection.findOne( { "_id": apiOid },{ "apiVer" : {$elemMatch: {"no":req.params.verNo}}}, function(err, doc){
 					sendData = doc;
+					sendData['level'] = req.query.level;
 					console.log(doc["apiVer"][0]);
 					res.send(sendData);
 				});
