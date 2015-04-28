@@ -21,6 +21,7 @@
 			<td>Location</td>
 			<td>Database</td>
 			<td>Activated</td>
+			<td>Type</td>
 		</tr>
 		 {% for apiKey, api in apiList %}
 		<tr>
@@ -68,6 +69,7 @@
 			<td>{{api.apiLocation}}</td>
 			<td>{{api.dataSource}}</td>
 			<td>{{api.apiActivated}}</td>
+			<td>{{api.apiType}}</td>
 		</tr>
 		{% endfor %}
 	</tbody>

@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 
-{% block title %}{{ pagename|title }}{% endblock %}
+{% block title %}{{ pagename|title }}
+{% endblock %}
 
 {% block content %}
 <h1>{{pagename}}</h1>
@@ -51,8 +52,8 @@
 				<input {% if api.apiActivated %}checked="checked"{% endif %} name="apiActivated" type="radio" value="true" />
 				<input {% if !api.apiActivated %}checked="checked"{% endif %} name="apiActivated" type="radio" value="false" />
 			</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
+			<td>Type:</td>
+			<td><input name="apiType" type="text" value="{{api.apiType}}" /></td>
 		</tr>
 	</tbody>
 </table>
@@ -84,17 +85,17 @@
 			<th scope="col"><input name="verCtrlType" readonly="readonly" size="5" type="text" value="{{ver.verCtrlType}}" /></th>
 			<th scope="col"><input name="verSrcUrl" readonly="readonly" size="30" type="text" value="{{ver.srcUrl}}"/></th>
 			<th scope="col">
-				<input {% if ver.deploy == 0 %}checked="checked"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="0" /><label>Disable</label>&nbsp;&nbsp;
-				<input {% if ver.deploy == 3 %}checked="checked"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="3" /><label>Dev</label>&nbsp;&nbsp;
-				<input {% if ver.deploy == 2 %}checked="checked"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="2" /><label>Test</label>&nbsp;&nbsp;
-				<input {% if ver.deploy == 1 %}checked="checked"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="1" /><label>On</label>&nbsp;
-				<input name="Deploy" type="button" value="Deploy" onclick="javascript:location.href='/mod/task/setdeploy/{{ver.no}}'" />
+				<input {% if ver.deploy == 0 %}checked="checked"{% else %}onclick="javascript:location.href='/mod/task/setdeploy/{{ver.no}}?level=0'"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="0" /><label>Disable</label>&nbsp;&nbsp;
+				<input {% if ver.deploy == 3 %}checked="checked"{% else %}onclick="javascript:location.href='/mod/task/setdeploy/{{ver.no}}?level=1'"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="3" /><label>Dev</label>&nbsp;&nbsp;
+				<input {% if ver.deploy == 2 %}checked="checked"{% else %}onclick="javascript:location.href='/mod/task/setdeploy/{{ver.no}}?level=2'"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="2" /><label>Test</label>&nbsp;&nbsp;
+				<input {% if ver.deploy == 1 %}checked="checked"{% else %}onclick="javascript:location.href='/mod/task/setdeploy/{{ver.no}}?level=3'"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="1" /><label>On</label>&nbsp;
+				<!-- <input name="Deploy" type="button" value="Deploy" onclick="javascript:location.href='/mod/task/setdeploy/{{ver.no}}'" /> -->
 			</th>
 		</tr>
 		{% endfor %}
 		<tr>
 			<th scope="col"><input name="verNo" size="2" type="text"  /></th>
-			<th scope="col"><input name="verApiUDate" size="18" type="text" /></th>
+			<th scope="col"><!-- <input name="verApiUDate" size="18" type="text" /> --></th>
 			<th scope="col"><input name="verCtrlType" size="5" type="text" /></th>
 			<th scope="col"><input name="verSrcUrl" size="30" type="text" /></th>
 			<th>

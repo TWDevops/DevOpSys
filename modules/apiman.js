@@ -101,18 +101,30 @@ function edit(req, res, next){
 						}else{
 							doc["apiActivated"] = false;
 						}
+						doc["apiType"]=req.body.apiType;
 						doc["apiVer"]=[];
-						for(var verIdx in req.body.verNo){
-							if(req.body.verNo[verIdx]!= ""){
-								doc["apiVer"][verIdx]={
-									"no":req.body.verNo[verIdx],
-									"apiUDate":req.body.verApiUDate[verIdx],
-									"verCtrlType":req.body.verCtrlType[verIdx],
-									"srcUrl":req.body.verSrcUrl[verIdx],
-									"deploy":req.body["verDeploy" + req.body.verNo[verIdx]]
-								};
+						if (Array.isArray(req.body.verNo)){
+							for(var verIdx in req.body.verNo){
+								if(req.body.verNo[verIdx]!= ""){
+									doc["apiVer"][verIdx]={
+										"no":req.body.verNo[verIdx],
+										"apiUDate":(req.body.verApiUDate[verIdx]||new Date()),
+										"verCtrlType":req.body.verCtrlType[verIdx],
+										"srcUrl":req.body.verSrcUrl[verIdx],
+										"deploy":(parseInt(req.body["verDeploy" + req.body.verNo[verIdx]]||0))
+									};
+								}
 							}
+						}else{
+							doc["apiVer"][0]={
+									"no":req.body.verNo,
+									"apiUDate":new Date(),
+									"verCtrlType":req.body.verCtrlType,
+									"srcUrl":req.body.verSrcUrl,
+									"deploy":0
+								};
 						}
+						//res.send(doc);
 						collection.update({"_id": apiOid},{'$set':doc},{"w":1},function(err, result){
 							console.log("result: " + result);
 							console.log("ok: " + JSON.parse(result)['ok']);
@@ -190,10 +202,16 @@ function register(req, res, next){
 		insertObj['apiDocUrl'] = req.body.apiDocUrl;
 		insertObj['apiEndPoint'] = req.body.apiEndPoint;
 		insertObj['apiProto'] = req.body.apiProto;
-		insertObj['apiCDate'] = new Date();;
+		insertObj['apiCDate'] = new Date();
 		insertObj['apiLocation'] = req.body.apiLocation;
 		insertObj['dataSource'] = req.body.dataSource;
-		insertObj['apiActivated'] = req.body.apiActivated;
+		if (typeof req.body.apiActivated !==  'undefined' && req.body.apiActivated == "true"){
+			insertObj['apiActivated'] = true;
+		}else{
+			insertObj['apiActivated'] = false;
+		}
+//		insertObj['apiActivated'] = req.body.apiActivated === 'true';
+		insertObj["apiType"]=req.body.apiType;
 		//res.send(insertObj);
 		db.open(function() {
 			db.collection('api', function(err, collection){
