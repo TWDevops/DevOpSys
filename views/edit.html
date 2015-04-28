@@ -4,7 +4,6 @@
 {% endblock %}
 
 {% block content %}
-<h1>{{pagename}}</h1>
 
 <form action="/mod/api/edit" method="post" name="apiUpdate">
 <!-- <input type="hidden" name="apiId" value="{{ apiIdHex }}"> -->
@@ -49,8 +48,8 @@
 		<tr>
 			<td>Activated:&nbsp;</td>
 			<td>
-				<input {% if api.apiActivated %}checked="checked"{% endif %} name="apiActivated" type="radio" value="true" />
-				<input {% if !api.apiActivated %}checked="checked"{% endif %} name="apiActivated" type="radio" value="false" />
+				<input {% if api.apiActivated %}checked="checked"{% endif %} name="apiActivated" type="radio" value="true" /><label>true</label>&nbsp;&nbsp;
+				<input {% if !api.apiActivated %}checked="checked"{% endif %} name="apiActivated" type="radio" value="false" /><label>false</label>
 			</td>
 			<td>Type:</td>
 			<td><input name="apiType" type="text" value="{{api.apiType}}" /></td>

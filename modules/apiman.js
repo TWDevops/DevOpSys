@@ -62,7 +62,7 @@ function listView(req, res, next) {
 					db.close();
 					console.log(sendData);
 					res.render('apilist',{
-						 pagename: "API List",
+						 title: "API List",
 						 apiList: sendData
 					});
 				}
@@ -167,7 +167,7 @@ function edit(req, res, next){
 						//sendData = doc;
 					//}else{
 						res.render('edit', {
-							pagename:"API Editor",
+							title:"API Editor",
 							apiKey:req.session.apiId,
 							api:doc,
 							apiIdHex:req.query.apiId

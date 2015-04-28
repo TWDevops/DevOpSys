@@ -2,6 +2,7 @@
  * New node file
  */
 var DataBase = new require('../utils/DataBase.js');
+var autoIncrement = require("mongodb-autoincrement");
 var dbase = new DataBase();
 
 var headHander = {}
@@ -27,8 +28,10 @@ function setDeploy(req, res, next) {
 	console.log("Set Task");
 	if(req.session.apiId){
 		var apiOid = dbase.ObjectID(req.session.apiId);
-		var verObj = {};
-		verObj['no'] = req.params.verNo;
+		var taskObj = {};
+//		var srcType = ""
+//		var srcPath = "";
+		taskObj['apiVerNo'] = req.params.verNo;
 		//sendData['_id'] = apiOid;
 		//sendData['apiVer.no'] = req.params.verNo;
 		db.open(function() {
@@ -41,14 +44,21 @@ function setDeploy(req, res, next) {
 				 *         "apiVer":{$elemMatch: {"no":"0.1"}}
 				 *     });
 				 */
-				apiColl.findOne( { "_id": apiOid },{ "_id":0, "apiLocation":1, "apiVer" : {$elemMatch: {"no":req.params.verNo}}}, function(err, doc){
-					/*db.collection('apserver', function(err, apSerColl){
-						apSerColl.findOne();
-					});*/
-					sendData = doc;
-					sendData['level'] = req.query.level;
-					console.log(doc["apiVer"][0]);
-					res.send(sendData);
+				apiColl.findOne( { "_id": apiOid },{ "_id":0, "apiLocation":1, "apiVer" : {$elemMatch: {"no":taskObj['apiVerNo']}}}, function(err, apiDoc){
+					taskObj['apServ'] = apiDoc.apiLocation;
+					taskObj['srcType'] = apiDoc.apiVer[0].verCtrlType;
+					taskObj['srcPath'] = apiDoc.apiVer[0].srcUrl;
+					//console.log("srcType: "+ srcType);
+					//console.log("srcPath: "+ srcPath);
+					db.collection('apserver', function(err, apSerColl){
+						apSerColl.findOne({ "apSerName" : taskObj['apServ']},{"apSerIntIp":1,"apSerPath":1},function(err,apSerDoc){
+							sendData['api'] = apiDoc;
+							sendData['apServ'] = apSerDoc;
+							sendData['level'] = req.query.level;
+							console.log(apiDoc["apiVer"][0]);
+							res.send(sendData);
+						});
+					});
 				});
 			})
 		});

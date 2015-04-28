@@ -9,6 +9,22 @@
 		{% endblock %}
 	</head>
 	<body>
-		{% block content %}{% endblock %}
+		<div id="container" style="width: 100%">
+			<div id="header" >
+				<h1 style="margin-bottom:0;">{% block pagetitle %}{{title}}{% endblock %}</h1>
+			</div>
+			
+			<div id="menu" style="background-color:#E1E2E3;height:600px;width:10%;float:left;">
+				<a href="/mod/api/listview">API清單<br></a>
+			</div>
+			
+			<div id="content" style="height:600;width:90%;float:left;">
+				{% block content %}{% endblock %}
+			</div>
+			
+			<div id="footer" style="background-color:#FFA500;clear:both;text-align:center;">
+				http://www.104.com.tw
+			</div>
+		</div>
 	</body>
 </html>
