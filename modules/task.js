@@ -32,9 +32,19 @@ function setDeploy(req, res, next) {
 		//sendData['_id'] = apiOid;
 		//sendData['apiVer.no'] = req.params.verNo;
 		db.open(function() {
-			db.collection('api', function(err, collection){
+			db.collection('api', function(err, apiColl){
 				//apiOid = dbase.ObjectID(req.session.apiId);
-				collection.findOne( { "_id": apiOid },{ "apiVer" : {$elemMatch: {"no":req.params.verNo}}}, function(err, doc){
+				/**
+				 * db.api.findOne(
+				 *     { "_id": ObjectId("553e097a6aa7e62704ca9fc2") },
+				 *     { "_id":0, "apiLocation":1,
+				 *         "apiVer":{$elemMatch: {"no":"0.1"}}
+				 *     });
+				 */
+				apiColl.findOne( { "_id": apiOid },{ "_id":0, "apiLocation":1, "apiVer" : {$elemMatch: {"no":req.params.verNo}}}, function(err, doc){
+					/*db.collection('apserver', function(err, apSerColl){
+						apSerColl.findOne();
+					});*/
 					sendData = doc;
 					sendData['level'] = req.query.level;
 					console.log(doc["apiVer"][0]);

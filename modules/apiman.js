@@ -96,11 +96,12 @@ function edit(req, res, next){
 						doc["apiLocation"]=req.body.apiLocation;
 						doc["dataSource"]=req.body.dataSource;
 						doc["apiDesc"]=req.body.apiDesc;
-						if (typeof req.body.apiActivated !==  'undefined' && req.body.apiActivated == "true"){
+						/*if (typeof req.body.apiActivated !==  'undefined' && req.body.apiActivated == "true"){
 							doc["apiActivated"] = true;
 						}else{
 							doc["apiActivated"] = false;
-						}
+						}*/
+						doc['apiActivated'] = req.body.apiActivated.toLowerCase() === 'true';
 						doc["apiType"]=req.body.apiType;
 						doc["apiVer"]=[];
 						if (Array.isArray(req.body.verNo)){
@@ -122,7 +123,7 @@ function edit(req, res, next){
 									"verCtrlType":req.body.verCtrlType,
 									"srcUrl":req.body.verSrcUrl,
 									"deploy":0
-								};
+							};
 						}
 						//res.send(doc);
 						collection.update({"_id": apiOid},{'$set':doc},{"w":1},function(err, result){
@@ -205,12 +206,12 @@ function register(req, res, next){
 		insertObj['apiCDate'] = new Date();
 		insertObj['apiLocation'] = req.body.apiLocation;
 		insertObj['dataSource'] = req.body.dataSource;
-		if (typeof req.body.apiActivated !==  'undefined' && req.body.apiActivated == "true"){
+		/*if (typeof req.body.apiActivated !==  'undefined' && req.body.apiActivated == "true"){
 			insertObj['apiActivated'] = true;
 		}else{
 			insertObj['apiActivated'] = false;
-		}
-//		insertObj['apiActivated'] = req.body.apiActivated === 'true';
+		}*/
+		insertObj['apiActivated'] = req.body.apiActivated.toLowerCase() === 'true';
 		insertObj["apiType"]=req.body.apiType;
 		//res.send(insertObj);
 		db.open(function() {
