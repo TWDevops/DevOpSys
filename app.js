@@ -37,7 +37,7 @@ swig.setDefaults({ cache: false });
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(session({
+/*app.use(session({
 		secret: 'O9mITfnV0',
 		saveUninitialized: false, // don't create session until something stored 
 	    resave: false, //don't save session if unmodified
@@ -46,7 +46,20 @@ app.use(session({
 			autoRemove: 'interval',
 			autoRemoveInterval: 10 // In minutes. Default 
 		})
-	}));
+	}));*/
+app.use(session({
+	secret: 'O9mITfnV0',
+	saveUninitialized: false, // don't create session until something stored 
+    resave: false, //don't save session if unmodified
+	store: new MongoStore({
+		db: 'devops',
+		host: '192.168.122.165',
+		port: 27017,
+		collection: 'session',
+		autoRemove: 'interval',
+		autoRemoveInterval: 10 // In minutes. Default 
+	})
+}));
 
 app.use(favicon(path.join(__dirname,'public','images','favicon.ico')));
 app.use("/styles", express.static(__dirname + '/views/styles'));
