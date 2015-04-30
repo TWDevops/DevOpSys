@@ -164,6 +164,7 @@ function edit(req, res, next){
 				collection.findOne({"_id": apiOid}, function(err, doc){
 					if(doc != null){
 						console.log(doc);
+						db.close();
 						//sendData = doc;
 					//}else{
 						res.render('edit', {
