@@ -52,9 +52,9 @@ app.use(session({
 	saveUninitialized: false, // don't create session until something stored 
     resave: false, //don't save session if unmodified
 	store: new MongoStore({
-		db: 'devops',
-		host: '192.168.122.165',
-		port: 27017,
+		db: config.get("DB_NAME"),
+		host: config.get("DB_HOST"),
+		port: parseInt(config.get("DB_PORT")),
 		collection: 'session',
 		autoRemove: 'interval',
 		autoRemoveInterval: 10 // In minutes. Default 
