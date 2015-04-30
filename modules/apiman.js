@@ -109,7 +109,7 @@ function edit(req, res, next){
 								if(req.body.verNo[verIdx]!= ""){
 									doc["apiVer"][verIdx]={
 										"no":req.body.verNo[verIdx],
-										"apiUDate":(req.body.verApiUDate[verIdx]||new Date()),
+										"apiUDate":(new Date(req.body.verApiUDate[verIdx])||new Date()),
 										"verCtrlType":req.body.verCtrlType[verIdx],
 										"srcUrl":req.body.verSrcUrl[verIdx],
 										"deploy":(parseInt(req.body["verDeploy" + req.body.verNo[verIdx]]||0))
