@@ -16,13 +16,15 @@ function getTask(req, res, next) {
 	if(req.params.action){
 		db.open(function() {
 			db.collection('task', function(err, taskColl){
-				taskColl.findOne({'taskAction':req.params.action},function(err, taskDoc){
+				taskColl.findOne({'taskAction':req.params.action, 'taskStatus': 1},function(err, taskDoc){
 					if(taskDoc){
 						sendData = taskDoc;
+					}else{
+						sendData['info'] = "No data."
 					}
-					console.log(sendData);
-					db.close();
-					res.send(sendData);
+						console.log(sendData);
+						db.close();
+						res.send(sendData);
 				});
 			})
 		});
@@ -33,6 +35,56 @@ function getTask(req, res, next) {
 	}
 }
 getHandler["gettask/:action"] = getTask;
+
+
+function setTask(req, res,next){
+	var sendData = {};
+	if(req.params.taskId){
+		var taskId = dbase.ObjectID(req.params.taskId);
+		var nowTaskSt = 1;
+		var nexTaskSt = 1;
+		console.log("setTask action: " + req.params.action);
+		if(req.params.action){
+			if(req.params.action.toLowerCase() == 'start'){
+				nowTaskSt = 1;
+				nexTaskSt = 2;
+			}else if(req.params.action.toLowerCase() == 'done') {
+				nowTaskSt = 2;
+				nexTaskSt = 0
+			}
+			console.log("setTask nowTaskSt: " + nowTaskSt);
+			console.log("setTask nexTaskSt: " + nexTaskSt);
+			console.log("setTask action: " + req.params.action);
+			db.open(function() {
+				db.collection('task', function(err, taskColl){
+					taskColl.update({"_id":taskId, 'taskStatus': nowTaskSt},{'$set':{'taskStatus':nexTaskSt}},{"w":1},function(err, result){
+						console.log("setTask result: " + result);
+						if(JSON.parse(result)['ok'] == 1){
+							sendData['state'] = 0;
+							sendData['nModified'] = JSON.parse(result)['nModified'];
+							sendData["info"] = "update success.";
+						}else{
+							sendData["state"] = 1;
+							sendData["info"] = "nothing update.";
+						}
+						db.close();
+						res.send(sendData);
+					});
+				});
+			});
+		}else{
+			sendData['state'] = 1;
+			sendData['info'] = "there is no action.";
+			res.send(sendData);
+		}
+	}else{
+		sendData['state'] = 1;
+		sendData['info'] = "there is no taskId.";
+		res.send(sendData);
+	}
+}
+getHandler["setTask/:taskId/:action"] = setTask;
+
 
 function deployTask(req, res, next) {
 	var sendData = {};
