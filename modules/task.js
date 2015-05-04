@@ -73,7 +73,7 @@ function deployTask(req, res, next) {
 								taskObj['taskNo'] = new Date().getTime();
 								taskObj['taskAction'] = 'deploy';
 								taskObj['taskParams'] = taskParams;
-								taskObj['taskStatus'] = 3;
+								taskObj['taskStatus'] = 1;
 								if (!taskObj['taskLog']){
 									taskObj['taskLog'] = ["Preparing to deploy"];
 								}else{
