@@ -84,7 +84,7 @@
 			<th scope="col"><input name="verCtrlType" readonly="readonly" size="5" type="text" value="{{ver.verCtrlType}}" /></th>
 			<th scope="col"><input name="verSrcUrl" readonly="readonly" size="30" type="text" value="{{ver.srcUrl}}"/></th>
 			<th scope="col">
-				<input {% if ver.deploy == 0 %}checked="checked"{% else %}onclick="javascript:location.href='/mod/task/deploy/{{ver.no}}?idxk={{key}}&deploy=0'"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="0" /><label>Disable</label>&nbsp;&nbsp;
+				<input {% if ver.deploy == 0 %}checked="checked"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="0" /><label>Disable</label>&nbsp;&nbsp;
 				<!-- <input {% if ver.deploy == 3 %}checked="checked"{% else %}onclick="javascript:location.href='/mod/task/deploy/{{ver.no}}?idxk={{key}}&deploy=3'"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="3" /><label>Dev</label>&nbsp;&nbsp;
 				<input {% if ver.deploy == 2 %}checked="checked"{% else %}onclick="javascript:location.href='/mod/task/deploy/{{ver.no}}?idxk={{key}}&deploy=2'"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="2" /><label>Test</label>&nbsp;&nbsp;-->
 				<input {% if ver.deploy == 1 %}checked="checked"{% else %}onclick="javascript:location.href='/mod/task/deploy/{{ver.no}}?idxk={{key}}&deploy=1'"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="1" /><label>On</label>&nbsp;
