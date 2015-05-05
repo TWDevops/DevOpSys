@@ -20,7 +20,8 @@ function getTask(req, res, next) {
 					if(taskDoc){
 						sendData = taskDoc;
 					}else{
-						sendData['info'] = "No data."
+						sendData['info'] = "No data.";
+						sendData["date"] = new Date();
 					}
 						console.log(sendData);
 						db.close();
@@ -31,6 +32,7 @@ function getTask(req, res, next) {
 		//sendData["action"] = req.params.action;
 	}else{
 		sendData["info"] = "Nothine to do.";
+		sendData["date"] = new Date();
 		res.send(sendData);
 	}
 }
@@ -58,28 +60,43 @@ function setTask(req, res,next){
 			db.open(function() {
 				db.collection('task', function(err, taskColl){
 					taskColl.update({"_id":taskId, 'taskStatus': nowTaskSt},{'$set':{'taskStatus':nexTaskSt}},{"w":1},function(err, result){
-						console.log("setTask result: " + result);
-						if(JSON.parse(result)['ok'] == 1){
-							sendData['state'] = 0;
-							sendData['nModified'] = JSON.parse(result)['nModified'];
-							sendData["info"] = "update success.";
-						}else{
+						if(result){
+							console.log("setTask result: " + result);
+							if(JSON.parse(result)['ok'] == 1){
+								sendData['state'] = 0;
+								sendData['nModified'] = JSON.parse(result)['nModified'];
+								if(sendData['nModified'] >0){
+									sendData["info"] = "update success.";
+								}else{
+									sendData["info"] = "nothing update."
+								}
+							}else{
+								sendData["state"] = 1;
+								sendData["info"] = "update error.";
+							}
+							sendData["date"] = new Date();
+							db.close();
+							res.send(sendData);
+						}else {
 							sendData["state"] = 1;
-							sendData["info"] = "nothing update.";
+							sendData["info"] = "update error.";
+							sendData["date"] = new Date();
+							db.close();
+							res.send(sendData);
 						}
-						db.close();
-						res.send(sendData);
 					});
 				});
 			});
 		}else{
 			sendData['state'] = 1;
 			sendData['info'] = "there is no action.";
+			sendData["date"] = new Date();
 			res.send(sendData);
 		}
 	}else{
 		sendData['state'] = 1;
 		sendData['info'] = "there is no taskId.";
+		sendData["date"] = new Date();
 		res.send(sendData);
 	}
 }
@@ -119,6 +136,7 @@ function deployTask(req, res, next) {
 					if(apiDoc){
 						db.collection('apserver', function(err, apSerColl){
 							apSerColl.findOne({ "apSerName" : apiDoc.apiLocation},{"apSerIntIp":1,"apSerPath":1},function(err,apSerDoc){
+								if(apSerDoc){
 									var taskObj = {};
 									var taskParams = {};
 									taskParams['apiId'] = apiDoc['_id'];
@@ -159,11 +177,12 @@ function deployTask(req, res, next) {
 									console.log(apiDoc["apiVer"][0]);
 									db.close();
 									res.send(sendData);*/
-								
+								}
 							});
 						});
 					}else {
 						sendData["info"] = "Can not find actived API.";
+						sendData["date"] = new Date();
 						res.send(sendData);
 					}
 				});
@@ -171,6 +190,7 @@ function deployTask(req, res, next) {
 		});
 	}else{
 		sendData["info"] = "Nothine to do.";
+		sendData["date"] = new Date();
 		res.send(sendData);
 	}
 }
