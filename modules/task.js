@@ -89,7 +89,10 @@ getHandler["setTask/:taskId/:action"] = setTask;
 function deployTask(req, res, next) {
 	var sendData = {};
 	console.log("Set Task");
-	if(req.session.apiId){
+	console.log("apiId: " + req.session.apiId);
+	console.log("idxk: " + req.query.idxk);
+	console.log("deploy: " + req.query.deploy);
+	if(req.session.apiId && req.query.idxk && req.query.deploy){
 		var apiOid = dbase.ObjectID(req.session.apiId);
 		//var taskParams = {};
 //		var srcType = ""
@@ -107,53 +110,62 @@ function deployTask(req, res, next) {
 				 *         "apiVer":{$elemMatch: {"no":"0.1"}}
 				 *     });
 				 */
-				apiColl.findOne( { "_id": apiOid },{ "_id":0, "apiLocation":1, "apiVer" : {$elemMatch: {"no":req.params.verNo}}}, function(err, apiDoc){
+				apiColl.findOne( { "_id": apiOid, 'apiActivated':true },{ "_id":1, "apiLocation":1, "apiVer" : {$elemMatch: {"no":req.params.verNo}}}, function(err, apiDoc){
 					/*taskParams['apServ'] = apiDoc.apiLocation;
 					taskParams['srcType'] = apiDoc.apiVer[0].verCtrlType;
 					taskParams['srcPath'] = apiDoc.apiVer[0].srcUrl;*/
 					//console.log("srcType: "+ srcType);
 					//console.log("srcPath: "+ srcPath);
-					db.collection('apserver', function(err, apSerColl){
-						apSerColl.findOne({ "apSerName" : apiDoc.apiLocation},{"apSerIntIp":1,"apSerPath":1},function(err,apSerDoc){
-								var taskObj = {};
-								var taskParams = {};
-								taskParams['apServName'] = apiDoc.apiLocation;
-								taskParams['srcType'] = apiDoc.apiVer[0].verCtrlType;
-								taskParams['srcPath'] = apiDoc.apiVer[0].srcUrl;
-								taskParams['apServIp'] = apSerDoc.apSerIntIp;
-								taskParams['destPath'] = apSerDoc.apSerPath;
-								taskObj['taskNo'] = new Date().getTime();
-								taskObj['taskAction'] = 'deploy';
-								taskObj['taskParams'] = taskParams;
-								taskObj['taskStatus'] = 1;
-								if (!taskObj['taskLog']){
-									taskObj['taskLog'] = ["Preparing to deploy"];
-								}else{
-									taskObj['taskLog'].push("Preparing to deploy");
-								}
-								taskObj['taskDesc'] = "Deploy ";
-								db.collection('task', function(err, taskColl){
-									taskColl.insert(taskObj, function(err, data){
-										if (data) {
-											console.log('Successfully Insert');
-							                sendData["state"] = 0;
-										} else {
-							                console.log('Failed to Insert');
-							                sendData["state"] = 1;
-							            }
-										db.close();
-										sendData["date"] = new Date();
-										res.send(sendData);
-									})
-								});
-								/*sendData['apServ'] = taskObj;
-								sendData['level'] = req.query.level;
-								console.log(apiDoc["apiVer"][0]);
-								db.close();
-								res.send(sendData);*/
-							
+					if(apiDoc){
+						db.collection('apserver', function(err, apSerColl){
+							apSerColl.findOne({ "apSerName" : apiDoc.apiLocation},{"apSerIntIp":1,"apSerPath":1},function(err,apSerDoc){
+									var taskObj = {};
+									var taskParams = {};
+									taskParams['apiId'] = apiDoc['_id'];
+									taskParams['apiVerNo'] = req.params.verNo;
+									taskParams['apiVerIdx'] = req.query.idxk;
+									taskParams['apServName'] = apiDoc.apiLocation;
+									taskParams['srcType'] = apiDoc.apiVer[0].verCtrlType;
+									taskParams['srcPath'] = apiDoc.apiVer[0].srcUrl;
+									taskParams['apServIp'] = apSerDoc.apSerIntIp;
+									taskParams['destPath'] = apSerDoc.apSerPath;
+									taskParams['deploy'] = req.query.deploy;
+									taskObj['taskNo'] = new Date().getTime();
+									taskObj['taskAction'] = 'deploy';
+									taskObj['taskParams'] = taskParams;
+									taskObj['taskStatus'] = 1;
+									if (!taskObj['taskLog']){
+										taskObj['taskLog'] = ["Preparing to deploy"];
+									}else{
+										taskObj['taskLog'].push("Preparing to deploy");
+									}
+									taskObj['taskDesc'] = "Deploy ";
+									db.collection('task', function(err, taskColl){
+										taskColl.insert(taskObj, function(err, data){
+											if (data) {
+												console.log('Successfully Insert');
+								                sendData["state"] = 0;
+											} else {
+								                console.log('Failed to Insert');
+								                sendData["state"] = 1;
+								            }
+											db.close();
+											sendData["date"] = new Date();
+											res.send(sendData);
+										})
+									});
+									/*sendData['apServ'] = taskObj;
+									sendData['level'] = req.query.level;
+									console.log(apiDoc["apiVer"][0]);
+									db.close();
+									res.send(sendData);*/
+								
+							});
 						});
-					});
+					}else {
+						sendData["info"] = "Can not find actived API.";
+						res.send(sendData);
+					}
 				});
 			})
 		});

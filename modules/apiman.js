@@ -185,6 +185,42 @@ getHandler["edit"] = edit;
 postHandler["edit"] = edit;
 
 
+function updateLevel(req, res, next){
+	var sendData = {};
+	var apiOid = null;
+	if(req.params.apiId && req.params.level && req.params.verIdx){
+		db.open(function() {
+			db.collection('api', function(err, apiColl){
+				apiOid = dbase.ObjectID(req.params.apiId);
+				var queryObj = {};
+				queryObj['_id'] = apiOid;
+				queryObj['apiVer.'+ req.params.verIdx.toString()] = {'$exists':true}
+				var updateObj = {};
+				updateObj['apiVer.'+ req.params.verIdx.toString() + '.deploy'] = parseInt(req.params.level);
+				console.log("queryObj: " + JSON.stringify(queryObj));
+				console.log("updateObj: " + JSON.stringify(updateObj));
+				apiColl.update( queryObj, {'$set': updateObj }, {"w":1}, function(err, result){
+					if(err)
+						console.log(err);
+					console.log("result: " + result);
+					if(JSON.parse(result)['ok'] == 1){
+						sendData["state"] = 0;
+					}else{
+						sendData["state"] = 1;
+					}
+					//sendData["UPDATE"] = doc;
+					sendData["date"] = new Date();
+					sendData["result"] = result;
+					res.send(sendData);
+					db.close();
+				});
+			});
+		});
+	}
+}
+getHandler["updatelv/:apiId/:level/:verIdx"] = updateLevel;
+
+
 function register(req, res, next){
 	//console.log("use api");
 	var sendData = {};
