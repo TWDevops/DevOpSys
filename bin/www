@@ -6,6 +6,37 @@
 config = require("nconf");
 config.env().file({ "file":"config.json" });
 
+//ZK Client child process
+var env = process.env,
+	bossEnv = {},
+	child_process = require('child_process');
+
+//Duplicate the parent's environment object
+for (someVar in env) {
+    bossEnv[someVar] = env[someVar];
+}
+
+// Now, extend this with some new variables:
+bossEnv['ZK_HOST'] = config.get('ZK_HOST');
+bossEnv['ZK_PORT'] = config.get('ZK_PORT');
+
+// send to boss, message format: {'workerid':id,'action':action,'data':{}}
+boss = child_process.fork('./worker/zkClientWorker.js',
+		{env:bossEnv}
+);
+/*boss = child_process.spawn("node", ["worker/taskBoss.js"],
+		{env:bossEnv,stdio: ['ipc']}
+);
+boss.stdout.setEncoding('utf8');
+boss.stdout.on('data', function(data) {
+  console.log(data);
+});*/
+console.log("Zk Client Worker initial.");
+boss.on('message', function(msg) {
+  console.log('www Got message from Boss:', msg);
+});
+
+// HTTP Service start.
 var app = require('../app');
 var debug = require('debug')('DevOpSys:server');
 var http = require('http');
