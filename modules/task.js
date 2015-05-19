@@ -4,6 +4,8 @@
 var DataBase = new require('../utils/DataBase.js');
 var dbase = new DataBase();
 
+var mainWorker = require('../worker/MainWorker.js');
+
 var headHander = {}
 var getHandler = {};
 var postHandler = {};
@@ -12,6 +14,7 @@ var db = dbase.getDb();
 
 function getTask(req, res, next) {
 	var sendData = {};
+	mainWorker.sendMessage('{"Hello":"World"}');
 	console.log("Task api");
 	if(req.params.action){
 		db.open(function() {

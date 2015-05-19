@@ -112,6 +112,7 @@ function edit(req, res, next){
 										"apiUDate":(new Date(req.body.verApiUDate[verIdx])||new Date()),
 										"verCtrlType":req.body.verCtrlType[verIdx],
 										"srcUrl":req.body.verSrcUrl[verIdx],
+										"fileList":req.body.verFileList[verIdx].split(","),
 										"deploy":(parseInt(req.body["verDeploy" + req.body.verNo[verIdx]]||0))
 									};
 								}

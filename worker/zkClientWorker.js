@@ -50,7 +50,7 @@ client.once('connected', function () {
 			console.log('Node exists.');
 		} else {
 			console.log('Node does not exist.');
-			client.create(path, function (error) {
+			client.create(path, new Buffer('DevOpSysACLs'), function (error) {
 		        if (error) {
 		            console.log('Failed to create node: %s due to: %s.', path, error);
 		        } else {
