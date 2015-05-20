@@ -1,5 +1,8 @@
 var express = require('express');
 
+var config = require("nconf");
+config.env().file({ "file":"config.json" });
+
 var session = require('express-session');
 var DataBase = new require('./utils/DataBase.js');
 var MongoStore = require('connect-mongo')(session);

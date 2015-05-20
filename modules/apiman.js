@@ -3,6 +3,7 @@
  */
 var DataBase = new require('../utils/DataBase.js');
 var dbase = new DataBase();
+var db = dbase.getDb();
 
 /*
  *  Method List(head, get, post)
@@ -11,16 +12,6 @@ var headHander = {}
 var getHandler = {};
 var postHandler = {};
 
-/*console.log(config.get("DB_HOST"));
-console.log(config.get("DB_PORT"));
-console.log(config.get("DB_NAME"));
-var mongodb = require('mongodb');
-var mongodbServer = new mongodb.Server(config.get("DB_HOST"),
-		config.get("DB_PORT"),
-		{ auto_reconnect: true, poolSize: 10 });
-var db = new mongodb.Db(config.get("DB_NAME"), mongodbServer);
-*/
-var db = dbase.getDb();
 
 function list(req, res, next) {
 	var sendData = {};
@@ -88,7 +79,7 @@ function edit(req, res, next){
 						//sendData = doc;
 						doc["apiName"]=req.body.apiName;
 						doc["apiOwner"]=req.body.apiOwner;
-						doc["apiCallee"]=req.body.apiCallee;
+						doc["apiAllow"]=req.body.apiAllow.split(",");
 						doc["apiUrl"]=req.body.apiUrl;
 						doc["apiDocUrl"]=req.body.apiDocUrl;
 						doc["apiEndPoint"]=req.body.apiEndPoint;
@@ -240,7 +231,7 @@ function register(req, res, next){
 		insertObj['apiOwner'] = req.body.apiOwner;
 		insertObj['apiDesc'] = req.body.apiDesc;
 		insertObj['apiVer'] = null;
-		insertObj['apiCallee'] = req.body.apiCallee;
+		insertObj['apiAllow'] = req.body.apiAllow.split(",");
 		insertObj['apiUrl'] = req.body.apiUrl;
 		insertObj['apiDocUrl'] = req.body.apiDocUrl;
 		insertObj['apiEndPoint'] = req.body.apiEndPoint;
@@ -283,7 +274,12 @@ function register(req, res, next){
 getHandler["register"] = register;
 postHandler["register"] = register;
 
-
+function allowList(req, res, next){
+	dbase.getApiAllow(function(allowList){
+		res.send(allowList);
+	});
+}
+getHandler["policy"] = allowList;
 
 exports.headHander = headHander;
 exports.getHandler = getHandler;

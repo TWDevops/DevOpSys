@@ -5,6 +5,9 @@
  *  "MOD_LIST":{"route" : "modules"},
  * 載入模組及相對應的路行,啟始路行為/mod/"route".
  */
+var config = require("nconf");
+config.env().file({ "file":"config.json" });
+
 var express = require('express');
 var router = express.Router();
 

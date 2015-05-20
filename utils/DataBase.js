@@ -1,6 +1,8 @@
 /**
  * New node file
  */
+var config = require("nconf");
+config.env().file({ "file":"config.json" });
 var mongodb = require('mongodb');
 var ObjectId = mongodb.ObjectID;
 var mongodbServer = null;
@@ -24,6 +26,25 @@ DataBase.prototype.ObjectID = function(o_id){
 	var oid = null;
 	oid =  new ObjectId(o_id);
 	return oid;
+}
+
+DataBase.prototype.getApiAllow = function(callback){
+	var allowList = {};
+	db.open(function() {
+		db.collection('api', function(err, apiColl){
+			var cursor = apiColl.find({},{apiAllow:true});
+			cursor.each(function(err, doc){
+				if(doc != null){
+					console.log(doc['_id'].toString());
+					allowList[doc['_id'].toString()]= doc['apiAllow'];
+				} else{
+					db.close();
+					console.log(allowList);
+					callback(allowList);
+				}
+			});
+		});
+	});
 }
 
 module.exports = DataBase;

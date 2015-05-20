@@ -1,7 +1,27 @@
 /**
  * New node file
  */
+var config = require("nconf");
+config.env().file({ "file":"config.json" });
 
+process.on('SIGTERM',function(){
+	console.log("\nGracefully shutting down from SIGTERM (system kill)");
+	singleton.getInstance().zkWorker.kill('SIGTERM');
+	process.exit();
+});
+
+process.on('SIGINT', function() {
+	//this.zkWorker.
+	//this.zkWorker.kill('SIGINT');
+	console.log("\nGracefully shutting down from SIGINT (Ctrl+C)");
+	process.exit();
+});
+
+process.on('exit',function(code){
+	console.log('Main process exited with exit code '+code);
+})
+
+//singleton class
 var singleton = function singleton(){
 	//ZK Client child process
 	var env = process.env;
@@ -23,7 +43,7 @@ var singleton = function singleton(){
 	this.zkWorker = child_process.fork('./worker/zkClientWorker.js',
 			{env:zkEnv}
 	);
-
+	
 	/*boss = child_process.spawn("node", ["worker/taskBoss.js"],
 			{env:bossEnv,stdio: ['ipc']}
 	);
@@ -37,11 +57,14 @@ var singleton = function singleton(){
 		  console.log('www Got message from zkWorker:', msg);
 	});
 	console.log("Zk Client Worker initial.");
-	
 }
 
 singleton.prototype.sendMessage = function(msg){
 	this.zkWorker.send(msg);
+}
+
+singleton.prototype.getZKWorker = function(){
+	return this.zkWorker;
 }
 
 singleton.instance = null;

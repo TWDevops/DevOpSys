@@ -4,8 +4,11 @@
  * Module dependencies.
  */
 //config 設為全域變數
-config = require("nconf");
+var config = require("nconf");
 config.env().file({ "file":"config.json" });
+
+var DataBase = new require('../utils/DataBase.js');
+var dbase = new DataBase();
 
 var mainWorker = require('../worker/MainWorker.js');
 
@@ -34,6 +37,10 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+dbase.getApiAllow(function(allowList) {
+	mainWorker.sendMessage({"action":"set",'name':'apiACLs',"data":allowList});
+});
 
 /**
  * Normalize a port into a number, string, or false.
