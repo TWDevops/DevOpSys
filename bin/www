@@ -39,7 +39,7 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 dbase.getApiAllow(function(allowList) {
-	mainWorker.sendMessage({"action":"set",'name':'apiACLs',"data":allowList});
+	mainWorker.sendMessage({"worker":"zkClient","action":"set",'name':'apiACLs',"data":allowList});
 });
 
 /**

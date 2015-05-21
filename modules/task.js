@@ -4,6 +4,7 @@
 var DataBase = new require('../utils/DataBase.js');
 var dbase = new DataBase();
 
+var assert = require('assert');
 var mainWorker = require('../worker/MainWorker.js');
 
 var headHander = {}
@@ -17,8 +18,9 @@ function getTask(req, res, next) {
 	mainWorker.sendMessage('{"Hello":"World"}');
 	console.log("Task api");
 	if(req.params.action){
-		db.open(function() {
-			db.collection('task', function(err, taskColl){
+		db.open(function(err, devopsDb) {
+			assert.equal(null, err);
+			devopsDb.collection('task', function(err, taskColl){
 				taskColl.findOne({'taskAction':req.params.action, 'taskStatus': 1},function(err, taskDoc){
 					if(taskDoc){
 						sendData = taskDoc;
@@ -27,7 +29,7 @@ function getTask(req, res, next) {
 						sendData["date"] = new Date();
 					}
 						console.log(sendData);
-						db.close();
+						devopsDb.close();
 						res.send(sendData);
 				});
 			})
@@ -60,8 +62,9 @@ function setTask(req, res,next){
 			console.log("setTask nowTaskSt: " + nowTaskSt);
 			console.log("setTask nexTaskSt: " + nexTaskSt);
 			console.log("setTask action: " + req.params.action);
-			db.open(function() {
-				db.collection('task', function(err, taskColl){
+			db.open(function(err, devopsDb) {
+				assert.equal(null, err);
+				devopsDb.collection('task', function(err, taskColl){
 					taskColl.update({"_id":taskId, 'taskStatus': nowTaskSt},{'$set':{'taskStatus':nexTaskSt}},{"w":1},function(err, result){
 						if(result){
 							console.log("setTask result: " + result);
@@ -78,13 +81,13 @@ function setTask(req, res,next){
 								sendData["info"] = "update error.";
 							}
 							sendData["date"] = new Date();
-							db.close();
+							devopsDb.close();
 							res.send(sendData);
 						}else {
 							sendData["state"] = 1;
 							sendData["info"] = "update error.";
 							sendData["date"] = new Date();
-							db.close();
+							devopsDb.close();
 							res.send(sendData);
 						}
 					});
@@ -120,8 +123,9 @@ function deployTask(req, res, next) {
 		//taskParams['apiVerNo'] = req.params.verNo;
 		//sendData['_id'] = apiOid;
 		//sendData['apiVer.no'] = req.params.verNo;
-		db.open(function() {
-			db.collection('api', function(err, apiColl){
+		db.open(function(err, devopsDb) {
+			assert.equal(null, err);
+			devopsDb.collection('api', function(err, apiColl){
 				//apiOid = dbase.ObjectID(req.session.apiId);
 				/**
 				 * db.api.findOne(
@@ -137,7 +141,7 @@ function deployTask(req, res, next) {
 					//console.log("srcType: "+ srcType);
 					//console.log("srcPath: "+ srcPath);
 					if(apiDoc){
-						db.collection('apserver', function(err, apSerColl){
+						devopsDb.collection('apserver', function(err, apSerColl){
 							apSerColl.findOne({ "apSerName" : apiDoc.apiLocation},{"apSerIntIp":1,"apSerPath":1},function(err,apSerDoc){
 								if(apSerDoc){
 									var taskObj = {};
@@ -161,7 +165,7 @@ function deployTask(req, res, next) {
 										taskObj['taskLog'].push("Preparing to deploy");
 									}
 									taskObj['taskDesc'] = "Deploy ";
-									db.collection('task', function(err, taskColl){
+									devopsDb.collection('task', function(err, taskColl){
 										taskColl.insert(taskObj, function(err, data){
 											if (data) {
 												console.log('Successfully Insert');
@@ -170,7 +174,7 @@ function deployTask(req, res, next) {
 								                console.log('Failed to Insert');
 								                sendData["state"] = 1;
 								            }
-											db.close();
+											devopsDb.close();
 											sendData["date"] = new Date();
 											res.send(sendData);
 										})

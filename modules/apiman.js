@@ -4,6 +4,7 @@
 var DataBase = new require('../utils/DataBase.js');
 var dbase = new DataBase();
 var db = dbase.getDb();
+//var assert = require('assert');
 
 /*
  *  Method List(head, get, post)
@@ -16,15 +17,27 @@ var postHandler = {};
 function list(req, res, next) {
 	var sendData = {};
 	console.log("use api");
-	db.open(function() {
-		db.collection('api', function(err, collection){
-			var cursor = collection.find({});
-			cursor.each(function(err, doc){
+	db.open(function(error, devopsDb) {
+		if(error){
+			console.log(error.stack);
+			process.exit(0);
+		}
+		devopsDb.collection('api', function(error, apiColl){
+			if(error){
+				console.log(error.stack);
+				process.exit(0);
+			}
+			var cursor = apiColl.find({});
+			cursor.each(function(error, doc){
+				if(error){
+					console.log(error.stack);
+					process.exit(0);
+				}
 				if(doc != null){
 					console.log(doc);
 					sendData[doc.apiName]= doc;
 				} else{
-					db.close();
+					devopsDb.close();
 					console.log(sendData);
 					res.send(sendData);
 				}
@@ -42,15 +55,27 @@ function listView(req, res, next) {
 	console.log("session.apiId: " + req.session.apiId);
 	var sendData = {};
 	//console.log("use api");
-	db.open(function() {
-		db.collection('api', function(err, collection){
-			var cursor = collection.find({});
-			cursor.each(function(err, doc){
+	db.open(function(error, devopsDb) {
+		if(error){
+			console.log(error.stack);
+			process.exit(0);
+		}
+		devopsDb.collection('api', function(error, apiColl){
+			if(error){
+				console.log(error.stack);
+				process.exit(0);
+			}
+			var cursor = apiColl.find({});
+			cursor.each(function(error, doc){
+				if(error){
+					console.log(error.stack);
+					process.exit(0);
+				}
 				if(doc != null){
 					console.log(doc['_id'].toString());
 					sendData[doc['_id'].toString()]= doc;
 				} else{
-					db.close();
+					devopsDb.close();
 					console.log(sendData);
 					res.render('apilist',{
 						 title: "API List",
@@ -69,11 +94,23 @@ function edit(req, res, next){
 	var apiOid = null;
 	if (req.method == 'POST') {
 		console.log(req.session.apiId);
-		db.open(function() {
-			db.collection('api', function(err, collection){
+		db.open(function(error, devopsDb) {
+			if(error){
+				console.log(error.stack);
+				process.exit(0);
+			}
+			devopsDb.collection('api', function(error, apiColl){
+				if(error){
+					console.log(error.stack);
+					process.exit(0);
+				}
 				apiOid = dbase.ObjectID(req.session.apiId);
 				console.log(apiOid);
-				collection.findOne({"_id": apiOid}, function(err, doc){
+				apiColl.findOne({"_id": apiOid}, function(error, doc){
+					if(error){
+						console.log(error.stack);
+						process.exit(0);
+					}
 					if(doc != null){
 						console.log(doc);
 						//sendData = doc;
@@ -118,7 +155,11 @@ function edit(req, res, next){
 							};
 						}
 						//res.send(doc);
-						collection.update({"_id": apiOid},{'$set':doc},{"w":1},function(err, result){
+						apiColl.update({"_id": apiOid},{'$set':doc},{"w":1},function(error, result){
+							if(error){
+								console.log(error.stack);
+								process.exit(0);
+							}
 							console.log("result: " + result);
 							console.log("ok: " + JSON.parse(result)['ok']);
 							if(JSON.parse(result)['ok'] == 1){
@@ -130,11 +171,11 @@ function edit(req, res, next){
 							sendData["date"] = new Date();
 							sendData["result"] = result;
 							res.send(sendData);
-							db.close();
+							devopsDb.close();
 						});
 					//}else{
 					}else{
-						db.close();
+						devopsDb.close();
 						sendData["state"] = 1;
 						sendData["error"] = "Data not found."
 						sendData["date"] = new Date();
@@ -144,19 +185,31 @@ function edit(req, res, next){
 			});
 		});
 	}else if(req.query.apiId){
-		db.open(function() {
+		db.open(function(error, devopsDb) {
+			if(error){
+				console.log(error.stack);
+				process.exit(0);
+			}
 			console.log(req.session.apiId);
 			req.session.apiId = req.query.apiId;
 			console.log(req.session.apiId);
-			db.collection('api', function(err, collection){
+			devopsDb.collection('api', function(error, apiColl){
+				if(error){
+					console.log(error.stack);
+					process.exit(0);
+				}
 				apiOid = dbase.ObjectID(req.query.apiId);
 				//var cursor = collection.find({"_id": apiOid});
 				
 				//cursor.each(function(err, doc){
-				collection.findOne({"_id": apiOid}, function(err, doc){
+				apiColl.findOne({"_id": apiOid}, function(error, doc){
+					if(error){
+						console.log(error.stack);
+						process.exit(0);
+					}
 					if(doc != null){
 						console.log(doc);
-						db.close();
+						devopsDb.close();
 						//sendData = doc;
 					//}else{
 						res.render('edit', {
@@ -181,8 +234,16 @@ function updateLevel(req, res, next){
 	var sendData = {};
 	var apiOid = null;
 	if(req.params.apiId && req.params.level && req.params.verIdx){
-		db.open(function() {
-			db.collection('api', function(err, apiColl){
+		db.open(function(error, devopsDb) {
+			if(error){
+				console.log(error.stack);
+				process.exit(0);
+			}
+			devopsDb.collection('api', function(error, apiColl){
+				if(error){
+					console.log(error.stack);
+					process.exit(0);
+				}
 				apiOid = dbase.ObjectID(req.params.apiId);
 				var queryObj = {};
 				queryObj['_id'] = apiOid;
@@ -191,7 +252,11 @@ function updateLevel(req, res, next){
 				updateObj['apiVer.'+ req.params.verIdx.toString() + '.deploy'] = parseInt(req.params.level);
 				console.log("queryObj: " + JSON.stringify(queryObj));
 				console.log("updateObj: " + JSON.stringify(updateObj));
-				apiColl.update( queryObj, {'$set': updateObj }, {"w":1}, function(err, result){
+				apiColl.update( queryObj, {'$set': updateObj }, {"w":1}, function(error, result){
+					if(error){
+						console.log(error.stack);
+						process.exit(0);
+					}
 					if(result){
 						console.log("result: " + result);
 						if(JSON.parse(result)['ok'] == 1){
@@ -203,7 +268,7 @@ function updateLevel(req, res, next){
 						sendData["date"] = new Date();
 						sendData["result"] = result;
 						res.send(sendData);
-						db.close();
+						devopsDb.close();
 					}else{
 						sendData["state"] = 1;
 						sendData["info"] = "update error.";
@@ -247,9 +312,21 @@ function register(req, res, next){
 		insertObj['apiActivated'] = req.body.apiActivated.toLowerCase() === 'true';
 		insertObj["apiType"]=req.body.apiType;
 		//res.send(insertObj);
-		db.open(function() {
-			db.collection('api', function(err, collection){
-				var cursor = collection.insert(insertObj, function(err,data){
+		db.open(function(error, devopsDb) {
+			if(error){
+				console.log(error.stack);
+				process.exit(0);
+			}
+			devopsDb.collection('api', function(error, apiColl){
+				if(error){
+					console.log(error.stack);
+					process.exit(0);
+				}
+				var cursor = apiColl.insert(insertObj, function(error,data){
+					if(error){
+						console.log(error.stack);
+						process.exit(0);
+					}
 					if (data) {
 		                console.log('Successfully Insert');
 		                sendData["state"] = 0;
@@ -257,7 +334,7 @@ function register(req, res, next){
 		                console.log('Failed to Insert');
 		                sendData["state"] = 1;
 		            }
-					db.close();
+					devopsDb.close();
 					sendData["date"] = new Date();
 					res.send(sendData);
 				});

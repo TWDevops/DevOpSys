@@ -6,7 +6,8 @@ config.env().file({ "file":"config.json" });
 var mongodb = require('mongodb');
 var ObjectId = mongodb.ObjectID;
 var mongodbServer = null;
-var db=null;
+//var db=null;
+//var assert = require('assert');
 
 function DataBase(){
 	console.log("DataBase Host: " + config.get("DB_HOST"));
@@ -15,11 +16,10 @@ function DataBase(){
 	mongodbServer = new mongodb.Server(config.get("DB_HOST"),
 			config.get("DB_PORT"),
 			{ auto_reconnect: true, poolSize: 10 });
-	db = new mongodb.Db(config.get("DB_NAME"), mongodbServer);
 }
 
-DataBase.prototype.getDb = function(){
-	return db;
+DataBase.prototype.getDb = function(dbName){
+	return new mongodb.Db((dbName||config.get("DB_NAME")), mongodbServer);
 }
 
 DataBase.prototype.ObjectID = function(o_id){
@@ -30,10 +30,23 @@ DataBase.prototype.ObjectID = function(o_id){
 
 DataBase.prototype.getApiAllow = function(callback){
 	var allowList = {};
-	db.open(function() {
-		db.collection('api', function(err, apiColl){
+	var db = new mongodb.Db(config.get("DB_NAME"), mongodbServer);
+	db.open(function(error, db) {
+		if(error){
+			console.log(error.stack);
+			process.exit(0);
+		}
+		db.collection('api', function(error, apiColl){
+			if(error){
+				console.log(error.stack);
+				process.exit(0);
+			}
 			var cursor = apiColl.find({},{apiAllow:true});
-			cursor.each(function(err, doc){
+			cursor.each(function(error, doc){
+				if(error){
+					console.log(error.stack);
+					process.exit(0);
+				}
 				if(doc != null){
 					console.log(doc['_id'].toString());
 					allowList[doc['_id'].toString()]= doc['apiAllow'];
