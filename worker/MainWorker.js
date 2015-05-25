@@ -4,6 +4,10 @@
 var config = require("nconf");
 config.env().file({ "file":"config.json" });
 
+//var DataBase = new require('../utils/DataBase.js');
+//var dbase = new DataBase();
+var dbase = new require('../utils/DataBase.js');
+
 process.on('SIGTERM',function(){
 	console.log("\nGracefully shutting down from SIGTERM (system kill)");
 	if(singleton.getInstance().zkWorker){
@@ -36,7 +40,7 @@ var singleton = function singleton(){
 	var	zkEnv = {};
 	var	child_process = require('child_process');
 	var zkWorker = null;
-	var workerHandler = {};
+	//var workerHandler = {};
 
 	//Duplicate the parent's environment object
 	for (someVar in env) {
@@ -59,7 +63,7 @@ var singleton = function singleton(){
 		  console.log('www Got message from zkWorker:', msg);
 	});
 	workerHandler['zkClient'] = zkWorker;
-	this.workerHandler = workerHandler;
+	//this.workerHandler = workerHandler;
 	console.log("Zk Client Worker initial.");
 
 	/*boss = child_process.spawn("node", ["worker/taskBoss.js"],
@@ -73,8 +77,20 @@ var singleton = function singleton(){
 
 singleton.prototype.sendMessage = function(msg){
 	console.log(msg['worker']);
-	this.workerHandler[msg['worker']].send(msg);
+	workerHandler[msg['worker']].send(msg);
 //	this.zkWorker.send(msg);
+}
+
+singleton.prototype.setApiAcls = function(){
+	dbase.getApiAllow(function(allowList) {
+		singleton.prototype.sendMessage({"worker":"zkClient","action":"set",'name':'apiACLs',"data":allowList});
+	})
+};
+
+singleton.prototype.getDeployTask = function(){
+	dbase.getTaskList('deploy', function(taskList) {
+		
+	})
 }
 
 /*singleton.prototype.getZKWorker = function(){
@@ -83,15 +99,16 @@ singleton.prototype.sendMessage = function(msg){
 
 singleton.instance = null;
 //singleton.zkWorker = null;
-singleton.workerHandler = {};
+var workerHandler = {};
 /**
  * Singleton getInstance definition
  * @return singleton class
  */
 singleton.getInstance = function(){
-    if(this.instance === null ){
-        this.instance = new singleton();
-    }
+	if(this.instance === null ){
+		this.instance = new singleton();
+		this.instance.setApiAcls();
+	}
     return this.instance;
 }
 

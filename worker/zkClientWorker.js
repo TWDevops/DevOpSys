@@ -3,7 +3,7 @@
  */
 var zookeeper = require('node-zookeeper-client');
 var env = process.env
-var child_process = require('child_process');
+//var child_process = require('child_process');
 var workerHandler = {};
 
 var client = zookeeper.createClient(env['ZK_HOST']+ ':' + env['ZK_PORT']);
@@ -12,29 +12,29 @@ var path = '/apiACLs';
 var EventEmitter = require('events').EventEmitter;
 var emitter = new EventEmitter();
 
-emitter.on('set',function(msg){
-	for(var apiId in msg['data']){
+emitter.on('set',function(nodeList){
+	setApiList(nodeList,0);
+	/*for(var apiId in nodeList){
 		(function(apiId){
 			console.log(apiId);
-			console.log(msg['data'][apiId]);
+			console.log(nodeList[apiId]);
 			client.exists(path + "/" + apiId.toString(), function(error, stat){
-				console.log("node: " + path + "/" + apiId)
 				if (error) {
 					console.log(error.stack);
 					return;
 				}
 				
 				if (stat) {
-					console.log('Node exists.');
+					console.log('Node: %s is exists.', path + "/" + apiId);
 					client.getData(path + "/" + apiId, function(error, data, stat){
 						if (error) {
 							console.log(error.stack);
 				            return;
 						}
-						if(data.toString('utf8') == msg['data'][apiId].toString()){
-							console.log('node ' + apiId.toString() + ": not to change");
+						if(data.toString('utf8') == nodeList[apiId].toString()){
+							console.log('Node: %s is not change', path + "/" + apiId);
 						}else{
-							client.setData(path + "/" + apiId, new Buffer(msg['data'][apiId].toString()), function(){
+							client.setData(path + "/" + apiId, new Buffer(nodeList[apiId].toString()), function(){
 								if (error) {
 									console.log('Failed to set node date: %s due to: %s.', path + "/" + apiId, error);
 							        return;
@@ -45,28 +45,159 @@ emitter.on('set',function(msg){
 						}
 					});
 				} else {
-					console.log('Node does not exist.');
-					client.create(path + "/" + apiId, new Buffer(msg['data'][apiId].toString()),  function (error) {
+					console.log('Node: %s is not exist.', path + "/" + apiId);
+					client.create(path + "/" + apiId, new Buffer(nodeList[apiId].toString()),  function (error) {
 			        	if (error) {
 			            	console.log('Failed to create node: %s due to: %s.', path + "/" + apiId, error);
 			        	} else {
-			            	console.log('Node: %s is successfully created.', path);
+			            	console.log('Node: %s is successfully created.', path + "/" + apiId);
 			        	}
 					});
 				}
 			});
 		})(apiId);
-	}
+	}*/
 });
 
-process.on('message', function(msg){
-	//console.log(workerHandler);
+emitter.on('msg',function(msg){
 	console.log('zkClientWorker Got message from www: ', msg);
-	console.log('worker: ' + msg['worker']);
-	console.log('action: ' + msg['action']);
-	console.log('name: ' + msg['name']);
+});
+
+function setApiList(nodeList, idx){
+	console.log(Object.keys(nodeList)[idx]);
+	console.log(nodeList[Object.keys(nodeList)[idx]]['apiAllow']);
+	client.exists(path + "/" + Object.keys(nodeList)[idx].toString(), function(error, stat){
+		if (error) {
+			console.log(error.stack);
+			return;
+		}
+				
+		if (stat) {
+			console.log('Node: %s is exists.', path + "/" + Object.keys(nodeList)[idx]);
+			client.exists(path + "/" + Object.keys(nodeList)[idx] + "/activated", function(error, stat){
+				if (error) {
+					console.log(error.stack);
+					return;
+				}
+				if(stat){
+					client.setData(path + "/" + Object.keys(nodeList)[idx] + "/activated", new Buffer(nodeList[Object.keys(nodeList)[idx]]['apiActivated'].toString()), function(error,stat){
+						if (error) {
+							console.log('Failed to set node date: %s due to: %s.', path + "/" + Object.keys(nodeList)[idx] + "/activated", error);
+							return;
+						}
+						console.log('Node: %s is successfully change.', path + "/" + Object.keys(nodeList)[idx] + "/activated");
+						client.exists(path + "/" + Object.keys(nodeList)[idx] + "/allow", function(error, stat){
+							if (error) {
+								console.log(error.stack);
+								return;
+							}
+							if(stat){
+								client.setData(path + "/" + Object.keys(nodeList)[idx] + "/allow", new Buffer(nodeList[Object.keys(nodeList)[idx]]['apiAllow'].toString()), function(error,stat){
+									if (error) {
+										console.log('Failed to set node date: %s due to: %s.', path + "/" + Object.keys(nodeList)[idx] + "/allow", error);
+										return;
+									}
+									console.log('Node: %s is successfully change.', path + "/" + Object.keys(nodeList)[idx] + "/allow");
+									if(idx >= Object.keys(nodeList).length -1){
+										return;
+									}
+									setApiList(nodeList, idx + 1);
+								});
+							}else{
+								client.create(path + "/" + Object.keys(nodeList)[idx] + "/allow", new Buffer(nodeList[Object.keys(nodeList)[idx]]['apiAllow'].toString()),  function (error) {
+									if (error) {
+										console.log('Failed to create node: %s due to: %s.', path + "/" + Object.keys(nodeList)[idx] + "/allow", error);
+										return;
+									}
+									console.log('Node: %s is successfully created.', path + "/" + Object.keys(nodeList)[idx] + "/allow");
+									if(idx >= Object.keys(nodeList).length -1){
+										return;
+									}
+									setApiList(nodeList, idx + 1);
+								});
+							}
+						});
+					});
+				}else{
+					client.create(path + "/" + Object.keys(nodeList)[idx] + "/activated", new Buffer(nodeList[Object.keys(nodeList)[idx]]['apiActivated'].toString()),  function (error) {
+						if (error) {
+							console.log('Failed to create node: %s due to: %s.', path + "/" + Object.keys(nodeList)[idx] + "/activated", error);
+							return;
+						}
+						console.log('Node: %s is successfully created.', path + "/" + Object.keys(nodeList)[idx] + "/activated");
+						client.exists(path + "/" + Object.keys(nodeList)[idx] + "/allow", function(error, stat){
+							if (error) {
+								console.log(error.stack);
+								return;
+							}
+							if(stat){
+								client.setData(path + "/" + Object.keys(nodeList)[idx] + "/allow", new Buffer(nodeList[Object.keys(nodeList)[idx]]['apiAllow'].toString()), function(error,stat){
+									if (error) {
+										console.log('Failed to set node date: %s due to: %s.', path + "/" + Object.keys(nodeList)[idx] + "/allow", error);
+										return;
+									}
+									console.log('Node: %s is successfully change.', path + "/" + Object.keys(nodeList)[idx] + "/allow");
+									if(idx >= Object.keys(nodeList).length -1){
+										return;
+									}
+									setApiList(nodeList, idx + 1);
+								});
+							}else{
+								client.create(path + "/" + Object.keys(nodeList)[idx] + "allow", new Buffer(nodeList[Object.keys(nodeList)[idx]]['apiAllow'].toString()),  function (error) {
+									if (error) {
+										console.log('Failed to create node: %s due to: %s.', path + "/" + Object.keys(nodeList)[idx] + "/allow", error);
+										return;
+									}
+									console.log('Node: %s is successfully created.', path + "/" + Object.keys(nodeList)[idx] + "/allow");
+									if(idx >= Object.keys(nodeList).length -1){
+										return;
+									}
+									setApiList(nodeList, idx + 1);
+								});
+							}
+						});
+					});
+				}
+			});
+		} else {
+			console.log('Node: %s is not exist.', path + "/" + Object.keys(nodeList)[idx]);
+			client.create(path + "/" + Object.keys(nodeList)[idx], new Buffer(nodeList[Object.keys(nodeList)[idx]]['apiDesc'].toString()),  function (error) {
+				if (error) {
+					console.log('Failed to create node: %s due to: %s.', path + "/" + Object.keys(nodeList)[idx], error);
+					return;
+				}
+				console.log('Node: %s is successfully created.', path + "/" + Object.keys(nodeList)[idx]);
+				client.create(path + "/" + Object.keys(nodeList)[idx] + "/activated", new Buffer(nodeList[Object.keys(nodeList)[idx]]['apiActivated'].toString()),  function (error) {
+					if (error) {
+						console.log('Failed to create node: %s due to: %s.', path + "/" + Object.keys(nodeList)[idx] + "/activated", error);
+						return;
+					}
+					console.log('Node: %s is successfully created.', path + "/" + Object.keys(nodeList)[idx] + "/activated");
+					client.create(path + "/" + Object.keys(nodeList)[idx] + "/allow", new Buffer(nodeList[Object.keys(nodeList)[idx]]['apiAllow'].toString()),  function (error) {
+						if (error) {
+							console.log('Failed to create node: %s due to: %s.', path + "/" + Object.keys(nodeList)[idx] + "/allow", error);
+							return;
+						}
+						console.log('Node: %s is successfully created.', path + "/" + Object.keys(nodeList)[idx] + "/allow");
+						if(idx >= Object.keys(nodeList).length -1){
+							return;
+						}
+						setApiList(nodeList, idx + 1);
+					});
+				});
+			});
+		}
+	});
+}
+
+process.on('message', function(actionData){
+	//console.log(workerHandler);
+	console.log('zkClientWorker Got action from www: ', actionData);
+	console.log('worker: ' + actionData['worker']);
+	console.log('action: ' + actionData['action']);
+	console.log('name: ' + actionData['name']);
 	console.log('data: ');
-	emitter.emit('set', msg);
+	emitter.emit(actionData['action'], actionData['data']);
 	//for(var apiId in msg['data']){
 		/*(function(apiId){
 			console.log(apiId);

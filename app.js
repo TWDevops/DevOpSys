@@ -4,7 +4,8 @@ var config = require("nconf");
 config.env().file({ "file":"config.json" });
 
 var session = require('express-session');
-var DataBase = new require('./utils/DataBase.js');
+//var DataBase = new require('./utils/DataBase.js');
+//var dbase = new require('./utils/DataBase.js');
 var MongoStore = require('connect-mongo')(session);
 
 var path = require('path');
@@ -45,7 +46,7 @@ swig.setDefaults({ cache: false });
 		saveUninitialized: false, // don't create session until something stored 
 	    resave: false, //don't save session if unmodified
 		store: new MongoStore({
-			db:new DataBase().getDb(),
+			db:dbase.getDb(),
 			autoRemove: 'interval',
 			autoRemoveInterval: 10 // In minutes. Default 
 		})

@@ -1,8 +1,9 @@
 /**
  * API Manager Module
  */
-var DataBase = new require('../utils/DataBase.js');
-var dbase = new DataBase();
+//var DataBase = new require('../utils/DataBase.js');
+//var dbase = new DataBase();
+var dbase = new require('../utils/DataBase.js');
 var db = dbase.getDb();
 //var assert = require('assert');
 

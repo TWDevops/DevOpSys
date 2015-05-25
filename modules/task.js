@@ -1,8 +1,9 @@
 /**
  * New node file
  */
-var DataBase = new require('../utils/DataBase.js');
-var dbase = new DataBase();
+//var DataBase = new require('../utils/DataBase.js');
+//var dbase = new DataBase();
+var dbase = new require('../utils/DataBase.js');
 
 var assert = require('assert');
 var mainWorker = require('../worker/MainWorker.js');
@@ -13,15 +14,26 @@ var postHandler = {};
 
 var db = dbase.getDb();
 
-function getTask(req, res, next) {
+/*function getTask(req, res, next) {
 	var sendData = {};
-	mainWorker.sendMessage('{"Hello":"World"}');
+	mainWorker.sendMessage({"worker":"zkClient","action":"msg","data":{"Hello":"World"}});
 	console.log("Task api");
 	if(req.params.action){
-		db.open(function(err, devopsDb) {
-			assert.equal(null, err);
-			devopsDb.collection('task', function(err, taskColl){
-				taskColl.findOne({'taskAction':req.params.action, 'taskStatus': 1},function(err, taskDoc){
+		db.open(function(error, devopsDb) {
+			if(error){
+				console.log(error.stack);
+				process.exit(0);
+			}
+			devopsDb.collection('task', function(error, taskColl){
+				if(error){
+					console.log(error.stack);
+					process.exit(0);
+				}
+				taskColl.findOne({'taskAction':req.params.action, 'taskStatus': 1},function(error, taskDoc){
+					if(error){
+						console.log(error.stack);
+						process.exit(0);
+					}
 					if(taskDoc){
 						sendData = taskDoc;
 					}else{
@@ -41,16 +53,22 @@ function getTask(req, res, next) {
 		res.send(sendData);
 	}
 }
-getHandler["gettask/:action"] = getTask;
+getHandler["gettask/:action"] = getTask;*/
 
+function getTask(req, res, next) {
+	dbase.getTaskList(req.params.action, function(taskList){
+		res.send(taskList);
+	})
+}
+getHandler["get/:action"] = getTask;
 
-function setTask(req, res,next){
+function updateTaskStatus(req, res,next){
 	var sendData = {};
 	if(req.params.taskId){
 		var taskId = dbase.ObjectID(req.params.taskId);
 		var nowTaskSt = 1;
 		var nexTaskSt = 1;
-		console.log("setTask action: " + req.params.action);
+		console.log("updateTaskStatus action: " + req.params.action);
 		if(req.params.action){
 			if(req.params.action.toLowerCase() == 'start'){
 				nowTaskSt = 1;
@@ -59,15 +77,26 @@ function setTask(req, res,next){
 				nowTaskSt = 2;
 				nexTaskSt = 0
 			}
-			console.log("setTask nowTaskSt: " + nowTaskSt);
-			console.log("setTask nexTaskSt: " + nexTaskSt);
-			console.log("setTask action: " + req.params.action);
-			db.open(function(err, devopsDb) {
-				assert.equal(null, err);
-				devopsDb.collection('task', function(err, taskColl){
-					taskColl.update({"_id":taskId, 'taskStatus': nowTaskSt},{'$set':{'taskStatus':nexTaskSt}},{"w":1},function(err, result){
+			console.log("updateTaskStatus nowTaskSt: " + nowTaskSt);
+			console.log("updateTaskStatus nexTaskSt: " + nexTaskSt);
+			console.log("updateTaskStatus action: " + req.params.action);
+			db.open(function(error, devopsDb) {
+				if(error){
+					console.log(error.stack);
+					process.exit(0);
+				}
+				devopsDb.collection('task', function(error, taskColl){
+					if(error){
+						console.log(error.stack);
+						process.exit(0);
+					}
+					taskColl.update({"_id":taskId, 'taskStatus': nowTaskSt},{'$set':{'taskStatus':nexTaskSt}},{"w":1},function(error, result){
+						if(error){
+							console.log(error.stack);
+							process.exit(0);
+						}
 						if(result){
-							console.log("setTask result: " + result);
+							console.log("updateTaskStatus result: " + result);
 							if(JSON.parse(result)['ok'] == 1){
 								sendData['state'] = 0;
 								sendData['nModified'] = JSON.parse(result)['nModified'];
@@ -106,7 +135,7 @@ function setTask(req, res,next){
 		res.send(sendData);
 	}
 }
-getHandler["setTask/:taskId/:action"] = setTask;
+getHandler["updatetask/:taskId/:action"] = updateTaskStatus;
 
 
 function deployTask(req, res, next) {
@@ -123,9 +152,16 @@ function deployTask(req, res, next) {
 		//taskParams['apiVerNo'] = req.params.verNo;
 		//sendData['_id'] = apiOid;
 		//sendData['apiVer.no'] = req.params.verNo;
-		db.open(function(err, devopsDb) {
-			assert.equal(null, err);
-			devopsDb.collection('api', function(err, apiColl){
+		db.open(function(error, devopsDb) {
+			if(error){
+				console.log(error.stack);
+				process.exit(0);
+			}
+			devopsDb.collection('api', function(error, apiColl){
+				if(error){
+					console.log(error.stack);
+					process.exit(0);
+				}
 				//apiOid = dbase.ObjectID(req.session.apiId);
 				/**
 				 * db.api.findOne(
@@ -134,15 +170,27 @@ function deployTask(req, res, next) {
 				 *         "apiVer":{$elemMatch: {"no":"0.1"}}
 				 *     });
 				 */
-				apiColl.findOne( { "_id": apiOid, 'apiActivated':true },{ "_id":1, "apiLocation":1, "apiVer" : {$elemMatch: {"no":req.params.verNo}}}, function(err, apiDoc){
+				apiColl.findOne( { "_id": apiOid, 'apiActivated':true },{ "_id":1, "apiLocation":1, "apiVer" : {$elemMatch: {"no":req.params.verNo}}}, function(error, apiDoc){
+					if(error){
+						console.log(error.stack);
+						process.exit(0);
+					}
 					/*taskParams['apServ'] = apiDoc.apiLocation;
 					taskParams['srcType'] = apiDoc.apiVer[0].verCtrlType;
 					taskParams['srcPath'] = apiDoc.apiVer[0].srcUrl;*/
 					//console.log("srcType: "+ srcType);
 					//console.log("srcPath: "+ srcPath);
 					if(apiDoc){
-						devopsDb.collection('apserver', function(err, apSerColl){
-							apSerColl.findOne({ "apSerName" : apiDoc.apiLocation},{"apSerIntIp":1,"apSerPath":1},function(err,apSerDoc){
+						devopsDb.collection('apserver', function(error, apSerColl){
+							if(error){
+								console.log(error.stack);
+								process.exit(0);
+							}
+							apSerColl.findOne({ "apSerName" : apiDoc.apiLocation},{"apSerIntIp":1,"apSerPath":1},function(error,apSerDoc){
+								if(error){
+									console.log(error.stack);
+									process.exit(0);
+								}
 								if(apSerDoc){
 									var taskObj = {};
 									var taskParams = {};
@@ -165,8 +213,16 @@ function deployTask(req, res, next) {
 										taskObj['taskLog'].push("Preparing to deploy");
 									}
 									taskObj['taskDesc'] = "Deploy ";
-									devopsDb.collection('task', function(err, taskColl){
-										taskColl.insert(taskObj, function(err, data){
+									devopsDb.collection('task', function(error, taskColl){
+										if(error){
+											console.log(error.stack);
+											process.exit(0);
+										}
+										taskColl.insert(taskObj, function(error, data){
+											if(error){
+												console.log(error.stack);
+												process.exit(0);
+											}
 											if (data) {
 												console.log('Successfully Insert');
 								                sendData["state"] = 0;
