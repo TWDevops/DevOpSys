@@ -41,15 +41,16 @@ DataBase.prototype.getApiAllow = function(callback){
 				console.log(error.stack);
 				process.exit(0);
 			}
-			var cursor = apiColl.find({},{apiActivated:true,apiAllow:true,apiDesc:true});
+			var cursor = apiColl.find({},{apiActivated:true,apiAllow:true,apiName:true});
 			cursor.each(function(error, doc){
 				if(error){
 					console.log(error.stack);
 					process.exit(0);
 				}
 				if(doc != null){
+					console.log(doc['apiName']);
 					console.log(doc['_id'].toString());
-					allowList[doc['_id'].toString()]= doc;
+					allowList[doc['apiName'].toString()]= doc;
 				} else{
 					apiDb.close();
 					console.log(allowList);
@@ -89,78 +90,81 @@ DataBase.prototype.getTaskList = function(action,callback){
 	});
 }
 
-//need to modify
-DataBase.prototype.updateTaskStatus(taskId, callback){
-	//var sendData = {};
-	if(req.params.taskId){
-		var taskId = dbase.ObjectID(req.params.taskId);
-		var nowTaskSt = 1;
+/*
+ * Update task status
+ * 0:done,
+ * 1:prepare,
+ * 2:disable server,
+ * 3:deploy,
+ * 4:restart daemon,
+ * 5:verify service,
+ * 6:enable server,
+ * 9:error
+ */
+DataBase.prototype.updateTaskStatus = function(taskId, taskSt, callback){
+	var resData = {};
+	var db = DataBase.prototype.getDb();
+	if(taskId){
+		var taskId = DataBase.prototype.ObjectID(taskId);
+		//var nowTaskSt = 1;
 		var nexTaskSt = 1;
-		console.log("updateTaskStatus action: " + req.params.action);
-		if(req.params.action){
-			if(req.params.action.toLowerCase() == 'start'){
-				nowTaskSt = 1;
+		console.log("updateTaskStatus action: " + taskSt);
+		switch (taskSt) {
+			case 'start':
+				//nowTaskSt = 1;
 				nexTaskSt = 2;
-			}else if(req.params.action.toLowerCase() == 'done') {
-				nowTaskSt = 2;
-				nexTaskSt = 0
+				break;
+			case 'done':
+				//nowTaskSt = 2;
+				nexTaskSt = 0;
+				break;
+			case 'error':
+				nexTaskSt = 9;
+				break;
+			default:
+				resData['state'] = 1;
+				resData['info'] = "there is no status.";
+				resData["date"] = new Date();
+				callback(resData);
+				return;
+		}
+		//console.log("updateTaskStatus nowTaskSt: " + nowTaskSt);
+		console.log("updateTaskStatus nexTaskSt: " + nexTaskSt);
+		console.log("updateTaskStatus action: " + taskSt);
+		db.open(function(error, devopsDb) {
+			if(error){
+				console.log(error.stack);
+				process.exit(0);
 			}
-			console.log("updateTaskStatus nowTaskSt: " + nowTaskSt);
-			console.log("updateTaskStatus nexTaskSt: " + nexTaskSt);
-			console.log("updateTaskStatus action: " + req.params.action);
-			db.open(function(error, devopsDb) {
+			devopsDb.collection('task', function(error, taskColl){
 				if(error){
 					console.log(error.stack);
 					process.exit(0);
 				}
-				devopsDb.collection('task', function(error, taskColl){
+				taskColl.update({"_id":taskId},{'$set':{'taskStatus':nexTaskSt}},{"w":1},function(error, result){
 					if(error){
 						console.log(error.stack);
 						process.exit(0);
 					}
-					taskColl.update({"_id":taskId, 'taskStatus': nowTaskSt},{'$set':{'taskStatus':nexTaskSt}},{"w":1},function(error, result){
-						if(error){
-							console.log(error.stack);
-							process.exit(0);
-						}
-						if(result){
-							console.log("updateTaskStatus result: " + result);
-							if(JSON.parse(result)['ok'] == 1){
-								sendData['state'] = 0;
-								sendData['nModified'] = JSON.parse(result)['nModified'];
-								if(sendData['nModified'] >0){
-									sendData["info"] = "update success.";
-								}else{
-									sendData["info"] = "nothing update."
-								}
-							}else{
-								sendData["state"] = 1;
-								sendData["info"] = "update error.";
-							}
-							sendData["date"] = new Date();
-							devopsDb.close();
-							res.send(sendData);
-						}else {
-							sendData["state"] = 1;
-							sendData["info"] = "update error.";
-							sendData["date"] = new Date();
-							devopsDb.close();
-							res.send(sendData);
-						}
-					});
+					if(result){
+						console.log("updateTaskStatus result: " + result);
+						devopsDb.close();
+						callback(result);
+					}else {
+						resData["state"] = 1;
+						resData["info"] = "update error.";
+						resData["date"] = new Date();
+						devopsDb.close();
+						callback(resData);
+					}
 				});
 			});
-		}else{
-			sendData['state'] = 1;
-			sendData['info'] = "there is no action.";
-			sendData["date"] = new Date();
-			res.send(sendData);
-		}
+		});
 	}else{
-		sendData['state'] = 1;
-		sendData['info'] = "there is no taskId.";
-		sendData["date"] = new Date();
-		res.send(sendData);
+		resData['state'] = 1;
+		resData['info'] = "there is no taskId.";
+		resData["date"] = new Date();
+		callback(resData);
 	}
 }
 

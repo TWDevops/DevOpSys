@@ -66,13 +66,13 @@ emitter.on('msg',function(msg){
 function setApiList(nodeList, idx){
 	console.log(Object.keys(nodeList)[idx]);
 	console.log(nodeList[Object.keys(nodeList)[idx]]['apiAllow']);
-	client.exists(path + "/" + Object.keys(nodeList)[idx].toString(), function(error, stat){
+	client.exists(path + "/" + Object.keys(nodeList)[idx], function(error, stat){
 		if (error) {
 			console.log(error.stack);
 			return;
 		}
-				
 		if (stat) {
+			client.setData(path + "/" + Object.keys(nodeList)[idx],new Buffer(nodeList[Object.keys(nodeList)[idx]]['_id'].toString()),function(error,stat){
 			console.log('Node: %s is exists.', path + "/" + Object.keys(nodeList)[idx]);
 			client.exists(path + "/" + Object.keys(nodeList)[idx] + "/activated", function(error, stat){
 				if (error) {
@@ -92,7 +92,7 @@ function setApiList(nodeList, idx){
 								return;
 							}
 							if(stat){
-								client.setData(path + "/" + Object.keys(nodeList)[idx] + "/allow", new Buffer(nodeList[Object.keys(nodeList)[idx]]['apiAllow'].toString()), function(error,stat){
+								client.setData(path + "/" + Object.keys(nodeList)[idx] + "/allow", new Buffer('{ allow: [' +nodeList[Object.keys(nodeList)[idx]]['apiAllow'].toString() + ']}'), function(error,stat){
 									if (error) {
 										console.log('Failed to set node date: %s due to: %s.', path + "/" + Object.keys(nodeList)[idx] + "/allow", error);
 										return;
@@ -104,7 +104,7 @@ function setApiList(nodeList, idx){
 									setApiList(nodeList, idx + 1);
 								});
 							}else{
-								client.create(path + "/" + Object.keys(nodeList)[idx] + "/allow", new Buffer(nodeList[Object.keys(nodeList)[idx]]['apiAllow'].toString()),  function (error) {
+								client.create(path + "/" + Object.keys(nodeList)[idx] + "/allow", new Buffer('{ allow: [' +nodeList[Object.keys(nodeList)[idx]]['apiAllow'].toString() + ']}'),  function (error) {
 									if (error) {
 										console.log('Failed to create node: %s due to: %s.', path + "/" + Object.keys(nodeList)[idx] + "/allow", error);
 										return;
@@ -131,7 +131,7 @@ function setApiList(nodeList, idx){
 								return;
 							}
 							if(stat){
-								client.setData(path + "/" + Object.keys(nodeList)[idx] + "/allow", new Buffer(nodeList[Object.keys(nodeList)[idx]]['apiAllow'].toString()), function(error,stat){
+								client.setData(path + "/" + Object.keys(nodeList)[idx] + "/allow", new Buffer('{ allow: [' +nodeList[Object.keys(nodeList)[idx]]['apiAllow'].toString() + ']}'), function(error,stat){
 									if (error) {
 										console.log('Failed to set node date: %s due to: %s.', path + "/" + Object.keys(nodeList)[idx] + "/allow", error);
 										return;
@@ -143,7 +143,7 @@ function setApiList(nodeList, idx){
 									setApiList(nodeList, idx + 1);
 								});
 							}else{
-								client.create(path + "/" + Object.keys(nodeList)[idx] + "allow", new Buffer(nodeList[Object.keys(nodeList)[idx]]['apiAllow'].toString()),  function (error) {
+								client.create(path + "/" + Object.keys(nodeList)[idx] + "allow", new Buffer('{ allow: [' +nodeList[Object.keys(nodeList)[idx]]['apiAllow'].toString() + ']}'),  function (error) {
 									if (error) {
 										console.log('Failed to create node: %s due to: %s.', path + "/" + Object.keys(nodeList)[idx] + "/allow", error);
 										return;
@@ -159,9 +159,10 @@ function setApiList(nodeList, idx){
 					});
 				}
 			});
+			});
 		} else {
 			console.log('Node: %s is not exist.', path + "/" + Object.keys(nodeList)[idx]);
-			client.create(path + "/" + Object.keys(nodeList)[idx], new Buffer(nodeList[Object.keys(nodeList)[idx]]['apiDesc'].toString()),  function (error) {
+			client.create(path + "/" + Object.keys(nodeList)[idx], new Buffer(nodeList[Object.keys(nodeList)[idx]]['_id'].toString()),  function (error) {
 				if (error) {
 					console.log('Failed to create node: %s due to: %s.', path + "/" + Object.keys(nodeList)[idx], error);
 					return;
@@ -173,7 +174,7 @@ function setApiList(nodeList, idx){
 						return;
 					}
 					console.log('Node: %s is successfully created.', path + "/" + Object.keys(nodeList)[idx] + "/activated");
-					client.create(path + "/" + Object.keys(nodeList)[idx] + "/allow", new Buffer(nodeList[Object.keys(nodeList)[idx]]['apiAllow'].toString()),  function (error) {
+					client.create(path + "/" + Object.keys(nodeList)[idx] + "/allow", new Buffer('{ allow: [' +nodeList[Object.keys(nodeList)[idx]]['apiAllow'].toString() + ']}'),  function (error) {
 						if (error) {
 							console.log('Failed to create node: %s due to: %s.', path + "/" + Object.keys(nodeList)[idx] + "/allow", error);
 							return;

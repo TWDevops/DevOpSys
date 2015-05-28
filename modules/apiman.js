@@ -230,6 +230,100 @@ function edit(req, res, next){
 getHandler["edit"] = edit;
 postHandler["edit"] = edit;
 
+function setCallingApi(req, res, next){
+	var sendData = {};
+	if(req.session.apiId){
+		if (req.method == 'POST') {
+			console.log("method: POST");
+			var oids = [];
+			console.log(typeof req.body['callApiId']);
+			if(Array.isArray(req.body.callApiId)){
+				req.body.callApiId.forEach(function(apiKey){
+					console.log("1: " + apiKey);
+					oids.push(dbase.ObjectID(apiKey));
+				});
+			}else{
+				oids.push(dbase.ObjectID(req.body.callApiId));
+			}
+			oids.forEach(function(apiOid){
+				console.log(apiOid);
+			});
+			
+			db.open(function(error, devopsDb){
+				if(error){
+					console.log(error.stack);
+					process.exit(0);
+				}
+				devopsDb.collection('api',function(error,apiColl){
+					if(error){
+						console.log(error.stack);
+						process.exit(0);
+					}
+					apiColl.update({"apiAllow":req.session.apiId},{$pull:{"apiAllow":req.session.apiId}},{multi:true},function(error,result){
+						if(error){
+							console.log(error.stack);
+							process.exit(0);
+						}
+						sendData['1']=result;
+						if(req.body.callApiId){
+							apiColl.update({
+								"_id":{$in:oids},
+								apiAllow:{$ne:req.session.apiId}
+							},{	
+								$push:{"apiAllow":req.session.apiId}},{multi:true},function(error,result){
+								sendData['2']=result;
+								devopsDb.close();
+								console.log(sendData);
+								res.send(sendData);
+							});
+						}else{
+							devopsDb.close();
+							sendData['2']="no api to call";
+							console.log(sendData);
+							res.send(sendData);
+						}
+					});
+				});
+			});
+		}else{
+			db.open(function(error, devopsDb){
+				if(error){
+					console.log(error.stack);
+					process.exit(0);
+				}
+				devopsDb.collection('api', function(error,apiColl){
+					if(error){
+						console.log(error.stack);
+						process.exit(0);
+					}
+					var cursor = apiColl.find({'_id':{$ne: dbase.ObjectID(req.session.apiId)}},{'apiName':true, 'apiAllow':true});
+					cursor.each(function(error, doc){
+						if(error){
+							console.log(error.stack);
+							process.exit(0);
+						}
+						if(doc != null){
+							console.log(doc['_id'].toString());
+							sendData[doc['_id'].toString()]= doc;
+						} else{
+							devopsDb.close();
+							console.log(sendData);
+							res.render('selectapi',{
+								 title: "API List",
+								 apiKey:req.session.apiId,
+								 apiList: sendData
+							});
+						}
+					});
+				});
+			});
+		}
+	}else{
+		res.send("nothing!!");
+	}
+}
+getHandler['selectapi'] = setCallingApi;
+postHandler['selectapi'] = setCallingApi;
 
 function updateLevel(req, res, next){
 	var sendData = {};

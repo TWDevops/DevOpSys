@@ -62,9 +62,11 @@ function getTask(req, res, next) {
 }
 getHandler["get/:action"] = getTask;
 
-function updateTaskStatus(req, res,next){
-	var sendData = {};
-	if(req.params.taskId){
+function setTaskStatus(req, res,next){
+	dbase.updateTaskStatus( req.params.taskId, req.params.taskSt, function(sendData){
+		res.send(sendData);
+	});
+	/*if(req.params.taskId){
 		var taskId = dbase.ObjectID(req.params.taskId);
 		var nowTaskSt = 1;
 		var nexTaskSt = 1;
@@ -133,9 +135,9 @@ function updateTaskStatus(req, res,next){
 		sendData['info'] = "there is no taskId.";
 		sendData["date"] = new Date();
 		res.send(sendData);
-	}
+	}*/
 }
-getHandler["updatetask/:taskId/:action"] = updateTaskStatus;
+getHandler["setstatus/:taskId/:taskSt"] = setTaskStatus;
 
 
 function deployTask(req, res, next) {
