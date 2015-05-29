@@ -4,7 +4,7 @@
 //var DataBase = new require('../utils/DataBase.js');
 //var dbase = new DataBase();
 var dbase = new require('../utils/DataBase.js');
-var db = dbase.getDb();
+//var db = dbase.getDb();
 //var assert = require('assert');
 
 /*
@@ -16,6 +16,7 @@ var postHandler = {};
 
 
 function list(req, res, next) {
+	var db = dbase.getDb();
 	var sendData = {};
 	console.log("use api");
 	db.open(function(error, devopsDb) {
@@ -53,6 +54,7 @@ function listView(req, res, next) {
 		console.log("session.apiId: " + req.session.apiId);
 		req.session.apiId=null;
 	}
+	var db = dbase.getDb();
 	console.log("session.apiId: " + req.session.apiId);
 	var sendData = {};
 	//console.log("use api");
@@ -91,9 +93,11 @@ getHandler["listview"]=listView;
 
 
 function edit(req, res, next){
-	var sendData={};
+	var db = dbase.getDb();
+	//var sendData={};
 	var apiOid = null;
 	if (req.method == 'POST') {
+		var sendData={};
 		console.log(req.session.apiId);
 		db.open(function(error, devopsDb) {
 			if(error){
@@ -186,6 +190,7 @@ function edit(req, res, next){
 			});
 		});
 	}else if(req.query.apiId){
+		var sendData={};
 		db.open(function(error, devopsDb) {
 			if(error){
 				console.log(error.stack);
@@ -231,9 +236,11 @@ getHandler["edit"] = edit;
 postHandler["edit"] = edit;
 
 function setCallingApi(req, res, next){
-	var sendData = {};
+	var db = dbase.getDb();
+	//var sendData = {};
 	if(req.session.apiId){
 		if (req.method == 'POST') {
+			var sendData={};
 			console.log("method: POST");
 			var oids = [];
 			console.log(typeof req.body['callApiId']);
@@ -286,6 +293,7 @@ function setCallingApi(req, res, next){
 				});
 			});
 		}else{
+			var sendData={};
 			db.open(function(error, devopsDb){
 				if(error){
 					console.log(error.stack);
@@ -326,6 +334,7 @@ getHandler['selectapi'] = setCallingApi;
 postHandler['selectapi'] = setCallingApi;
 
 function updateLevel(req, res, next){
+	var db = dbase.getDb();
 	var sendData = {};
 	var apiOid = null;
 	if(req.params.apiId && req.params.level && req.params.verIdx){
@@ -379,12 +388,14 @@ getHandler["updatelv/:apiId/:level/:verIdx"] = updateLevel;
 
 function register(req, res, next){
 	//console.log("use api");
-	var sendData = {};
+	var db = dbase.getDb();
+	//var sendData = {};
 	if(req.session.apiId){
 		req.session.apiId = null;
 	}
 	console.log("req.session.apiID: " + req.session.apiId);
 	if (req.method == 'POST') {
+		var sendData={};
 		//sendData = req.body;
 		var insertObj = {};
 		insertObj['apiName'] = req.body.apiName;
@@ -439,8 +450,8 @@ function register(req, res, next){
 		res.render('register', {
 			pagename:"API Register"
 		});
-		sendData["state"] = 1;
-		sendData["date"] = new Date();
+		//sendData["state"] = 1;
+		//sendData["date"] = new Date();
 	}
 }
 getHandler["register"] = register;
