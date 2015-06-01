@@ -142,12 +142,13 @@ getHandler["setstatus/:taskId/:taskSt"] = setTaskStatus;
 
 function deployTask(req, res, next) {
 	var db = dbase.getDb();
+	var sendData = {};
 	console.log("Set Task");
 	console.log("apiId: " + req.session.apiId);
 	console.log("idxk: " + req.query.idxk);
 	console.log("deploy: " + req.query.deploy);
 	if(req.session.apiId && req.query.idxk && req.query.deploy){
-		var sendData = {};
+		//var sendData = {};
 		var apiOid = dbase.ObjectID(req.session.apiId);
 		//var taskParams = {};
 //		var srcType = ""
@@ -247,7 +248,7 @@ function deployTask(req, res, next) {
 							});
 						});
 					}else {
-						var sendData = {};
+						//var sendData = {};
 						sendData["info"] = "Can not find actived API.";
 						sendData["date"] = new Date();
 						res.send(sendData);
