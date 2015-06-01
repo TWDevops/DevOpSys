@@ -104,7 +104,7 @@ DataBase.prototype.getTaskList = function(action,callback){
 DataBase.prototype.updateTaskStatus = function(taskId, taskSt, callback){
 	var resData = {};
 	var db = DataBase.prototype.getDb();
-	if(taskId){
+	//if(taskId){
 		var taskId = DataBase.prototype.ObjectID(taskId);
 		//var nowTaskSt = 1;
 		var nexTaskSt = 1;
@@ -146,26 +146,26 @@ DataBase.prototype.updateTaskStatus = function(taskId, taskSt, callback){
 						console.log(error.stack);
 						process.exit(0);
 					}
-					if(result){
+					//if(result){
 						console.log("updateTaskStatus result: " + result);
 						devopsDb.close();
 						callback(result);
-					}else {
+					/*}else {
 						resData["state"] = 1;
 						resData["info"] = "update error.";
 						resData["date"] = new Date();
 						devopsDb.close();
 						callback(resData);
-					}
+					}*/
 				});
 			});
 		});
-	}else{
+	/*}else{
 		resData['state'] = 1;
 		resData['info'] = "there is no taskId.";
 		resData["date"] = new Date();
 		callback(resData);
-	}
+	}*/
 }
 
 DataBase.instance = null;

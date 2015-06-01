@@ -63,9 +63,40 @@ function getTask(req, res, next) {
 getHandler["get/:action"] = getTask;
 
 function setTaskStatus(req, res,next){
-	dbase.updateTaskStatus( req.params.taskId, req.params.taskSt, function(sendData){
+	var sendData = {};
+	if(req.params.taskId){
+		dbase.updateTaskStatus( req.params.taskId, req.params.taskSt, function(result){
+			if(result){
+				console.log("updateTaskStatus result: " + result);
+				if(JSON.parse(result)['ok'] == 1){
+					sendData['state'] = 0;
+					sendData['nModified'] = JSON.parse(result)['nModified'];
+					if(sendData['nModified'] >0){
+						sendData["info"] = "update success.";
+					}else{
+						sendData["info"] = "nothing update."
+					}
+				}else{
+					sendData["state"] = 1;
+					sendData["info"] = "update error.";
+				}
+				sendData["date"] = new Date();
+				devopsDb.close();
+				res.send(sendData);
+			}else {
+				sendData["state"] = 1;
+				sendData["info"] = "update error.";
+				sendData["date"] = new Date();
+				devopsDb.close();
+				res.send(sendData);
+			}
+		});
+	}else{
+		sendData['state'] = 1;
+		sendData['info'] = "there is no taskId.";
+		sendData["date"] = new Date();
 		res.send(sendData);
-	});
+	}
 	/*if(req.params.taskId){
 		var taskId = dbase.ObjectID(req.params.taskId);
 		var nowTaskSt = 1;
