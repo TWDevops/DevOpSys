@@ -81,13 +81,11 @@ function setTaskStatus(req, res,next){
 					sendData["info"] = "update error.";
 				}
 				sendData["date"] = new Date();
-				devopsDb.close();
 				res.send(sendData);
 			}else {
 				sendData["state"] = 1;
 				sendData["info"] = "update error.";
 				sendData["date"] = new Date();
-				devopsDb.close();
 				res.send(sendData);
 			}
 		});
