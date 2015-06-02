@@ -259,6 +259,7 @@ function deployTask(req, res, next) {
 											if (data) {
 												console.log('Successfully Insert');
 								                sendData["state"] = 0;
+								                triggerRundeck();
 											} else {
 								                console.log('Failed to Insert');
 								                sendData["state"] = 1;
