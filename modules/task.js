@@ -3,6 +3,8 @@
  */
 //var DataBase = new require('../utils/DataBase.js');
 //var dbase = new DataBase();
+var config = require("nconf");
+config.env().file({ "file":"config.json" });
 var dbase = new require('../utils/DataBase.js');
 
 var assert = require('assert');
@@ -298,9 +300,9 @@ function triggerRundeck(){
 	var xml2js = require('xml2js');
 	var http = require('http');
 	var options = {
-			host: '10.240.1.49',
+			host: config.get('RUNDECK_HOST'),
 			path: '/api/13/job/c120eec4-b724-4a36-9a60-38f336c3d422/run',
-			port: '4440',
+			port: config.get('RUNDECK_PORT'),
 			headers:{'X-Rundeck-Auth-Token':'49qG8tdSFl3o00yM4jGvQK2DV2DazjD8'}
 	}
 	callback = function(response) {
@@ -319,8 +321,7 @@ function triggerRundeck(){
 			//console.log(str);
 		});
 	}
-	var req = http.request(options, callback);
-	
+	http.request(options, callback).end();
 }
 
 exports.headHander = headHander;

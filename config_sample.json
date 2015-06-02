@@ -1,9 +1,11 @@
 {
     "MOD_LIST":{"api":"apiman", "hello":"hello", "task":"task"},
-    "DB_HOST":"192.168.122.165",
+    "DB_HOST":"127.0.0.1",
     "DB_PORT":"27017",
     "DB_NAME":"devops",
     "HTTP_PORT":"3000",
-    "ZK_HOST":"192.168.122.165",
-    "ZK_PORT":"2181"
+    "ZK_HOST":"127.0.0.1",
+    "ZK_PORT":"2181",
+    "RUNDECK_HOST":"127.0.0.1",
+    "RUNDECK_PORT":"4440"
 }
