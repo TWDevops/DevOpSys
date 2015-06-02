@@ -316,7 +316,7 @@ function triggerRundeck(){
 			parser.parseString(xmlStr, function (err, result) {
 		    	//console.dir(result);
 		    	console.dir(result['executions']['execution'][0]['$']['status']);
-		        console.log('xmlStr');
+		        console.log(xmlStr);
 		    });
 			//console.log(str);
 		});
