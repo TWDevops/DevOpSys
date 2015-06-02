@@ -293,6 +293,35 @@ function deployTask(req, res, next) {
 }
 getHandler["deploy/:verNo"] = deployTask;
 
+function triggerRundeck(){
+	var xml2js = require('xml2js');
+	var http = require('http');
+	var option = {
+			host: '10.240.1.49:4440',
+			path: '/api/13/job/c120eec4-b724-4a36-9a60-38f336c3d422/run',
+			port: '4440',
+			headers:{'X-Rundeck-Auth-Token':'49qG8tdSFl3o00yM4jGvQK2DV2DazjD8'}
+	}
+	callback = function(response) {
+		var xmlStr = '';
+		response.on('data', function (chunk) {
+		    xmlStr += chunk;
+		});
+
+		response.on('end', function () {
+			var parser = new xml2js.Parser();
+			parser.parseString(data, function (err, result) {
+		    	//console.dir(result);
+		    	console.dir(result['executions']['execution'][0]['$']['status']);
+		        console.log('xmlStr');
+		    });
+			//console.log(str);
+		});
+	}
+	var req = http.request(options, callback);
+	
+}
+
 exports.headHander = headHander;
 exports.getHandler = getHandler;
 exports.postHandler = postHandler;
