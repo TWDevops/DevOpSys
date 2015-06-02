@@ -297,7 +297,7 @@ getHandler["deploy/:verNo"] = deployTask;
 function triggerRundeck(){
 	var xml2js = require('xml2js');
 	var http = require('http');
-	var option = {
+	var options = {
 			host: '10.240.1.49:4440',
 			path: '/api/13/job/c120eec4-b724-4a36-9a60-38f336c3d422/run',
 			port: '4440',
