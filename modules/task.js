@@ -298,7 +298,7 @@ function triggerRundeck(){
 	var xml2js = require('xml2js');
 	var http = require('http');
 	var options = {
-			host: '10.240.1.49:4440',
+			host: '10.240.1.49',
 			path: '/api/13/job/c120eec4-b724-4a36-9a60-38f336c3d422/run',
 			port: '4440',
 			headers:{'X-Rundeck-Auth-Token':'49qG8tdSFl3o00yM4jGvQK2DV2DazjD8'}
