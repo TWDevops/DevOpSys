@@ -313,7 +313,7 @@ function triggerRundeck(){
 
 		response.on('end', function () {
 			var parser = new xml2js.Parser();
-			parser.parseString(data, function (err, result) {
+			parser.parseString(xmlStr, function (err, result) {
 		    	//console.dir(result);
 		    	console.dir(result['executions']['execution'][0]['$']['status']);
 		        console.log('xmlStr');
