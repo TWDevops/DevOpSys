@@ -11,7 +11,13 @@
 			<td>Name:&nbsp;</td>
 			<td><input name="apiName" type="text" /></td>
 			<td>Owner:&nbsp;</td>
-			<td><input name="apiOwner" type="text" /></td>
+			<td>
+				<select name="apiOwner">
+				{% for user in owners %}
+					<option value="{{user.id}}">{{user.name}}</option>
+				{% endfor %}
+				</select>
+			</td>
 		</tr>
 		<tr>
 			<td>Allow:&nbsp;</td>

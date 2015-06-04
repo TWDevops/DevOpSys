@@ -4,6 +4,8 @@
 //var DataBase = new require('../utils/DataBase.js');
 //var dbase = new DataBase();
 var dbase = new require('../utils/DataBase.js');
+var GitlabApi = require('../utils/GitlabApi.js');
+var gitlab = new GitlabApi();
 //var db = dbase.getDb();
 //var assert = require('assert');
 
@@ -218,11 +220,14 @@ function edit(req, res, next){
 						devopsDb.close();
 						//sendData = doc;
 					//}else{
-						res.render('edit', {
-							title:"API Editor",
-							apiKey:req.session.apiId,
-							api:doc,
-							apiIdHex:req.query.apiId
+						gitlab.getUserList(function(userList) {
+							res.render('edit', {
+								title:"API Editor",
+								apiKey:req.session.apiId,
+								api:doc,
+								apiIdHex:req.query.apiId,
+								owners: userList
+							});
 						});
 					}
 				});
@@ -447,9 +452,13 @@ function register(req, res, next){
 			});
 		});
 	}else{
-		res.render('register', {
-			pagename:"API Register"
-		});
+		gitlab.getUserList(function(userList) {
+			res.render('register', {
+				pagename:"API Register",
+				owners:userList
+			});
+		})
+		
 		//sendData["state"] = 1;
 		//sendData["date"] = new Date();
 	}

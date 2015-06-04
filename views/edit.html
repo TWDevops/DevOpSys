@@ -19,7 +19,13 @@
 			<td>Name:&nbsp;</td>
 			<td><input name="apiName" type="text" value="{{ api.apiName }}" /></td>
 			<td>Owner:&nbsp;</td>
-			<td><input name="apiOwner" type="text" value="{{ api.apiOwner}}" /></td>
+			<td>
+				<select name="apiOwner">
+				{% for user in owners %}
+					<option value="{{user.id}}" {% if api.apiOwner == user.id %} selected="true" {% endif %}>{{user.name}}</option>
+				{% endfor %}
+				</select>
+			</td>
 		</tr>
 		<tr>
 			<td>Allow:&nbsp;</td>
