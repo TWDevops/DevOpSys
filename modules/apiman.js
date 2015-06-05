@@ -220,13 +220,13 @@ function edit(req, res, next){
 						devopsDb.close();
 						//sendData = doc;
 					//}else{
-						gitlab.getUserList(function(userList) {
+						gitlab.getGroupList(function(groupList) {
 							res.render('edit', {
 								title:"API Editor",
 								apiKey:req.session.apiId,
 								api:doc,
 								apiIdHex:req.query.apiId,
-								owners: userList
+								owners: groupList
 							});
 						});
 					}
@@ -452,10 +452,10 @@ function register(req, res, next){
 			});
 		});
 	}else{
-		gitlab.getUserList(function(userList) {
+		gitlab.getGroupList(function(groupList) {
 			res.render('register', {
 				pagename:"API Register",
-				owners:userList
+				owners:groupList
 			});
 		})
 		

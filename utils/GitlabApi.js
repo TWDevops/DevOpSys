@@ -35,7 +35,19 @@ GitlabApi.prototype.getUserList = function(callback){
 
 GitlabApi.prototype.getGroupList = function(callback){
 	var groupList = [];
-	this.gitlab.groups.all();
+	this.gitlab.groups.all(function(groups){
+		for(var i = 0; i <groups.length; i++){
+			groupList.push({
+				id:groups[i].id,
+				name:groups[i].name
+			})
+		}
+		callback(groupList);
+	});
+}
+
+GitlabApi.prototype.createApiProject = function(callback){
+	
 }
 
 module.exports = GitlabApi;
