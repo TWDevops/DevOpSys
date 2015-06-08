@@ -1,4 +1,5 @@
 #!/bin/bash
+
 echo '=== Install Gitlab api lib ==='
 workdir=$(/usr/bin/realpath "`/usr/bin/dirname $0`/../")
 if [ -e "$workdir/libs" ];then
@@ -17,6 +18,6 @@ patch -p0 < ../patch/gitlab_evan.patch
 echo '=== make Gitlab dependence==='
 cd gitlab
 npm install
-sudo npm install -g coffee-script
+npm install -g coffee-script
 echo '=== Build Gitlab ==='
 make build

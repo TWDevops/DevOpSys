@@ -3,11 +3,11 @@
     "DB_HOST":"127.0.0.1",
     "DB_PORT":"27017",
     "DB_NAME":"devops",
-    "HTTP_PORT":"3000",
+    "HTTP_PORT":"8080",
     "ZK_HOST":"127.0.0.1",
     "ZK_PORT":"2181",
     "RUNDECK_HOST":"127.0.0.1",
     "RUNDECK_PORT":"4440",
-    "GITLAB_URL":"http://104.199.156.18:3000/",
+    "GITLAB_URL":"http://127.0.0.1:3000/",
     "GITLAB_TOKEN":"XUzW33Qezf-sDbe_fQeT"
 }

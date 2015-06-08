@@ -13,7 +13,7 @@
 			<td>API Key:</td>
 			<td>{{ apiKey }}</td>
 			<td></td>
-			<td><input name="callee" type="button" value="select calling api" onclick="javascript:location.href='/mod/api/selectapi'"></td>
+			<td></td>
 		</tr>
 		<tr>
 			<td>Name:&nbsp;</td>
@@ -42,27 +42,21 @@
 		<tr>
 			<td>Protocol:&nbsp;</td>
 			<td><input name="apiProto" type="text" value="{{api.apiProto}}" /></td>
-			<td>apiCDate:&nbsp;</td>
-			<td>{{api.apiCDate.toString()}}</td>
-		</tr>
-		<tr>
-			<td>Location:&nbsp;</td>
-			<td><input name="apiLocation" type="text" value="{{api.apiLocation}}" /></td>
 			<td>DB:&nbsp;</td>
 			<td><input name="dataSource" type="text" value="{{api.dataSource}}" /></td>
 		</tr>
 		<tr>
+			<td>Type:&nbsp;</td>
+			<td><input name="apiType" type="text" value="{{api.apiType}}" /></td>
 			<td>Activated:&nbsp;</td>
 			<td>
 				<input {% if api.apiActivated %}checked="checked"{% endif %} name="apiActivated" type="radio" value="true" /><label>true</label>&nbsp;&nbsp;
 				<input {% if !api.apiActivated %}checked="checked"{% endif %} name="apiActivated" type="radio" value="false" /><label>false</label>
 			</td>
-			<td>Type:</td>
-			<td><input name="apiType" type="text" value="{{api.apiType}}" /></td>
 		</tr>
 	</tbody>
 </table>
-
+<div>Create Date:&nbsp;{{api.apiCDate.toString()}}</div>
 <div>
 <table  border="0" cellpadding="0" cellspacing="1">
 	<tbody>
@@ -73,8 +67,91 @@
 	</tbody>
 </table>
 </div>
-
-<table cellpadding="2" rules="all" style="border:1px #22ACDD solid;padding:2px;">
+<br>
+<input name="location" type=button value="select location" onclick="document.location.href='/mod/api/selectapser'">
+<input name="callee" type="button" value="select calling api" onclick="document.location.href='/mod/api/selectapi'">
+<br>
+<br>
+GIT:
+<table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
+<tr>
+	<td>Project ID</td>
+	<td>repo_http</td>
+	<td>repo_ssh</td>    
+</tr>
+<tr>
+	<td>{{api.apiGitInfo.id}}</td>
+	<td>{{api.apiGitInfo.repo_http}}</td>
+	<td>{{api.apiGitInfo.repo_ssh}}</td>
+</tr>
+</table>
+<br>
+<table>
+<tr><td>
+LAB Location:&nbsp;
+	<table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
+		<thead>
+		<tr>
+			<th width="30px">ID</th>
+			<th width="150px">Name</th>
+			<th width="60px">Active</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+		{% for dapser in api.apiLocation.developer %}
+			<td></td>
+			<td>{{dapser}}</td>
+			<td></td>
+		{% endfor %}
+		</tr>
+		</tbody>
+	</table>
+</td><td>
+OL Location:&nbsp;
+	<table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
+		<thead>
+		<tr>
+			<th width="30px">ID</th>
+			<th width="150px">Name</th>
+			<th width="60px">Active</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+		{% for tapser in api.apiLocation.tester %}
+			<td></td>
+			<td>{{tapser}}</td>
+			<td></td>
+		{% endfor %}
+		</tr>
+		</tbody>
+	</table>
+</td><td>
+On-Line Location:&nbsp;
+	<table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
+		<thead>
+		<tr>
+			<th width="30px">ID</th>
+			<th width="150px">Name</th>
+			<th width="60px">Active</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+		{% for mapser in api.apiLocation.master %}
+			<td></td>
+			<td>{{mapser}}</td>
+			<td></td>
+		{% endfor %}
+		</tr>
+		</tbody>
+	</table>
+</td></tr>
+</table>
+{% if api.apiVer %}
+<br>
+<table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
 	<thead>
 		<tr>
 			<th scope="col">編號</th>
@@ -84,39 +161,40 @@
 			<th scope="col">List</th>
 			<th scope="col">Deploy</th>
 		</tr>
-		{% for key,ver in api.apiVer %}
+	</thead>
+	<tbody>
+	{% for key,ver in api.apiVer %}
 		<tr>
-			<th scope="col"><input name="verNo" readonly="readonly" size="2" type="text" value="{{ver.no}}" /></th>
-			<th scope="col"><input name="verApiUDate" readonly="readonly" size="18" type="text" value="{{ver.apiUDate.toString()}}" /></th>
-			<th scope="col"><input name="verCtrlType" size="5" type="text" value="{{ver.verCtrlType}}" /></th>
-			<th scope="col"><input name="verSrcUrl" size="30" type="text" value="{{ver.srcUrl}}"/></th>
-			<th scope="col">
+			<td scope="col"><input name="verNo" readonly="readonly" size="2" type="text" value="{{ver.no}}" /></td>
+			<td scope="col"><input name="verApiUDate" readonly="readonly" size="18" type="text" value="{{ver.apiUDate.toString()}}" /></td>
+			<td scope="col"><input name="verCtrlType" size="5" type="text" value="{{ver.verCtrlType}}" /></td>
+			<td scope="col"><input name="verSrcUrl" size="30" type="text" value="{{ver.srcUrl}}"/></td>
+			<td scope="col">
 				<textarea name="verFileList" readonly="readonly">{{ver.fileList}}</textarea>
-			</th>
-			<th scope="col">
+			</td>
+			<td scope="col">
 				<input {% if ver.deploy == 0 %}checked="checked"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="0" /><label>Disable</label>&nbsp;&nbsp;
 				<!-- <input {% if ver.deploy == 3 %}checked="checked"{% else %}onclick="javascript:location.href='/mod/task/deploy/{{ver.no}}?idxk={{key}}&deploy=3'"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="3" /><label>Dev</label>&nbsp;&nbsp;
 				<input {% if ver.deploy == 2 %}checked="checked"{% else %}onclick="javascript:location.href='/mod/task/deploy/{{ver.no}}?idxk={{key}}&deploy=2'"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="2" /><label>Test</label>&nbsp;&nbsp;-->
 				<input {% if ver.deploy == 1 %}checked="checked"{% else %}onclick="javascript:location.href='/mod/task/deploy/{{ver.no}}?idxk={{key}}&deploy=1'"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="1" /><label>On</label>&nbsp;
 				<!-- <input name="Deploy" type="button" value="Deploy" onclick="javascript:location.href='/mod/task/setdeploy/{{ver.no}}'" /> -->
-			</th>
+			</td>
 		</tr>
 		{% endfor %}
 		<tr>
-			<th scope="col"><input name="verNo" size="2" type="text"  /></th>
-			<th scope="col"><input name="verApiUDate" readonly="readonly" size="18" type="text"  /></th>
-			<th scope="col"><input name="verCtrlType" size="5" type="text" /></th>
-			<th scope="col"><input name="verSrcUrl" size="30" type="text" /></th>
-			<th scope="col">
+			<td scope="col"><input name="verNo" size="2" type="text"  /></td>
+			<td scope="col"><input name="verApiUDate" readonly="readonly" size="18" type="text"  /></td>
+			<td scope="col"><input name="verCtrlType" size="5" type="text" /></td>
+			<td scope="col"><input name="verSrcUrl" size="30" type="text" /></td>
+			<td scope="col">
 				<textarea name="verFileList">{{ver.fileList}}</textarea>
-			</th>
-			<th>
-			</th>
+			</td>
+			<td>
+			</td>
 		</tr>
-	</thead>
-	<tbody>
 	</tbody>
 </table>
+{% endif %}
 <br/>
 <input name="確認" type="submit" value="submit" />
 <input name="重設" type="reset" value="reset" />

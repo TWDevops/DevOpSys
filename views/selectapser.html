@@ -1,0 +1,73 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ pagename|title }}
+{% endblock %}
+
+{% block content %}
+<table cellpadding="5" rules="all" style="border:3px #FFAC55 double;padding:5px;">
+	<tr>
+		<td>API Key:</td>
+		<td>{{ apiKey }}</td>
+	</tr>
+</table>
+<br>
+<form action="/mod/api/selectapser" method="post">
+<table border="0" cellpadding="0" cellspacing="1">
+	<tr>
+	<td>
+	LAB Location:
+	<table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
+		<tr>
+			<td>Location</td>
+			<td>AP Server</td>
+		</tr>
+		{% for apServer in apSerList %}
+		{% if apServer.apSerLevel == 2 %}
+		<tr>
+			<td><input type="checkbox" name="devServers" value="{{apServer.apSerName}}"></td>
+			<td>{{apServer.apSerName}}</td>
+		</tr>
+		{% endif %}
+		{% endfor %}
+	</table>
+	</td>
+	<td>
+	OL Location:
+	<table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
+		<tr>
+			<td>Location</td>
+			<td>AP Server</td>
+		</tr>
+		{% for apServer in apSerList %}
+		{% if apServer.apSerLevel == 1 %}
+		<tr>
+			<td><input type="checkbox" name="testServers" value="{{apServer.apSerName}}"></td>
+			<td>{{apServer.apSerName}}</td>
+		</tr>
+		{% endif %}
+		{% endfor %}
+	</table>
+	</td>
+	<td>
+	On-Line Location:
+	<table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
+		<tr>
+			<td>Location</td>
+			<td>AP Server</td>
+		</tr>
+		{% for apServer in apSerList %}
+		{% if apServer.apSerLevel == 0 %}
+		<tr>
+			<td><input type="checkbox" name="masterServers" value="{{apServer.apSerName}}"></td>
+			<td>{{apServer.apSerName}}</td>
+		</tr>
+		{% endif %}
+		{% endfor %}
+	</table>
+	</td>
+	</tr>
+</table>
+<input name="確認" type="submit" value="submit" />
+<input name="重設" type="reset" value="reset" />
+</form>
+{% endblock %}

@@ -96,10 +96,10 @@ getHandler["listview"]=listView;
 
 function edit(req, res, next){
 	var db = dbase.getDb();
-	//var sendData={};
+	var sendData={};
 	var apiOid = null;
 	if (req.method == 'POST') {
-		var sendData={};
+		//var sendData={};
 		console.log(req.session.apiId);
 		db.open(function(error, devopsDb) {
 			if(error){
@@ -192,7 +192,7 @@ function edit(req, res, next){
 			});
 		});
 	}else if(req.query.apiId){
-		var sendData={};
+		//var sendData={};
 		db.open(function(error, devopsDb) {
 			if(error){
 				console.log(error.stack);
@@ -242,10 +242,10 @@ postHandler["edit"] = edit;
 
 function setCallingApi(req, res, next){
 	var db = dbase.getDb();
-	//var sendData = {};
+	var sendData = {};
 	if(req.session.apiId){
 		if (req.method == 'POST') {
-			var sendData={};
+			//var sendData={};
 			console.log("method: POST");
 			var oids = [];
 			console.log(typeof req.body['callApiId']);
@@ -298,7 +298,7 @@ function setCallingApi(req, res, next){
 				});
 			});
 		}else{
-			var sendData={};
+			//var sendData={};
 			db.open(function(error, devopsDb){
 				if(error){
 					console.log(error.stack);
@@ -322,7 +322,7 @@ function setCallingApi(req, res, next){
 							devopsDb.close();
 							console.log(sendData);
 							res.render('selectapi',{
-								 title: "API List",
+								 title: "API select",
 								 apiKey:req.session.apiId,
 								 apiList: sendData
 							});
@@ -337,6 +337,106 @@ function setCallingApi(req, res, next){
 }
 getHandler['selectapi'] = setCallingApi;
 postHandler['selectapi'] = setCallingApi;
+
+function selectAPServer(req, res, next){
+	var db = dbase.getDb();
+	var sendData = {};
+	if(req.session.apiId){
+		if (req.method == 'POST') {
+			console.log("method: POST");
+			var apiLoc = {}
+			var devSers = [];
+			console.log(typeof req.body['callApiId']);
+			if(Array.isArray(req.body.devServers)){
+				req.body.devServers.forEach(function(devSer){
+					devSers.push(devSer);
+				});
+			}else{
+				devSers.push(req.body.devServers);
+			}
+			apiLoc['developer'] = devSers;
+			
+			var testSers = [];
+			if(Array.isArray(req.body.testServers)){
+				req.body.testServers.forEach(function(testSer){
+					testSers.push(testSer);
+				});
+			}else{
+				testSers.push(req.body.testServers);
+			}
+			apiLoc['tester'] = testSers;
+			
+			var masterSers = [];
+			if(Array.isArray(req.body.masterServers)){
+				req.body.masterServers.forEach(function(masterSer){
+					masterSers.push(masterSer);
+				});
+			}else{
+				masterSers.push(req.body.masterServers);
+			}
+			apiLoc['master'] = masterSers;
+			
+			db.open(function(error, devopsDb){
+				if(error){
+					console.log(error.stack);
+					process.exit(0);
+				}
+				devopsDb.collection('api',function(error,apiColl){
+					if(error){
+						console.log(error.stack);
+						process.exit(0);
+					}
+					apiColl.update({'_id': dbase.ObjectID(req.session.apiId)},{$set:{'apiLocation': apiLoc}},function(error, result){
+						if(error){
+							console.log(error.stack);
+							process.exit(0);
+						}
+						sendData = result;
+						res.send(sendData);
+					});
+				});
+			});
+			
+		}else{
+			db.open(function(error, devopsDb){
+				if(error){
+					console.log(error.stack);
+					process.exit(0);
+				}
+				devopsDb.collection('apserver', function(error,apSerColl){
+					if(error){
+						console.log(error.stack);
+						process.exit(0);
+					}
+					var cursor = apSerColl.find({"apSerActivated":true},{'apSerName':true,'apSerLevel':true});
+					cursor.each(function(error, doc){
+						if(error){
+							console.log(error.stack);
+							process.exit(0);
+						}
+						if(doc != null){
+							console.log(doc['_id'].toString());
+							sendData[doc['_id'].toString()]= doc;
+						}else{
+							devopsDb.close();
+							console.log(sendData);
+							res.render('selectapser',{
+								 title: "AP Server Select",
+								 apiKey:req.session.apiId,
+								 apSerList: sendData
+							});
+						}
+					});
+				});
+			});
+		}
+	}else{
+		res.send("nothing!!");
+	}
+}
+getHandler['selectapser'] = selectAPServer;
+postHandler['selectapser'] = selectAPServer;
+
 
 function updateLevel(req, res, next){
 	var db = dbase.getDb();
@@ -401,56 +501,62 @@ function register(req, res, next){
 	console.log("req.session.apiID: " + req.session.apiId);
 	if (req.method == 'POST') {
 		var sendData={};
-		//sendData = req.body;
-		var insertObj = {};
-		insertObj['apiName'] = req.body.apiName;
-		insertObj['apiOwner'] = req.body.apiOwner;
-		insertObj['apiDesc'] = req.body.apiDesc;
-		insertObj['apiVer'] = null;
-		insertObj['apiAllow'] = req.body.apiAllow.split(",");
-		insertObj['apiUrl'] = req.body.apiUrl;
-		insertObj['apiDocUrl'] = req.body.apiDocUrl;
-		insertObj['apiEndPoint'] = req.body.apiEndPoint;
-		insertObj['apiProto'] = req.body.apiProto;
-		insertObj['apiCDate'] = new Date();
-		insertObj['apiLocation'] = req.body.apiLocation;
-		insertObj['dataSource'] = req.body.dataSource;
-		/*if (typeof req.body.apiActivated !==  'undefined' && req.body.apiActivated == "true"){
-			insertObj['apiActivated'] = true;
-		}else{
-			insertObj['apiActivated'] = false;
-		}*/
-		insertObj['apiActivated'] = req.body.apiActivated.toLowerCase() === 'true';
-		insertObj["apiType"]=req.body.apiType;
-		//res.send(insertObj);
-		db.open(function(error, devopsDb) {
-			if(error){
-				console.log(error.stack);
-				process.exit(0);
-			}
-			devopsDb.collection('api', function(error, apiColl){
-				if(error){
-					console.log(error.stack);
-					process.exit(0);
-				}
-				var cursor = apiColl.insert(insertObj, function(error,data){
+		gitlab.createApiProject(req.body.apiName, req.body.apiOwner, function(data){
+			if(data.status == 0){
+				var insertObj = {};
+				insertObj['apiName'] = req.body.apiName;
+				insertObj['apiOwner'] = req.body.apiOwner;
+				insertObj['apiDesc'] = req.body.apiDesc;
+				insertObj['apiGitInfo'] = data.gitInfo;
+				insertObj['apiAllow'] = []
+				insertObj['apiUrl'] = req.body.apiUrl;
+				insertObj['apiDocUrl'] = req.body.apiDocUrl;
+				insertObj['apiEndPoint'] = req.body.apiEndPoint;
+				insertObj['apiProto'] = req.body.apiProto;
+				insertObj['apiCDate'] = new Date();
+				//insertObj['apiLocation'] = req.body.apiLocation;
+				insertObj['dataSource'] = req.body.dataSource;
+				/*if (typeof req.body.apiActivated !==  'undefined' && req.body.apiActivated == "true"){
+					insertObj['apiActivated'] = true;
+				}else{
+					insertObj['apiActivated'] = false;
+				}*/
+				insertObj['apiActivated'] = req.body.apiActivated.toLowerCase() === 'true';
+				insertObj["apiType"]=req.body.apiType;
+				//res.send(insertObj);
+				db.open(function(error, devopsDb) {
 					if(error){
 						console.log(error.stack);
 						process.exit(0);
 					}
-					if (data) {
-		                console.log('Successfully Insert');
-		                sendData["state"] = 0;
-		            } else {
-		                console.log('Failed to Insert');
-		                sendData["state"] = 1;
-		            }
-					devopsDb.close();
-					sendData["date"] = new Date();
-					res.send(sendData);
+					devopsDb.collection('api', function(error, apiColl){
+						if(error){
+							console.log(error.stack);
+							process.exit(0);
+						}
+						var cursor = apiColl.insert(insertObj, function(error,data){
+							if(error){
+								console.log(error.stack);
+								process.exit(0);
+							}
+							if (data) {
+				                console.log('Successfully Insert');
+				                sendData["state"] = 0;
+				            } else {
+				                console.log('Failed to Insert');
+				                sendData["state"] = 1;
+				            }
+							devopsDb.close();
+							sendData["date"] = new Date();
+							res.send(sendData);
+						});
+					});
 				});
-			});
-		});
+			}else{
+				res.send(data);
+			}
+		})
+		//sendData = req.body;
 	}else{
 		gitlab.getGroupList(function(groupList) {
 			res.render('register', {
