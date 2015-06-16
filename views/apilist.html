@@ -3,29 +3,30 @@
 {% block title %}{{ pagename|title }}{% endblock %}
 
 {% block content %}
-<h1>{{ pagename|title }}</h1>
 
 <table cellpadding="5" rules="all" style="border:3px #FFAC55 double;padding:5px;">
-	<tbody>
+	<thead style="border:3px #FFAC55 double;padding:5px;">
 		<tr>
-			<td>Name</td>
-			<td>Owner</td>
-			<td>說明</td>
-			<!-- <td>版本</td>
-			<td>API Call</td>
-			<td>URL</td>
-			<td>Doc URL</td>
-			<td>Endpoint</td>
-			<td>Protocol</td> -->
-			<td>Create Date</td>
-			<!-- <td>Location</td>
-			<td>Database</td> -->
-			<td>Activated</td>
-			<!-- <td>Type</td> -->
+			<th>Name</th>
+			<th>Owner</th>
+			<th>說明</th>
+			<!-- <th>版本</th>
+			<th>API Call</th>
+			<th>URL</th>
+			<th>Doc URL</th>
+			<th>Endpoint</th>
+			<th>Protocol</th> -->
+			<th>Create Date</th>
+			<!-- <th>Location</th>
+			<th>Database</th> -->
+			<th>Activated</th>
+			<!-- <th>Type</th> -->
 		</tr>
+	</thead>
+	<tbody>
 		 {% for apiKey, api in apiList %}
 		<tr>
-			<td><a href="/mod/api/edit?apiId={{apiKey}}">{{ api.apiName }}</a></td>
+			<td><a href="/mod/apiman/edit?apiId={{apiKey}}">{{ api.apiName }}</a></td>
 			<td>{{ api.apiOwner}}</td>
 			<td>{{ api.apiDesc}}</td>
 			<!-- <td>

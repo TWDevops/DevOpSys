@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ pagename|title }}{% endblock %}
+
+{% block content %}
+<table cellpadding="5" rules="all" style="border:3px #FFAC55 double;padding:5px;">
+	<thead style="border:3px #FFAC55 double;padding:5px;">
+		<tr>
+			<th>ID</td>
+			<th>Name</td>
+			<th>Type</td>
+			<th>Activated</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for apSer in apSerList %}
+		<tr>
+			<td>{{apSer._id.toString()}}</td>
+			<td>{{apSer.apSerName}}</td>
+			<td>{{apSer.apSerType}}</td>
+			<td>{{apSer.apSerActivated}}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+{% endblock %}

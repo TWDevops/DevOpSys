@@ -1,3 +1,4 @@
+/*jslint es5:true*/
 /**
  * Module Auto Loading
  * 
@@ -19,8 +20,17 @@ for (var modIdx in config.get("MOD_LIST")){
 	if( typeof mod.getHandler !==  'undefined' && Object.keys(mod.getHandler).length >0){
 		addGet(modIdx,mod.getHandler);
 	}
+	
 	if( typeof mod.postHandler !==  'undefined' && Object.keys(mod.postHandler).length >0){
 		addPost(modIdx,mod.postHandler);
+	}
+	
+	if( typeof mod.putHandler !==  'undefined' && Object.keys(mod.putHandler).length >0){
+		addPut(modIdx,mod.putHandler);
+	}
+	
+	if( typeof mod.delHandler !==  'undefined' && Object.keys(mod.delHandler).length >0){
+		addDelete(modIdx,mod.delHandler);
 	}
 }
 
@@ -42,6 +52,28 @@ function addPost(idx, handle){
 		if(typeof handle[key] === 'function'){
 			console.log("Mod " + idx + " POST method register: " + "/" + idx + "/" + key);
 			router.post("/" + idx + "/" + key, handle[key]);
+		}
+	}
+}
+
+function addPut(idx, handle){
+	console.log("Registing PUT Method");
+	for (var key in handle){
+		console.log( "Mod " + idx + " key: " + key);
+		if(typeof handle[key] === 'function'){
+			console.log("Mod " + idx + " PUT method register: " + "/" + idx + "/" + key);
+			router.put("/" + idx + "/" + key, handle[key]);
+		}
+	}
+}
+
+function addDelete(idx, handle){
+	console.log("Registing DELETE Method");
+	for (var key in handle){
+		console.log( "Mod " + idx + " key: " + key);
+		if(typeof handle[key] === 'function'){
+			console.log("Mod " + idx + " DELETE method register: " + "/" + idx + "/" + key);
+			router.delete("/" + idx + "/" + key, handle[key]);
 		}
 	}
 }

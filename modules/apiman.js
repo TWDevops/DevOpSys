@@ -128,7 +128,7 @@ function edit(req, res, next){
 						doc["apiDocUrl"]=req.body.apiDocUrl;
 						doc["apiEndPoint"]=req.body.apiEndPoint;
 						doc["apiProto"]=req.body.apiProto;
-						doc["apiLocation"]=req.body.apiLocation;
+						//doc["apiLocation"]=req.body.apiLocation;
 						doc["dataSource"]=req.body.dataSource;
 						doc["apiDesc"]=req.body.apiDesc;
 						/*if (typeof req.body.apiActivated !==  'undefined' && req.body.apiActivated == "true"){
@@ -138,7 +138,7 @@ function edit(req, res, next){
 						}*/
 						doc['apiActivated'] = req.body.apiActivated.toLowerCase() === 'true';
 						doc["apiType"]=req.body.apiType;
-						doc["apiVer"]=[];
+						/*doc["apiVer"]=[];
 						if (Array.isArray(req.body.verNo)){
 							for(var verIdx in req.body.verNo){
 								if(req.body.verNo[verIdx]!= ""){
@@ -153,14 +153,16 @@ function edit(req, res, next){
 								}
 							}
 						}else{
-							doc["apiVer"][0]={
+							if(eq.body.verNo!=""){
+								doc["apiVer"][0]={
 									"no":req.body.verNo,
 									"apiUDate":new Date(),
 									"verCtrlType":req.body.verCtrlType,
 									"srcUrl":req.body.verSrcUrl,
 									"deploy":0
-							};
-						}
+								};
+							}
+						}*/
 						//res.send(doc);
 						apiColl.update({"_id": apiOid},{'$set':doc},{"w":1},function(error, result){
 							if(error){
@@ -345,26 +347,26 @@ function selectAPServer(req, res, next){
 		if (req.method == 'POST') {
 			console.log("method: POST");
 			var apiLoc = {}
-			var devSers = [];
+			var labSers = [];
 			console.log(typeof req.body['callApiId']);
-			if(Array.isArray(req.body.devServers)){
-				req.body.devServers.forEach(function(devSer){
-					devSers.push(devSer);
+			if(Array.isArray(req.body.labServers)){
+				req.body.labServers.forEach(function(labSer){
+					labSers.push(labSer);
 				});
 			}else{
-				devSers.push(req.body.devServers);
+				labSers.push(req.body.labServers);
 			}
-			apiLoc['developer'] = devSers;
+			apiLoc['lab'] = labSers;
 			
-			var testSers = [];
-			if(Array.isArray(req.body.testServers)){
-				req.body.testServers.forEach(function(testSer){
-					testSers.push(testSer);
+			var olSers = [];
+			if(Array.isArray(req.body.olServers)){
+				req.body.olServers.forEach(function(olSer){
+					olSers.push(olSer);
 				});
 			}else{
-				testSers.push(req.body.testServers);
+				olSers.push(req.body.olServers);
 			}
-			apiLoc['tester'] = testSers;
+			apiLoc['ol'] = olSers;
 			
 			var masterSers = [];
 			if(Array.isArray(req.body.masterServers)){
@@ -408,7 +410,25 @@ function selectAPServer(req, res, next){
 						console.log(error.stack);
 						process.exit(0);
 					}
-					var cursor = apSerColl.find({"apSerActivated":true},{'apSerName':true,'apSerLevel':true});
+					apSerColl.find({"apSerActivated":true},{'apSerName':true,'apSerLevel':true}).toArray(function(error,apSerDocs){
+						if(error){
+							console.log(error.stack);
+							process.exit(0);
+						}
+						devopsDb.collection('api', function(error,apiColl){
+							apiColl.findOne({'_id': dbase.ObjectID(req.session.apiId)},{apiLocation:true},function(error,apiDoc){
+								devopsDb.close();
+								//console.log(sendData);
+								res.render('selectapser',{
+									 title: "AP Server Select",
+									 apiKey: req.session.apiId,
+									 apiDoc: apiDoc,
+									 apSerList: apSerDocs
+								});
+							})
+						})
+					});
+					/*var cursor = apSerColl.find({"apSerActivated":true},{'apSerName':true,'apSerLevel':true});
 					cursor.each(function(error, doc){
 						if(error){
 							console.log(error.stack);
@@ -426,7 +446,7 @@ function selectAPServer(req, res, next){
 								 apSerList: sendData
 							});
 						}
-					});
+					});*/
 				});
 			});
 		}
@@ -560,7 +580,7 @@ function register(req, res, next){
 	}else{
 		gitlab.getGroupList(function(groupList) {
 			res.render('register', {
-				pagename:"API Register",
+				title:"API Register",
 				owners:groupList
 			});
 		})

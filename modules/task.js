@@ -58,7 +58,7 @@ var postHandler = {};
 getHandler["gettask/:action"] = getTask;*/
 
 function getTask(req, res, next) {
-	dbase.getTaskList(req.params.action, function(taskList){
+	dbase.getTask(req.params.action,function(taskList){
 		res.send(taskList);
 	})
 }
@@ -170,7 +170,85 @@ function setTaskStatus(req, res,next){
 }
 getHandler["setstatus/:taskId/:taskSt"] = setTaskStatus;
 
+function deploy(req, res, next){
+	var findOpt = {};
+	var query = {};
+	if (req.method == 'GET') {
+		if(req.params.id){
+			switch (req.params.id) {
+			case 'done':
+				query['taskAction'] = 'deploy';
+				query['taskStatus'] = 0;
+				findOpt['query'] = query;
+				findOpt['limit'] = 0
+				break;
+				
+			case 'log':
+				query['taskAction'] = 'deploy';
+				query['$or'] = [{taskStatus:0},{taskStatus:9}];
+				findOpt['query'] = query;
+				findOpt['limit'] = 0
+				break;
+				
+			case 'error':
+				query['taskAction'] = 'deploy';
+				query['taskStatus'] = 9;
+				findOpt['query'] = query;
+				findOpt['limit'] = 0;
+				break;
+				
+			default:
+				var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
+				if(checkForHexRegExp.test(req.params.id)){
+					query['_id'] = dbase.ObjectID(req.params.id);
+					findOpt['query'] = query;
+					findOpt['limit'] = 0;
+				}else{
+					console.log("task: Argument passed in must be a single String of 12 bytes or a string of 24 hex characters");
+					res.send({});
+					return;
+				}
+				break;
+			}
+		} else {
+			query['taskAction'] = 'deploy';
+			query['taskStatus'] = 1;
+			findOpt['query'] = query;
+			findOpt['limit'] = 0;
+		}
+		dbase.getDeployList(findOpt, function(taskList){
+			res.send(taskList);
+		});
+	}/* else if (req.method == 'POST') {
+		if (req.body.apId){
+			var taskObj = {}
+			taskObj['taskNo'] = new Date().getTime();
+			taskObj['taskAction'] = 'deploy';
+			taskObj['params'] = req.body.params;
+		} else {
+			res.send({});
+		}
+	}*/
+}
+getHandler['api/deploy'] = deploy;
+getHandler['api/deploy/:id'] = deploy;
+//postHandler['api/deploy'] = deploy;
 
+function deployApi(req, res, next){
+	if(req.session.apiId){
+		var setOpt = {};
+		setOpt['apserName'] = req.params.apserName;
+		setOpt['apiId'] = req.session.apiId;
+		dbase.setTask(setOpt, function(result) {
+			res.send(result);
+		})
+	}else{
+		res.send("nothing!!");
+	}
+}
+getHandler['deploy/:apserName'] = deployApi;
+
+//不再使用,準備移除
 function deployTask(req, res, next) {
 	var db = dbase.getDb();
 	var sendData = {};
@@ -294,7 +372,7 @@ function deployTask(req, res, next) {
 		res.send(sendData);
 	}
 }
-getHandler["deploy/:verNo"] = deployTask;
+getHandler["deploytask/:verNo"] = deployTask;
 
 function triggerRundeck(){
 	var xml2js = require('xml2js');

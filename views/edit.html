@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<form action="/mod/api/edit" method="post" name="apiUpdate">
+<form action="/mod/apiman/edit" method="post" name="apiUpdate">
 <!-- <input type="hidden" name="apiId" value="{{ apiIdHex }}"> -->
 <table border="0" cellpadding="0" cellspacing="1">
 	<tbody>
@@ -67,88 +67,6 @@
 	</tbody>
 </table>
 </div>
-<br>
-<input name="location" type=button value="select location" onclick="document.location.href='/mod/api/selectapser'">
-<input name="callee" type="button" value="select calling api" onclick="document.location.href='/mod/api/selectapi'">
-<br>
-<br>
-GIT:
-<table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
-<tr>
-	<td>Project ID</td>
-	<td>repo_http</td>
-	<td>repo_ssh</td>    
-</tr>
-<tr>
-	<td>{{api.apiGitInfo.id}}</td>
-	<td>{{api.apiGitInfo.repo_http}}</td>
-	<td>{{api.apiGitInfo.repo_ssh}}</td>
-</tr>
-</table>
-<br>
-<table>
-<tr><td>
-LAB Location:&nbsp;
-	<table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
-		<thead>
-		<tr>
-			<th width="30px">ID</th>
-			<th width="150px">Name</th>
-			<th width="60px">Active</th>
-		</tr>
-		</thead>
-		<tbody>
-		<tr>
-		{% for dapser in api.apiLocation.developer %}
-			<td></td>
-			<td>{{dapser}}</td>
-			<td></td>
-		{% endfor %}
-		</tr>
-		</tbody>
-	</table>
-</td><td>
-OL Location:&nbsp;
-	<table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
-		<thead>
-		<tr>
-			<th width="30px">ID</th>
-			<th width="150px">Name</th>
-			<th width="60px">Active</th>
-		</tr>
-		</thead>
-		<tbody>
-		<tr>
-		{% for tapser in api.apiLocation.tester %}
-			<td></td>
-			<td>{{tapser}}</td>
-			<td></td>
-		{% endfor %}
-		</tr>
-		</tbody>
-	</table>
-</td><td>
-On-Line Location:&nbsp;
-	<table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
-		<thead>
-		<tr>
-			<th width="30px">ID</th>
-			<th width="150px">Name</th>
-			<th width="60px">Active</th>
-		</tr>
-		</thead>
-		<tbody>
-		<tr>
-		{% for mapser in api.apiLocation.master %}
-			<td></td>
-			<td>{{mapser}}</td>
-			<td></td>
-		{% endfor %}
-		</tr>
-		</tbody>
-	</table>
-</td></tr>
-</table>
 {% if api.apiVer %}
 <br>
 <table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
@@ -199,4 +117,82 @@ On-Line Location:&nbsp;
 <input name="確認" type="submit" value="submit" />
 <input name="重設" type="reset" value="reset" />
 </form>
+<br>
+<input name="location" type=button value="select location" onclick="document.location.href='/mod/apiman/selectapser'">
+<input name="callee" type="button" value="select calling api" onclick="document.location.href='/mod/apiman/selectapi'">
+<br>
+<br>
+GIT:
+<table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
+<tr>
+	<td>Project ID</td>
+	<td>repo_http</td>
+	<td>repo_ssh</td>    
+</tr>
+<tr>
+	<td>{{api.apiGitInfo.id}}</td>
+	<td>{{api.apiGitInfo.repo_http}}</td>
+	<td>{{api.apiGitInfo.repo_ssh}}</td>
+</tr>
+</table>
+<br>
+<table>
+<tr><td>
+LAB Location:&nbsp;
+	<table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
+		<thead>
+		<tr>
+			<th width="150px">Name</th>
+			<th width="60px">Deploy</th>
+		</tr>
+		</thead>
+		<tbody>
+		{% for labApser in api.apiLocation.lab %}
+		<tr>
+			<td>{{labApser}}</td>
+			<td><input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{labApser}}'"></td>
+		</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</td><td>
+OL Location:&nbsp;
+	<table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
+		<thead>
+		<tr>
+			<th width="150px">Name</th>
+			<th width="60px">Deploy</th>
+		</tr>
+		</thead>
+		<tbody>
+		{% for olApser in api.apiLocation.ol %}
+		<tr>
+			<td>{{olApser}}</td>
+			<td><input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser}}'"></td>
+		</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</td><td>
+On-Line Location:&nbsp;
+	<table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
+		<thead>
+		<tr>
+			<th width="150px">Name</th>
+			<th width="60px">Deploy</th>
+		</tr>
+		</thead>
+		<tbody>
+		{% for masterApser in api.apiLocation.master %}
+		<tr>
+			<td>{{masterApser}}</td>
+			<td>
+				<input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser}}'">
+			</td>
+		</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</td></tr>
+</table>
 {% endblock %}
