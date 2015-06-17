@@ -10,9 +10,37 @@ var dbase = new require('../utils/DataBase.js');
 var assert = require('assert');
 var mainWorker = require('../worker/MainWorker.js');
 
-var headHander = {}
+var headHander = {};
 var getHandler = {};
 var postHandler = {};
+
+function triggerRundeck(){
+	var xml2js = require('xml2js');
+	var http = require('http');
+	var options = {
+			host: config.get('RUNDECK_HOST'),
+			path: config.get('RUNDECK_DEPLOY_PATH'),
+			port: config.get('RUNDECK_PORT'),
+			headers:{'X-Rundeck-Auth-Token':'49qG8tdSFl3o00yM4jGvQK2DV2DazjD8'}
+	};
+	var callback = function(response) {
+		var xmlStr = '';
+		response.on('data', function (chunk) {
+		    xmlStr += chunk;
+		});
+
+		response.on('end', function () {
+			var parser = new xml2js.Parser();
+			parser.parseString(xmlStr, function (err, result) {
+		    	//console.dir(result);
+		    	console.dir(result['executions']['execution'][0]['$']['status']);
+		        console.log(xmlStr);
+		    });
+			//console.log(str);
+		});
+	};
+	http.request(options, callback).end();
+}
 
 //var db = dbase.getDb();
 
@@ -60,7 +88,7 @@ getHandler["gettask/:action"] = getTask;*/
 function getTask(req, res, next) {
 	dbase.getTask(req.params.action,function(taskList){
 		res.send(taskList);
-	})
+	});
 }
 getHandler["get/:action"] = getTask;
 
@@ -70,7 +98,7 @@ function setTaskStatus(req, res,next){
 		dbase.updateTaskStatus( req.params.taskId, req.params.taskSt, function(result){
 			if(result){
 				console.log("updateTaskStatus result: " + result);
-				if(JSON.parse(result)['ok'] == 1){
+				if(JSON.parse(result)['ok'] === 1){
 					sendData['state'] = 0;
 					sendData['nModified'] = JSON.parse(result)['nModified'];
 					if(sendData['nModified'] >0){
@@ -173,7 +201,7 @@ getHandler["setstatus/:taskId/:taskSt"] = setTaskStatus;
 function deploy(req, res, next){
 	var findOpt = {};
 	var query = {};
-	if (req.method == 'GET') {
+	if (req.method === 'GET') {
 		if(req.params.id){
 			switch (req.params.id) {
 			case 'done':
@@ -241,7 +269,7 @@ function deployApi(req, res, next){
 		setOpt['apiId'] = req.session.apiId;
 		dbase.setTask(setOpt, function(result) {
 			res.send(result);
-		})
+		});
 	}else{
 		res.send("nothing!!");
 	}
@@ -347,7 +375,7 @@ function deployTask(req, res, next) {
 											devopsDb.close();
 											sendData["date"] = new Date();
 											res.send(sendData);
-										})
+										});
 									});
 									/*sendData['apServ'] = taskObj;
 									sendData['level'] = req.query.level;
@@ -373,34 +401,6 @@ function deployTask(req, res, next) {
 	}
 }
 getHandler["deploytask/:verNo"] = deployTask;
-
-function triggerRundeck(){
-	var xml2js = require('xml2js');
-	var http = require('http');
-	var options = {
-			host: config.get('RUNDECK_HOST'),
-			path: '/api/13/job/c120eec4-b724-4a36-9a60-38f336c3d422/run',
-			port: config.get('RUNDECK_PORT'),
-			headers:{'X-Rundeck-Auth-Token':'49qG8tdSFl3o00yM4jGvQK2DV2DazjD8'}
-	}
-	callback = function(response) {
-		var xmlStr = '';
-		response.on('data', function (chunk) {
-		    xmlStr += chunk;
-		});
-
-		response.on('end', function () {
-			var parser = new xml2js.Parser();
-			parser.parseString(xmlStr, function (err, result) {
-		    	//console.dir(result);
-		    	console.dir(result['executions']['execution'][0]['$']['status']);
-		        console.log(xmlStr);
-		    });
-			//console.log(str);
-		});
-	}
-	http.request(options, callback).end();
-}
 
 exports.headHander = headHander;
 exports.getHandler = getHandler;
