@@ -19,9 +19,9 @@ function triggerRundeck(){
 	var http = require('http');
 	var options = {
 			host: config.get('RUNDECK_HOST'),
-			path: config.get('RUNDECK_DEPLOY_PATH'),
+			path: config.get('RUNDECK_CALL_DEPLOY'),
 			port: config.get('RUNDECK_PORT'),
-			headers:{'X-Rundeck-Auth-Token':'49qG8tdSFl3o00yM4jGvQK2DV2DazjD8'}
+			headers:{'X-Rundeck-Auth-Token':config.get('RUNDECK_TOKEN')}
 	};
 	var callback = function(response) {
 		var xmlStr = '';
