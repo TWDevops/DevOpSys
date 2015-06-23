@@ -20,7 +20,7 @@ function listView(req, res, next) {
 				console.log(error.stack);
 				process.exit(0);
 			}
-			apserColl.find({},{'apSerName':true, 'apSerType':true, 'apSerActivated': true}).toArray(function(error, apSerList){
+			apserColl.find({},{'apSerName':true, 'apSerType':true, 'apSerActivated': true,"apSerIntIp":true}).toArray(function(error, apSerList){
 				if(error){
 					console.log(error.stack);
 					process.exit(0);

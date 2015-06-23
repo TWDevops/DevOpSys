@@ -10,6 +10,7 @@
 			<th>Name</td>
 			<th>Type</td>
 			<th>Activated</th>
+			<th>On-line</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -19,6 +20,19 @@
 			<td>{{apSer.apSerName}}</td>
 			<td>{{apSer.apSerType}}</td>
 			<td>{{apSer.apSerActivated}}</td>
+			<td>
+				<form action="http://{{apSer.apSerIntIp}}:9763/ServStat" enctype='application/json' method="post" name="{{apSer.apSerName}}_Online">
+					<input type="hidden" name="ServerName" value="{{apSer.apSerName}}">
+					<input type="hidden" name="status" value="0">
+					<input name="確認" type="submit" value="On" />
+				</form>
+				<form action="http://{{apSer.apSerIntIp}}:9763/ServStat" 
+				enctype='application/json' method="post" name="{{apSer.apSerName}}_Offline">
+					<input type="hidden" name="ServerName" value="{{apSer.apSerName}}">
+					<input type="hidden" name="status" value="1">
+					<input name="確認" type="submit" value="Off" />
+				</form>
+			</td>
 		</tr>
 	{% endfor %}
 	</tbody>
