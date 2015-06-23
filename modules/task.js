@@ -201,7 +201,7 @@ getHandler["setstatus/:taskId/:taskSt"] = setTaskStatus;
 function deploy(req, res, next){
 	var findOpt = {};
 	var query = {};
-	if (req.method === 'GET') {
+	if (req.method == 'GET') {
 		if(req.params.id){
 			switch (req.params.id) {
 			case 'done':
@@ -225,6 +225,13 @@ function deploy(req, res, next){
 				findOpt['limit'] = 0;
 				break;
 				
+			case 'list':
+				query['taskAction'] = 'deploy';
+				query['taskStatus'] = 1;
+				findOpt['query'] = query;
+				findOpt['limit'] = 0;
+				break;
+				
 			default:
 				var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
 				if(checkForHexRegExp.test(req.params.id)){
@@ -242,7 +249,7 @@ function deploy(req, res, next){
 			query['taskAction'] = 'deploy';
 			query['taskStatus'] = 1;
 			findOpt['query'] = query;
-			findOpt['limit'] = 0;
+			findOpt['limit'] = 1;
 		}
 		dbase.getDeployList(findOpt, function(taskList){
 			res.send(taskList);

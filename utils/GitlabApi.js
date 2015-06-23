@@ -7,7 +7,7 @@ config.env().file({ "file":"config.json" });
 this.gitlab = null;
 
 function GitlabApi(){
-	this.gitlab = require('../libs/gitlab')({
+	this.gitlab = require('gitlab')({
 		url: config.get("GITLAB_URL"),
 		token: config.get("GITLAB_TOKEN")
 	});
@@ -18,7 +18,7 @@ GitlabApi.prototype.getUid = function(eMailOrName,callback){
 		console.log(data);
 		callback(data[0].id);
 	});
-}
+};
 
 GitlabApi.prototype.getUserList = function(callback){
 	var userList = [];
@@ -31,7 +31,7 @@ GitlabApi.prototype.getUserList = function(callback){
 		}
 		callback(userList);
 	});
-}
+};
 
 GitlabApi.prototype.getGroupList = function(callback){
 	var groupList = [];
@@ -40,25 +40,25 @@ GitlabApi.prototype.getGroupList = function(callback){
 			groupList.push({
 				id:groups[i].id,
 				name:groups[i].name
-			})
+			});
 		}
 		callback(groupList);
 	});
-}
+};
 
 GitlabApi.prototype.createApiProject = function(proName, groupId,callback){
 	var newProject = {
 			"namespace_id":groupId,
 			"name":proName,
 			"public":true
-	}
+	};
 	this.gitlab.projects.create(newProject,function(data){
 		var retData=null;
 		if(data == true){
 			retData = {
 					status: 1,
 					message: "Can Not Create Project!"
-			}
+			};
 		}else if(data){
 			retData = {
 					status: 0,
@@ -68,16 +68,16 @@ GitlabApi.prototype.createApiProject = function(proName, groupId,callback){
 						repo_http: data.http_url_to_repo,
 						repo_ssh: data.ssh_url_to_repo
 					}
-			}
+			};
 		}else{
 			retData = {
 					status:0,
 					message: "Unknow Error!"
-			}
+			};
 		}
 		callback(retData);
 	});
-}
+};
 
 GitlabApi.prototype.commits = function(pId, refName, callBack){
 	var retData = {};
@@ -101,10 +101,10 @@ GitlabApi.prototype.commits = function(pId, refName, callBack){
 					status: 0,
 					message: "Got Commit list.",
 					commits: commitsTmp
-			}
+			};
 			callBack(retData);
 		}
-	})
-}
+	});
+};
 
 module.exports = GitlabApi;

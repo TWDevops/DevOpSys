@@ -6,11 +6,6 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
-			<name>tern.eclipse.ide.core.ternBuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-		<buildCommand>
 			<name>com.eclipsesource.jshint.ui.builder</name>
 			<arguments>
 			</arguments>
@@ -21,4 +16,15 @@
 		<nature>org.eclipse.wst.jsdt.core.jsNature</nature>
 		<nature>tern.eclipse.ide.core.ternnature</nature>
 	</natures>
+	<filteredResources>
+		<filter>
+			<id>1434616353827</id>
+			<name></name>
+			<type>14</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-location-matches-false-false-node_modules/*/node_modules</arguments>
+			</matcher>
+		</filter>
+	</filteredResources>
 </projectDescription>

@@ -1,5 +1,5 @@
 {
-    "MOD_LIST":{"apiman":"apiman", "hello":"hello", "task":"task", "ser":"serman"},
+    "MOD_LIST":{"apiman":"apiman", "hello":"hello", "task":"task", "ser":"serman", "report": "report"},
     "DB_HOST":"192.168.122.165",
     "DB_PORT":"27017",
     "DB_NAME":"devops",
@@ -10,5 +10,6 @@
     "RUNDECK_DEPLOY_PATH":"/api/13/job/c120eec4-b724-4a36-9a60-38f336c3d422/run",
     "RUNDECK_PORT":"4440",
     "GITLAB_URL":"http://192.168.122.165:3000/",
-    "GITLAB_TOKEN":"ny1xXS9B_S5U8ozJFYMf"
+    "GITLAB_TOKEN":"ny1xXS9B_S5U8ozJFYMf",
+    "JENKINS_URL":"http://192.168.122.165:8080"
 }
