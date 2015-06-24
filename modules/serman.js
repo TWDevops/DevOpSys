@@ -72,7 +72,7 @@ function listView(req, res, next) {
 }
 getHandler['listview'] = listView;
 
-function apServCtrl(req, res, next){
+/*function apServCtrl(req, res, next){
 	var apSerStatObj = {};
 	if(req.method === "GET"){
 		switch(req.params.action){
@@ -109,7 +109,7 @@ function apServCtrl(req, res, next){
 		});
 	}
 }
-getHandler['apservctrl/:id/:action'] = apServCtrl;
+getHandler['apservctrl/:id/:action'] = apServCtrl;*/
 
 exports.headHander = headHander;
 exports.getHandler = getHandler;
