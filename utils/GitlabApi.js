@@ -107,4 +107,26 @@ GitlabApi.prototype.commits = function(pId, refName, callBack){
 	});
 };
 
+GitlabApi.prototype.addHook = function(pId, callback){
+    var retData = {};
+    var hookUrl = config.get("GITLAB_HOOK");
+    this.gitlab.projects.hooks.add(pId,hookUrl, function(data){
+	console.log(data);
+	if(data!== true){
+	    retData = {
+		    status: 0,
+		    project: pId,
+		    message: "["+hookUrl+ "] has been added."
+	    };
+	}else{
+	    retData = {
+		    status: 1,
+		    project: pId,
+		    message: "["+hookUrl+ "] has not been added."
+	    }
+	}
+	callback(retData);
+    })
+}
+
 module.exports = GitlabApi;

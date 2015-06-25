@@ -4,8 +4,13 @@
 //var DataBase = new require('../utils/DataBase.js');
 //var dbase = new DataBase();
 var dbase = new require('../utils/DataBase.js');
+
 var GitlabApi = require('../utils/GitlabApi.js');
 var gitlab = new GitlabApi();
+
+var JenKinsApi = require('../utils/JenKinsApi');
+var jenkins = new JenKinsApi();
+
 //var db = dbase.getDb();
 //var assert = require('assert');
 
@@ -457,7 +462,7 @@ function selectAPServer(req, res, next){
 getHandler['selectapser'] = selectAPServer;
 postHandler['selectapser'] = selectAPServer;
 
-
+//準備移除
 function updateLevel(req, res, next){
 	var db = dbase.getDb();
 	var sendData = {};
@@ -522,56 +527,64 @@ function register(req, res, next){
 	if (req.method == 'POST') {
 		var sendData={};
 		gitlab.createApiProject(req.body.apiName, req.body.apiOwner, function(data){
-			if(data.status == 0){
-				var insertObj = {};
-				insertObj['apiName'] = req.body.apiName;
-				insertObj['apiOwner'] = req.body.apiOwner;
-				insertObj['apiDesc'] = req.body.apiDesc;
-				insertObj['apiGitInfo'] = data.gitInfo;
-				insertObj['apiAllow'] = []
-				insertObj['apiUrl'] = req.body.apiUrl;
-				insertObj['apiDocUrl'] = req.body.apiDocUrl;
-				insertObj['apiEndPoint'] = req.body.apiEndPoint;
-				insertObj['apiProto'] = req.body.apiProto;
-				insertObj['apiCDate'] = new Date();
-				//insertObj['apiLocation'] = req.body.apiLocation;
-				insertObj['dataSource'] = req.body.dataSource;
-				/*if (typeof req.body.apiActivated !==  'undefined' && req.body.apiActivated == "true"){
-					insertObj['apiActivated'] = true;
-				}else{
-					insertObj['apiActivated'] = false;
-				}*/
-				insertObj['apiActivated'] = req.body.apiActivated.toLowerCase() === 'true';
-				insertObj["apiType"]=req.body.apiType;
-				//res.send(insertObj);
-				db.open(function(error, devopsDb) {
-					if(error){
-						console.log(error.stack);
-						process.exit(0);
-					}
-					devopsDb.collection('api', function(error, apiColl){
-						if(error){
-							console.log(error.stack);
-							process.exit(0);
-						}
-						var cursor = apiColl.insert(insertObj, function(error,data){
-							if(error){
-								console.log(error.stack);
-								process.exit(0);
-							}
-							if (data) {
-				                console.log('Successfully Insert');
-				                sendData["state"] = 0;
-				            } else {
-				                console.log('Failed to Insert');
-				                sendData["state"] = 1;
-				            }
-							devopsDb.close();
-							sendData["date"] = new Date();
-							res.send(sendData);
-						});
-					});
-				});
+			if(data.status === 0){
+			    //console.log("gitinfo:"+data.gitInfo);
+			    //console.log("giturl:"+data.gitInfo.repo_http);
+			    jenkins.create(req.body.apiName, data.gitInfo.repo_http, function(result) {
+			    	if(result.stats !== 0){
+			    	    res.send(result);
+			    	}else{
+        			    	var insertObj = {};
+        				insertObj['apiName'] = req.body.apiName;
+        				insertObj['apiOwner'] = req.body.apiOwner;
+        				insertObj['apiDesc'] = req.body.apiDesc;
+        				insertObj['apiGitInfo'] = data.gitInfo;
+        				insertObj['apiAllow'] = []
+        				insertObj['apiUrl'] = req.body.apiUrl;
+        				insertObj['apiDocUrl'] = req.body.apiDocUrl;
+        				insertObj['apiEndPoint'] = req.body.apiEndPoint;
+        				insertObj['apiProto'] = req.body.apiProto;
+        				insertObj['apiCDate'] = new Date();
+        				//insertObj['apiLocation'] = req.body.apiLocation;
+        				insertObj['dataSource'] = req.body.dataSource;
+        				/*if (typeof req.body.apiActivated !==  'undefined' && req.body.apiActivated == "true"){
+        					insertObj['apiActivated'] = true;
+        				}else{
+        					insertObj['apiActivated'] = false;
+        				}*/
+        				insertObj['apiActivated'] = req.body.apiActivated.toLowerCase() === 'true';
+        				insertObj["apiType"]=req.body.apiType;
+        				//res.send(insertObj);
+        				db.open(function(error, devopsDb) {
+        					if(error){
+        						console.log(error.stack);
+        						process.exit(0);
+        					}
+        					devopsDb.collection('api', function(error, apiColl){
+        						if(error){
+        							console.log(error.stack);
+        							process.exit(0);
+        						}
+        						var cursor = apiColl.insert(insertObj, function(error,data){
+        							if(error){
+        								console.log(error.stack);
+        								process.exit(0);
+        							}
+        							if (data) {
+        				                console.log('Successfully Insert');
+        				                sendData["state"] = 0;
+        				            } else {
+        				                console.log('Failed to Insert');
+        				                sendData["state"] = 1;
+        				            }
+        							devopsDb.close();
+        							sendData["date"] = new Date();
+        							res.send(sendData);
+        						});
+        					});
+        				});
+			    	}
+			    });
 			}else{
 				res.send(data);
 			}
