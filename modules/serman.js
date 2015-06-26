@@ -28,8 +28,14 @@ function setApSerStatus(apSerIp, apSerStatJson, callback){
 		});
 		
 		res.on('end', function(){
-			var resultObject = JSON.parse(responseString);
-			callback(resultObject);
+		    var retData = {};
+		    if(res.statusCode === 200){
+			retData.status = 0;
+		    } else {
+			retData.status = 1;
+		    }
+		    retData.response = responseString;
+		    callback(retData);
 		});
 	});
 	
@@ -72,7 +78,7 @@ function listView(req, res, next) {
 }
 getHandler['listview'] = listView;
 
-/*function apServCtrl(req, res, next){
+function apServCtrl(req, res, next){
 	var apSerStatObj = {};
 	if(req.method === "GET"){
 		switch(req.params.action){
@@ -109,7 +115,7 @@ getHandler['listview'] = listView;
 		});
 	}
 }
-getHandler['apservctrl/:id/:action'] = apServCtrl;*/
+getHandler['apservctrl/:id/:action'] = apServCtrl;
 
 exports.headHander = headHander;
 exports.getHandler = getHandler;
