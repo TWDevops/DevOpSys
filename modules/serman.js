@@ -85,7 +85,7 @@ function apServCtrl(req, res, next){
 			case "on":
 				apSerStatObj.status = 0;
 				break;
-			case "off":
+			case "down":
 				apSerStatObj.status = 1;
 				break;
 			case "status":
