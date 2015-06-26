@@ -9,14 +9,15 @@ var postHandler = {};
 
 function setApSerStatus(apSerIp, apSerStatJson, callback){
 	var http = require('http');
-	var apStatStr = JSON.stringify(apSerStatJson);
+	var apStatSt = JSON.stringify(apSerStatJson);
 	var options = {
 			host: apSerIp,
 			path: "/ServStat",
 			port: "9763",
+			method: 'POST',
 			headers:{
 				'Content-Type': 'application/json',
-				'Content-Length': apStatStr.length
+				'Content-Length': apStatSt.length
 			}
 	};
 	var req = http.request(options, function(res){
@@ -44,7 +45,7 @@ function setApSerStatus(apSerIp, apSerStatJson, callback){
 		process.exit(0);
 	})
 	
-	req.write(apStatStr);
+	req.write(apStatSt);
 	req.end();
 }
 
