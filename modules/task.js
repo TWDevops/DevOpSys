@@ -408,7 +408,7 @@ function deployTask(req, res, next) {
 		res.send(sendData);
 	}
 }
-getHandler["deploytask/:verNo"] = deployTask;
+//getHandler["deploytask/:verNo"] = deployTask;
 
 exports.headHander = headHander;
 exports.getHandler = getHandler;
