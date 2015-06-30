@@ -13,10 +13,10 @@ function receive(req, res, next) {
     var methods = {
 	    "ci" : function(){
 		sendData.SERVICE = req.params.sender;
-		sendData.info = {};
-		sendData.info.COMMIT_ID = req.body.COMMIT_ID;
+		sendData.info = req.body;
+		/*sendData.info.COMMIT_ID = req.body.COMMIT_ID;
 		sendData.info.BUILD_ID = req.body.BUILD_ID;
-		sendData.info.BUILD_BRANCH = req.body.BUILD_BRANCH;
+		sendData.info.BUILD_BRANCH = req.body.BUILD_BRANCH;*/
 		db.open(function(error, devopsDb) {
 		    if(error){
 			console.log(error.stack);

@@ -275,7 +275,8 @@ function deployApi(req, res, next){
 		setOpt['apserName'] = req.params.apserName;
 		setOpt['apiId'] = req.session.apiId;
 		dbase.setTask(setOpt, function(result) {
-			res.send(result);
+		    triggerRundeck();
+		    res.send(result);
 		});
 	}else{
 		res.send("nothing!!");
