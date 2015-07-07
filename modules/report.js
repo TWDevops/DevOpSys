@@ -50,6 +50,7 @@ function receive(req, res, next) {
 					    console.log("success!")
 					    sendData["state"] = 0;
 					}
+					db.close();
 					res.send(sendData);
 				    });
 				}

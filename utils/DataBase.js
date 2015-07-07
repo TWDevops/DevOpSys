@@ -58,7 +58,7 @@ DataBase.prototype.getApiAllow = function(callback){
 					console.log(doc['_id'].toString());
 					allowList[doc['apiName'].toString()]= doc;
 				} else{
-					apiDb.close();
+					db.close();
 					console.log(allowList);
 					callback(allowList);
 				}
@@ -88,7 +88,7 @@ DataBase.prototype.getTask = function(action,callback){
 				if(taskDoc){
 					taskList = taskDoc;
 				}
-					devopsDb.close();
+					db.close();
 					console.log(taskList);
 					callback(taskList);
 			});
@@ -118,7 +118,7 @@ DataBase.prototype.getDeployList = function(findOpt,callback){
 				if(doc != null){
 					taskList[doc._id] = doc;
 				}else{
-					devopsDb.close();
+					db.close();
 					console.log(taskList);
 					callback(taskList);
 				}
@@ -218,7 +218,7 @@ DataBase.prototype.getDataByApserName = function(serName,callback){
 				}else{
 					callback({});
 				}
-				devopsDb.close();
+				db.close();
 			});
 		});
 	});
@@ -247,7 +247,7 @@ DataBase.prototype.getApiGitRepo = function(apiId, callback){
 				}else{
 					callback({});
 				}
-				devopsDb.close();
+				db.close();
 			});
 		});
 	});
@@ -307,7 +307,7 @@ DataBase.prototype.updateTaskStatus = function(taskId, taskSt, callback){
 					}
 					//if(result){
 						console.log("updateTaskStatus result: " + result);
-						devopsDb.close();
+						db.close();
 						callback(result);
 					/*}else {
 						resData["state"] = 1;

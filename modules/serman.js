@@ -51,7 +51,7 @@ function setApSerStatus(apSerIp, apSerStatJson, callback){
 
 function listView(req, res, next) {
 	var db = dbase.getDb();
-	var sendData = {};
+	//var sendData = {};
 	db.open(function(error, devopsDb) {
 		if(error){
 			console.log(error.stack);
@@ -67,8 +67,8 @@ function listView(req, res, next) {
 					console.log(error.stack);
 					process.exit(0);
 				}
-				devopsDb.close();
-				console.log(sendData);
+				db.close();
+				//console.log(sendData);
 				res.render('apserlist',{
 					 title: "AP Server List",
 					 apSerList: apSerList

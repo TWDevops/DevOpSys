@@ -380,7 +380,7 @@ function deployTask(req, res, next) {
 								                console.log('Failed to Insert');
 								                sendData["state"] = 1;
 								            }
-											devopsDb.close();
+											db.close();
 											sendData["date"] = new Date();
 											res.send(sendData);
 										});

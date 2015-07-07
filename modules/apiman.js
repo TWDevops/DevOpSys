@@ -46,7 +46,7 @@ function list(req, res, next) {
 					console.log(doc);
 					sendData[doc.apiName]= doc;
 				} else{
-					devopsDb.close();
+					db.close();
 					console.log(sendData);
 					res.send(sendData);
 				}
@@ -85,7 +85,7 @@ function listView(req, res, next) {
 					console.log(doc['_id'].toString());
 					sendData[doc['_id'].toString()]= doc;
 				} else{
-					devopsDb.close();
+					db.close();
 					console.log(sendData);
 					res.render('apilist',{
 						 title: "API List",
@@ -184,12 +184,12 @@ function edit(req, res, next){
 							//sendData["UPDATE"] = doc;
 							sendData["date"] = new Date();
 							sendData["result"] = result;
+							db.close();
 							res.send(sendData);
-							devopsDb.close();
 						});
 					//}else{
 					}else{
-						devopsDb.close();
+						db.close();
 						sendData["state"] = 1;
 						sendData["error"] = "Data not found."
 						sendData["date"] = new Date();
@@ -224,7 +224,7 @@ function edit(req, res, next){
 					}
 					if(doc != null){
 						console.log(doc);
-						devopsDb.close();
+						db.close();
 						//sendData = doc;
 					//}else{
 						gitlab.getGroupList(function(groupList) {
@@ -291,12 +291,12 @@ function setCallingApi(req, res, next){
 							},{	
 								$push:{"apiAllow":req.session.apiId}},{multi:true},function(error,result){
 								sendData['2']=result;
-								devopsDb.close();
+								db.close();
 								console.log(sendData);
 								res.send(sendData);
 							});
 						}else{
-							devopsDb.close();
+							db.close();
 							sendData['2']="no api to call";
 							console.log(sendData);
 							res.send(sendData);
@@ -326,7 +326,7 @@ function setCallingApi(req, res, next){
 							console.log(doc['_id'].toString());
 							sendData[doc['_id'].toString()]= doc;
 						} else{
-							devopsDb.close();
+							db.close();
 							console.log(sendData);
 							res.render('selectapi',{
 								 title: "API select",
@@ -422,7 +422,7 @@ function selectAPServer(req, res, next){
 						}
 						devopsDb.collection('api', function(error,apiColl){
 							apiColl.findOne({'_id': dbase.ObjectID(req.session.apiId)},{apiLocation:true},function(error,apiDoc){
-								devopsDb.close();
+								db.close();
 								//console.log(sendData);
 								res.render('selectapser',{
 									 title: "AP Server Select",
@@ -502,7 +502,7 @@ function updateLevel(req, res, next){
 						sendData["date"] = new Date();
 						sendData["result"] = result;
 						res.send(sendData);
-						devopsDb.close();
+						db.close();
 					}else{
 						sendData["state"] = 1;
 						sendData["info"] = "update error.";
@@ -577,7 +577,7 @@ function register(req, res, next){
         				                console.log('Failed to Insert');
         				                sendData["state"] = 1;
         				            }
-        							devopsDb.close();
+        							db.close();
         							sendData["date"] = new Date();
         							res.send(sendData);
         						});
