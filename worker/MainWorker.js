@@ -87,11 +87,11 @@ singleton.prototype.setApiAcls = function(){
 	})
 };
 
-singleton.prototype.getDeployTask = function(){
+/*singleton.prototype.getDeployTask = function(){
 	dbase.getTaskList('deploy', function(taskList) {
 		
 	})
-}
+}*/
 
 /*singleton.prototype.getZKWorker = function(){
 	return this.zkWorker;

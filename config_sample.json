@@ -18,5 +18,6 @@
     "GITLAB_TOKEN":"ny1xXS9B_S5U8ozJFYMf",
     "GITLAB_HOOK":"http://192.168.122.165:8080/jenkins/gitlab/build_now",
     "JENKINS_URL":"http://192.168.122.165:8080",
+    "JENKINS_WS":"/opt/JenKisn_WS",
     "BUILD_FOLDER":"/home/evan/Downloads/test"
 }

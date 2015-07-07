@@ -92,7 +92,7 @@ DataBase.prototype.getTask = function(action,callback){
 					console.log(taskList);
 					callback(taskList);
 			});
-		})
+		});
 	});
 }
 

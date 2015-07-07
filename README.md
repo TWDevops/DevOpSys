@@ -14,20 +14,20 @@
 
 ## Developing
 list: list all api for json format.
-url: http://apimanager_ip/mod/api/list 
+url: http://apimanager_ip/mod/apiman/list 
 
 listview: list all api for html format.
-url: http://apimanager_ip/mod/api/edit
+url: http://apimanager_ip/mod/apiman/listview
 
 edit: modify api data.(not finish)
-url: http://apimanager_ip/mod/api/edit
+url: http://apimanager_ip/mod/apiman/edit
 
 register: register api information.(need XHR POST to test)
-url: http://apimanager_ip/mod/api/register
+url: http://apimanager_ip/mod/apiman/register
 
 ### Tools
 
 Created with [Nodeclipse](https://github.com/Nodeclipse/nodeclipse-1)
- ([Eclipse Marketplace](http://marketplace.eclipse.org/content/nodeclipse), [site](http://www.nodeclipse.org))   
+ ([Eclipse Marketplace](http://marketplace.eclipse.org/content/nodeclipse), [site](http://www.nodeclipse.org)) 
 
 Nodeclipse is free open-source project that grows with your contributions.

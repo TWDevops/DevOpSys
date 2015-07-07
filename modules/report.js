@@ -3,6 +3,11 @@
  */
 var dbase = new require('../utils/DataBase.js');
 
+var config = require("nconf");
+config.env().file({ "file":"config.json" });
+
+var fse = require('fs-extra');
+
 var headHander = {};
 var getHandler = {};
 var postHandler = {};
@@ -33,18 +38,52 @@ function receive(req, res, next) {
 				process.exit(0);
 			    }
 			    if (data) {
-				console.log('Successfully Insert');
-				sendData["state"] = 0;
-				res.send(sendData);
+				//console.log('Successfully Insert');
+				if(req.body.state.toString().toLowerCase() === "succeed"){
+				    fse.copy(config.get("JENKINS_WS") + "/" + req.body.jobname + "/" + req.body.BUILD_ID + "/workspace.tgz",
+					    "downloads/apifiles/" + req.body.jobname + "_" + req.body.BUILD_BRANCH + "_" + req.body.BUILD_ID + ".tgz",
+					    function(error){
+					if (error) {
+					    console.error(error);
+					    sendData["state"] = 1;
+					}else{
+					    console.log("success!")
+					    sendData["state"] = 0;
+					}
+					res.send(sendData);
+				    });
+				}
 			    }
 			});
 		    });
 		});
 	    },
-		'test' : function(){
-			res.send({"state":0, "receive":req.body, "info": "This is test."})
-		}
-	};
+	    'test' : function(){
+		sendData.SERVICE = req.params.sender;
+		sendData.info = req.body;
+		db.open(function(error, devopsDb) {
+		    if(error){
+			console.log(error.stack);
+			process.exit(0);
+		    }
+		    devopsDb.collection('log', function(error, logColl){
+			if(error){
+			    console.log(error.stack);
+			    process.exit(0);
+			}
+			logColl.insert(sendData, function(error, data){
+			    if(error){
+				console.log(error.stack);
+				process.exit(0);
+			    }
+			    sendData["state"] = 0;
+			    res.send(sendData);
+			});
+		    });
+		});
+	    }
+    };
+	    
 	console.log(req.method);
 	switch(req.method){
 	case 'POST':
