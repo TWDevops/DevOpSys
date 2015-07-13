@@ -85,6 +85,8 @@ singleton.prototype.setApiAcls = function(){
 	dbase.getApiAllow(function(allowList) {
 	    if(allowList){
 		singleton.prototype.sendMessage({"worker":"zkClient","action":"set",'name':'apiACLs',"data":allowList});
+	    }else{
+		console.log("No api allow list!");
 	    }
 	})
 };
