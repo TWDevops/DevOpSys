@@ -56,7 +56,8 @@ function receive(req, res, next) {
 				    
 				}*/
 				db.close();
-				sendData["state"] = 0;
+				sendData.date = new Date();
+				sendData.state = 0;
 				res.send(sendData);
 			    }
 			});
@@ -81,7 +82,8 @@ function receive(req, res, next) {
 				console.log(error.stack);
 				process.exit(0);
 			    }
-			    sendData["state"] = 0;
+			    sendData.date = new Date();
+			    sendData.state = 0;
 			    res.send(sendData);
 			});
 		    });
@@ -105,7 +107,7 @@ function receive(req, res, next) {
 				console.log(error.stack);
 				process.exit(0);
 			    }
-			    sendData["state"] = 0;
+			    sendData.state = 0;
 			    res.send(sendData);
 			});
 		    });

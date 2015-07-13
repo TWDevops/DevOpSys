@@ -13,11 +13,10 @@
     "RUNDECK_HOST":"192.168.122.165",
     "RUNDECK_CALL_DEPLOY":"/api/13/job/c120eec4-b724-4a36-9a60-38f336c3d422/run",
     "RUNDECK_PORT":"4440",
-    "RUNDECK_TOKEN":" vcsw1qJZpmFpBFWltqa5w0qhtQcnUEgD",
+    "RUNDECK_TOKEN":"vcsw1qJZpmFpBFWltqa5w0qhtQcnUEgD",
     "GITLAB_URL":"http://192.168.122.165:3000/",
     "GITLAB_TOKEN":"ny1xXS9B_S5U8ozJFYMf",
     "GITLAB_HOOK":"http://192.168.122.165:8080/jenkins/gitlab/build_now",
     "JENKINS_URL":"http://192.168.122.165:8080",
-    "JENKINS_WS":"/opt/JenKisn_WS",
-    "BUILD_FOLDER":"/home/evan/Downloads/test"
+    "JENKINS_BUILDS":"/opt/JenKisn_WS"
 }

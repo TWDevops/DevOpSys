@@ -52,6 +52,9 @@ var rundeck = function(func, paramObj, callback){
 	    headers: headers
     };
     switch(func){
+    	case 'systeminfo':
+    	    options.path = '/api/13/system/info';
+    	    break;
     	case 'deployTrigger':
     	    //options.headers.method = 'GET';
     	    options.path = '/api/13/job/c120eec4-b724-4a36-9a60-38f336c3d422/run';
@@ -76,6 +79,14 @@ var rundeck = function(func, paramObj, callback){
 	    fn(resStr);
 	});
     }).end();
+};
+
+RunDeckApi.prototype.getSystemInfo = function(callback){
+    rundeck('systeminfo', function(xmlStr){
+	xml2Json(xmlStr, function(result) {
+	    callback(result);
+	});
+    });
 };
 
 RunDeckApi.prototype.getProjects = function(callback){
