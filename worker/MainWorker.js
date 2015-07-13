@@ -83,7 +83,9 @@ singleton.prototype.sendMessage = function(msg){
 
 singleton.prototype.setApiAcls = function(){
 	dbase.getApiAllow(function(allowList) {
+	    if(allowList){
 		singleton.prototype.sendMessage({"worker":"zkClient","action":"set",'name':'apiACLs',"data":allowList});
+	    }
 	})
 };
 
