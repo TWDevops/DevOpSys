@@ -68,8 +68,26 @@ app.use(session({
 app.use(favicon(path.join(__dirname,'public','images','favicon.ico')));
 app.use("/styles", express.static(__dirname + '/views/styles'));
 app.use(logger('dev'));
+/*app.use(function(req, res, next) {
+    if(req.is("application/xml")){
+	var data = '';
+	    req.setEncoding('utf8');
+
+	    req.on('data', function(chunk) { 
+	        data += chunk;
+	    });
+
+	    req.on('end', function() {
+		req.rawBody = data;
+		next();
+	    });
+    }else{
+	next();
+    }
+});*/
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.text({defaultCharset: "utf-8", type:"application/xml"}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req, res, next) {

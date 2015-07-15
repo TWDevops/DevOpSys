@@ -534,7 +534,8 @@ function register(req, res, next){
 			    	if(result.stats !== 0){
 			    	    res.send(result);
 			    	}else{
-        			    	var insertObj = {};
+        			    gitlab.addHook(data.gitInfo.id, function(addHookResult) {
+        				var insertObj = {};
         				insertObj['apiName'] = req.body.apiName;
         				insertObj['apiOwner'] = req.body.apiOwner;
         				insertObj['apiDesc'] = req.body.apiDesc;
@@ -572,17 +573,19 @@ function register(req, res, next){
         							}
         							if (data) {
         				                console.log('Successfully Insert');
-        				                sendData["state"] = 0;
+        				                sendData.state = 0;
         				            } else {
         				                console.log('Failed to Insert');
-        				                sendData["state"] = 1;
+        				                sendData.state = 1;
         				            }
         							db.close();
-        							sendData["date"] = new Date();
+        							sendData.date = new Date();
+        							sendData.hookInfo = addHookResult;
         							res.send(sendData);
         						});
         					});
         				});
+        			    })
 			    	}
 			    });
 			}else{
