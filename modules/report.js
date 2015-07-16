@@ -40,25 +40,16 @@ function receive(req, res, next) {
 			}
 			if (data) {
 			    //console.log('Successfully Insert');
-			    /*if(req.body.state.toString().toLowerCase() === "succeed"){
-				    fse.copy(config.get("JENKINS_WS") + "/" + req.body.jobname + "/" + req.body.BUILD_ID + "/workspace.tgz",
-					"downloads/apifiles/" + req.body.jobname + "_" + req.body.BUILD_BRANCH + "_" + req.body.BUILD_ID + ".tgz",
-					function(error){
-					if (error) {
-					    console.error(error);
-					    sendData["state"] = 1;
-					}else{
-				    	    console.log("success!");
-					    sendData["state"] = 0;
-				        }
-					db.close();
-					res.send(sendData);
-				    });
-				    
-				}*/
-				db.close();
-				sendData.state = 0;
-				res.send(sendData);
+			    if(req.body.JOB_STATUS === "SUCCESS"){
+				fse.ensureDirSync("downloads/deploy/" + req.body.JOB_NAME + "/" + req.body.BUILD_ID);
+				req.body.PKG_FILE.forEach(function(fileName) {
+				    fse.copySync(config.get("JENKINS_BUILDS") + "/" + req.body.JOB_NAME + "/" + req.body.BUILD_ID + "/" + fileName,
+					    "downloads/deploy/" + req.body.JOB_NAME + "/" + req.body.BUILD_ID + "/" + fileName);
+				});
+			    }
+			    db.close();
+			    sendData.state = 0;
+			    res.send(sendData);
 			}
 		    });
 		});
