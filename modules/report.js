@@ -46,6 +46,23 @@ function receive(req, res, next) {
 				    fse.copySync(config.get("JENKINS_BUILDS") + "/" + req.body.JOB_NAME + "/" + req.body.BUILD_ID + "/" + fileName,
 					    "downloads/deploy/" + req.body.JOB_NAME + "/" + req.body.BUILD_ID + "/" + fileName);
 				});
+				var buildDoc ={};
+				buildDoc.apiName = req.body.JOB_NAME;
+				buildDoc.jkBuildId = req.body.BUILD_ID;
+				buildDoc.gitBranch = req.body.BRANCH;
+				buildDoc.fileList = req.body.PKG_FILE;
+				devopsDb.collection('builds', function(error, buildColl){
+				    if(error){
+					console.log(error.stack);
+					process.exit(0);
+				    }
+				    buildColl.insert(buildDoc, function(error, data){
+					if(error){
+					    console.log(error.stack);
+					    process.exit(0);
+					}
+				    });
+				});
 			    }
 			    db.close();
 			    sendData.state = 0;
