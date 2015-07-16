@@ -61,12 +61,12 @@ function receive(req, res, next) {
 					    console.log(error.stack);
 					    process.exit(0);
 					}
+					db.close();
+					sendData.state = 0;
+					res.send(sendData);
 				    });
 				});
 			    }
-			    db.close();
-			    sendData.state = 0;
-			    res.send(sendData);
 			}
 		    });
 		});
