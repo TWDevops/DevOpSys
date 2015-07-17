@@ -150,7 +150,7 @@ function log(req, res, next){
 		console.log(error.stack);
 		process.exit(0);
 	    }
-	    var logCursor = logColl.find({});
+	    var logCursor = logColl.find({},{},{"sort": 'date'});
 	    logCursor.toArray(function(error, logDocArray){
 		if(error){
 		    console.log(error.stack);
