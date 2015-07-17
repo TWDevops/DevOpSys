@@ -151,7 +151,7 @@ function log(req, res, next){
 		process.exit(0);
 	    }
 	    var logCursor = logColl.find({});
-	    cursor.toArray(function(error, logDocArray){
+	    logCursor.toArray(function(error, logDocArray){
 		if(error){
 		    console.log(error.stack);
 		    process.exit(0);
