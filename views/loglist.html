@@ -16,7 +16,7 @@
 		<tr>
 			<td>{{log.SERVICE}}</td>
 			<td>{{log.date.toString()}}</td>
-			<td>{{log.info.toString()}}</td>
+			<td>{{log.info|json_encode}}</td>
 		</tr>
 	{% endfor %}
 	</tbody>
