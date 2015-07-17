@@ -138,6 +138,37 @@ function receive(req, res, next) {
 postHandler['receive/:sender'] = receive;
 getHandler['receive'] = receive;
 
+function log(req, res, next){
+    var db = dbase.getDb();
+    db.open(function(error, devopsDb) {
+	if(error){
+	    console.log(error.stack);
+	    process.exit(0);
+	}
+	devopsDb.collection('log', function(error, logColl){
+	    if(error){
+		console.log(error.stack);
+		process.exit(0);
+	    }
+	    var logCursor = logColl.find({});
+	    cursor.toArray(function(error, logDocArray){
+		if(error){
+		    console.log(error.stack);
+		    process.exit(0);
+		}
+		db.close();
+		console.log(logDocArray);
+		res.render('loglist',{
+			 title: "Log",
+			 logList: logDocArray
+		});
+	    });
+	    	
+	});
+    });
+}
+getHandler['log'] = log;
+
 exports.headHander = headHander;
 exports.getHandler = getHandler;
 exports.postHandler = postHandler;
