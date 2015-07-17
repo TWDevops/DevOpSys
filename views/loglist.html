@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ pagename|title }}{% endblock %}
+
+{% block content %}
+<table cellpadding="5" rules="all" style="border:3px #FFAC55 double;padding:5px;">
+	<thead style="border:3px #FFAC55 double;padding:5px;">
+		<tr>
+			<th>Service</th>
+			<th>Data</th>
+			<th>info</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for log in logList %}
+		<tr>
+			<td>{{log.SERVICE}}</td>
+			<td>{{log.date.toString()}}</td>
+			<td>{{log.info}}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+{% endblock %}
