@@ -118,6 +118,26 @@ function apServCtrl(req, res, next){
 }
 getHandler['apservctrl/:id/:action'] = apServCtrl;
 
+function apServXml(req, res, next){
+    var sendData = '<project><node name="10.240.1.3" description="devops-as" tags="" hostname="10.240.1.3:60022" osArch="amd64" osFamily="unix" osName="Linux" osVersion="2.6.32-431.el6.x86_64" username="rockman" ssh-authentication="privateKey" ssh-password-storage-path="keys/deployprivatekey"/><node name="10.240.1.73" description="devops-ansible" tags="" hostname="10.240.1.73:60022" osArch="amd64" osFamily="unix" osName="Linux" osVersion="2.6.32-431.el6.x86_64" username="rockman" ssh-authentication="privateKey" ssh-password-storage-path="keys/deployprivatekey"/></project>';
+    /*var db = dbase.getDb();
+    db.open(function(error, devopsDb) {
+	if(error){
+		console.log(error.stack);
+		process.exit(0);
+	}
+	devopsDb.collection('apserver', function(error, apserColl) {
+		if(error){
+			console.log(error.stack);
+			process.exit(0);
+		}
+	});
+    });*/
+    res.set('Content-Type', 'text/xml');
+    res.send(sendData);
+}
+getHandler['resources'] = apServXml;
+
 exports.headHander = headHander;
 exports.getHandler = getHandler;
 exports.postHandler = postHandler;
