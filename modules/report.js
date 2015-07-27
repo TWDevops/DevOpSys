@@ -50,6 +50,7 @@ function receive(req, res, next) {
 				buildDoc.apiName = req.body.JOB_NAME;
 				buildDoc.jkBuildId = req.body.BUILD_ID;
 				buildDoc.gitBranch = req.body.BRANCH;
+				buildDoc.gitCommitId = req.body.COMMIT_ID;
 				buildDoc.fileList = req.body.PKG_FILE;
 				devopsDb.collection('builds', function(error, buildColl){
 				    if(error){
