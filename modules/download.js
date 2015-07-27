@@ -11,7 +11,7 @@ var postHandler = {};
  */
 function apiFileDl(req, res, next) {
     var apiFile = req.params.file,
-    	path = __dirname + '/../downloads/apifiles/' + apiFile;
+    	path = __dirname + '/../downloads/deploy/' + apiFile;
     
     res.download(path);
     
