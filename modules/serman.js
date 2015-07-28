@@ -120,9 +120,10 @@ getHandler['apservctrl/:id/:action'] = apServCtrl;
 
 function apServXml(req, res, next){
     var sendData = '<?xml version="1.0" encoding="UTF-8"?><project>';
-    sendData = sendData + '<node name="devops-as" description="devops-as" tags="" hostname="10.240.1.3:60022" osArch="amd64" osFamily="unix" osName="Linux" osVersion="2.6.32-431.el6.x86_64" username="rockman" ssh-authentication="privateKey" ssh-password-storage-path="keys/deployprivatekey"/>';
-    sendData = sendData + '<node name="devops-nginx" description="devops-nginx" tags="" hostname="10.240.1.73:60022" osArch="amd64" osFamily="unix" osName="Linux" osVersion="2.6.32-431.el6.x86_64" username="rockman" ssh-authentication="privateKey" ssh-password-storage-path="keys/deployprivatekey"/>';
-    sendData = sendData + '</project>';
+    sendData = sendData + '<node name="devops-as" description="devops-as" tags="" hostname="10.240.1.3:60022" osArch="amd64" osFamily="unix" osName="Linux" osVersion="2.6.32-431.el6.x86_64" username="rockman" ssh-authentication="privateKey" ssh-password-storage-path="keys/deployprivatekey">';
+    sendData = sendData + '<attribute name="group" value="tomcat"/></node>'
+    sendData = sendData + '<node name="devops-nginx" description="devops-nginx" tags="" hostname="10.240.1.73:60022" osArch="amd64" osFamily="unix" osName="Linux" osVersion="2.6.32-431.el6.x86_64" username="rockman" ssh-authentication="privateKey" ssh-password-storage-path="keys/deployprivatekey">';
+    sendData = sendData + '<attribute name="group" value="tomcat"/></node></project>';
     /*var db = dbase.getDb();
     db.open(function(error, devopsDb) {
 	if(error){
