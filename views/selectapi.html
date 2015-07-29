@@ -23,7 +23,7 @@
 		{% for apiId,api in apiList %}
 		<tr>
 			<td><input type="checkbox" name="callApiId" value="{{apiId}}" {% if api.apiAllow.indexOf(apiKey) > -1 %} checked="checked" {% endif %}></td>
-			<td><label>{{api.apiName}}{{api.apiAllow.indexOf(apiKey)}}</label></td>
+			<td><label>{{api.apiName}}</label></td>
 		</tr>
 		{% endfor %}
 		<tr>

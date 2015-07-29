@@ -54,12 +54,12 @@ DataBase.prototype.getApiAllow = function(callback){
 					process.exit(0);
 				}
 				if(doc != null){
-					console.log(doc['apiName']);
-					console.log(doc['_id'].toString());
+					//console.log(doc['apiName']);
+					//console.log(doc['_id'].toString());
 					allowList[doc['apiName'].toString()]= doc;
 				} else{
 					db.close();
-					console.log(allowList);
+					//console.log(allowList);
 					callback(allowList);
 				}
 			});

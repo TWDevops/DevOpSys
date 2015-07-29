@@ -11,6 +11,7 @@ var gitlab = new GitlabApi();
 var JenKinsApi = require('../utils/JenKinsApi');
 var jenkins = new JenKinsApi();
 
+var mainWorker = require('../worker/MainWorker.js');
 //var db = dbase.getDb();
 //var assert = require('assert');
 
@@ -289,10 +290,12 @@ function setCallingApi(req, res, next){
 								"_id":{$in:oids},
 								apiAllow:{$ne:req.session.apiId}
 							},{	
-								$push:{"apiAllow":req.session.apiId}},{multi:true},function(error,result){
+								$push:{"apiAllow":req.session.apiId}
+							},{multi:true},function(error,result){
 								sendData['2']=result;
 								db.close();
 								console.log(sendData);
+								mainWorker.setApiAcls();
 								res.send(sendData);
 							});
 						}else{

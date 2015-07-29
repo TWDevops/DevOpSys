@@ -76,7 +76,7 @@ var singleton = function singleton(){
 }
 
 singleton.prototype.sendMessage = function(msg){
-	console.log(msg['worker']);
+	//console.log(msg['worker']);
 	workerHandler[msg['worker']].send(msg);
 //	this.zkWorker.send(msg);
 }
