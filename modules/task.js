@@ -272,8 +272,13 @@ getHandler['api/deploy/:id'] = deploy;
 function deployApi(req, res, next){
 	if(req.session.apiId){
 		var setOpt = {};
+		setOpt['taskNo'] = req.params.deployId;
 		setOpt['apserName'] = req.params.apserName;
 		setOpt['apiId'] = req.session.apiId;
+		setOpt['fullAuto'] = false;
+		if(req.params.fullAuto){
+		    setOpt['fullAuto'] = req.params.fullAuto;
+		}
 		dbase.setTask(setOpt, function(result) {
 		    triggerRundeck();
 		    res.send(result);

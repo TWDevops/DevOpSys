@@ -57,7 +57,7 @@ function receive(req, res, next) {
 					console.log(error.stack);
 					process.exit(0);
 				    }
-				    buildColl.insert(buildDoc, function(error, data){
+				    buildColl.update({"gitCommitId":req.body.COMMIT_ID},buildDoc,{"upsert":ture}, function(error, data){
 					if(error){
 					    console.log(error.stack);
 					    process.exit(0);

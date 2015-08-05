@@ -135,7 +135,7 @@ DataBase.prototype.setTask = function(setOpt, callback){
 			DataBase.prototype.getApiGitRepo(setOpt.apiId, function(apiGitData){
 				if(Object.keys(apiGitData).length > 0){
 					var taskObj = {}
-					taskObj['taskNo'] = new Date().getTime();
+					taskObj['taskNo'] = setOpt.taskNo;
 					taskObj['taskAction'] = 'deploy';
 					taskObj['taskParams'] = {};
 					taskObj.taskParams.apServId = apSerDoc._id;

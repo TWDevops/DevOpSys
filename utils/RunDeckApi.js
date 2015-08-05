@@ -4,6 +4,8 @@
 var config = require("nconf");
 config.env().file({ "file":"config.json" });
 
+var querystring = require('querystring');
+
 var xml2js = require('xml2js');
 var http = require('http');
 var host = null;
@@ -44,20 +46,31 @@ var rundeck = function(func, paramObj, callback){
 	}
     }
     
-    headers.method = 'GET';
+    //headers.method = 'GET';
     
     var options = {
 	    host: host,
 	    port: port,
+	    method: 'GET',
 	    headers: headers
     };
     switch(func){
     	case 'systeminfo':
     	    options.path = '/api/13/system/info';
     	    break;
-    	case 'deployTrigger':
-    	    //options.headers.method = 'GET';
-    	    options.path = '/api/13/job/c120eec4-b724-4a36-9a60-38f336c3d422/run';
+    	case 'fullDeployTrigger':
+    	    var paramStr = querystring.stringify(paramObj);
+    	    options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    	    options.headers['Content-Length'] = paramStr.length;
+    	    options.method = 'POST';
+    	    options.path = '/api/13/job/' + config.get('RUNDECK_FULL_AUTO_DEPLOY_ID') + '/executions';
+    	    break;
+    	case 'halfDeployTrigger':
+    	var paramStr = querystring.stringify(paramObj);
+	    options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+	    options.headers['Content-Length'] = paramStr.length;
+	    options.method = 'POST';
+    	    options.path = '/api/13/job/' + config.get('RUNDECK_HALF_AUTO_DEPLOY_ID') + '/executions';
     	    break;
     	case 'projects':
     	    //options.headers.method = 'GET';
@@ -69,7 +82,8 @@ var rundeck = function(func, paramObj, callback){
     	    break;
     }
     
-    http.request(options,function(res){
+    var req = http.request(options,function(res){
+	res.setEncoding('utf-8');
 	var resStr = '';
 	res.on('data', function (chunk) {
 	    //console.log(String(chunk));
@@ -78,7 +92,13 @@ var rundeck = function(func, paramObj, callback){
 	res.on('end', function () {
 	    fn(resStr);
 	});
-    }).end();
+    });
+    
+    if(options.method === 'POST'){
+	req.write(paramStr);
+    }
+    
+    req.end();
 };
 
 RunDeckApi.prototype.getSystemInfo = function(callback){
@@ -111,8 +131,14 @@ RunDeckApi.prototype.getResources = function(project, callback){
     });
 };
 
-RunDeckApi.prototype.deployTrigger = function(){
-    rundeck('deployTrigger', function(xmlStr) {
+RunDeckApi.prototype.deployTrigger = function(isFull, nodeName, deployId, fileUrl ){
+    var triggerFunc = "halfDeployTrigger";
+    var paramObj = {};
+    if(isFull){
+	triggerFunc = "fullDeployTrigger";
+    }
+    paramObj.argString= "-nodeName \"" + nodeName + "\" -deployId \"" + deployId + "\" -fileUrl \"" + fileUrl +"\"";
+    rundeck(triggerFunc, paramObj, function(xmlStr) {
 	//var parser = new xml2js.Parser();
 	//parser.parseString(xmlStr, function (err, result) {
 	xml2Json(xmlStr, function(result) {

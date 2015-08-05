@@ -229,7 +229,7 @@ function edit(req, res, next){
 						//sendData = doc;
 					//}else{
 						gitlab.getGroupList(function(groupList) {
-							res.render('edit', {
+							res.render('apiedit', {
 								title:"API Editor",
 								apiKey:req.session.apiId,
 								api:doc,
@@ -466,7 +466,7 @@ getHandler['selectapser'] = selectAPServer;
 postHandler['selectapser'] = selectAPServer;
 
 //準備移除
-function updateLevel(req, res, next){
+/*function updateLevel(req, res, next){
 	var db = dbase.getDb();
 	var sendData = {};
 	var apiOid = null;
@@ -517,7 +517,7 @@ function updateLevel(req, res, next){
 	}
 }
 getHandler["updatelv/:apiId/:level/:verIdx"] = updateLevel;
-
+*/
 
 function register(req, res, next){
 	//console.log("use api");
@@ -617,6 +617,11 @@ function allowList(req, res, next){
 	});
 }
 getHandler["policy"] = allowList;
+
+function deploy(req, res, next){
+    
+}
+getHandler["deploy"] = deploy;
 
 exports.headHander = headHander;
 exports.getHandler = getHandler;
