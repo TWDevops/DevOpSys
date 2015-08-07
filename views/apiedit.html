@@ -189,7 +189,7 @@ OL Location:&nbsp;
 			<td>{{olApser}}</td>
 			<td>
 			{% if commitId.ol %}
-				<input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser}}/{{commitId.lab}}'">
+				<input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser}}/{{commitId.ol}}'">
 			{% endif %}
 			</td>
 		</tr>
@@ -211,7 +211,7 @@ On-Line Location:&nbsp;
 			<td>{{masterApser}}</td>
 			<td>
 			{% if commitId.master %}
-				<input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser}}/{{commitId.lab}}'">
+				<input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser}}/{{commitId.master}}'">
 			{% endif %}
 			</td>
 		</tr>
