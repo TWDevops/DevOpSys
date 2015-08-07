@@ -10,11 +10,14 @@ var dbase = new require('../utils/DataBase.js');
 var assert = require('assert');
 var mainWorker = require('../worker/MainWorker.js');
 
+var RunDeckApi = require('../utils/RunDeckApi.js');
+var rundeck = new RunDeckApi();
+
 var headHander = {};
 var getHandler = {};
 var postHandler = {};
 
-function triggerRundeck(){
+/*function triggerRundeck(){
 	var xml2js = require('xml2js');
 	var http = require('http');
 	var options = {
@@ -40,7 +43,7 @@ function triggerRundeck(){
 		});
 	};
 	http.request(options, callback).end();
-}
+}*/
 
 //var db = dbase.getDb();
 
@@ -280,14 +283,16 @@ function deployApi(req, res, next){
 		    setOpt['fullAuto'] = req.params.fullAuto;
 		}
 		dbase.setTask(setOpt, function(result) {
-		    triggerRundeck();
-		    res.send(result);
+		    //triggerRundeck();
+		    rundeck.deployTrigger(isFull, req.params.apserName, req.params.deployId, fileUrl, function(rkresult){
+			res.send(result);
+		    });
 		});
 	}else{
 		res.send("nothing!!");
 	}
 }
-getHandler['deploy/:apserName'] = deployApi;
+getHandler['deploy/:apserName/:deployId'] = deployApi;
 
 //不再使用,準備移除
 function deployTask(req, res, next) {

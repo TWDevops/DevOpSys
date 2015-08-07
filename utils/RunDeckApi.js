@@ -131,7 +131,7 @@ RunDeckApi.prototype.getResources = function(project, callback){
     });
 };
 
-RunDeckApi.prototype.deployTrigger = function(isFull, nodeName, deployId, fileUrl ){
+RunDeckApi.prototype.deployTrigger = function(isFull, nodeName, deployId, fileUrl, callback ){
     var triggerFunc = "halfDeployTrigger";
     var paramObj = {};
     if(isFull){
@@ -142,8 +142,9 @@ RunDeckApi.prototype.deployTrigger = function(isFull, nodeName, deployId, fileUr
 	//var parser = new xml2js.Parser();
 	//parser.parseString(xmlStr, function (err, result) {
 	xml2Json(xmlStr, function(result) {
-	    console.dir(result['executions']['execution'][0]['$']['status']);
-	    console.log(xmlStr);
+	    //console.dir(result['executions']['execution'][0]['$']['status']);
+	    //console.log(xmlStr);
+	    callback(result);
 	});
     });
 };

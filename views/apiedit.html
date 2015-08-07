@@ -167,7 +167,7 @@ LAB Location:&nbsp;
 			<td>{{labApser}}</td>
 			<td>
 			{% if commitId.lab %}
-				<input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{labApser}}'">
+				<input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{labApser}}/{{commitId.lab}}'">
 			{% endif %}
 			</td>
 		</tr>
@@ -189,7 +189,7 @@ OL Location:&nbsp;
 			<td>{{olApser}}</td>
 			<td>
 			{% if commitId.ol %}
-				<input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser}}'">
+				<input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser}}/{{commitId.lab}}'">
 			{% endif %}
 			</td>
 		</tr>
@@ -211,7 +211,7 @@ On-Line Location:&nbsp;
 			<td>{{masterApser}}</td>
 			<td>
 			{% if commitId.master %}
-				<input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser}}'">
+				<input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser}}/{{commitId.lab}}'">
 			{% endif %}
 			</td>
 		</tr>
