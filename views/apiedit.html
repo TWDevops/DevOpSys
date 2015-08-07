@@ -183,7 +183,11 @@ OL Location:&nbsp;
 		{% for olApser in api.apiLocation.ol %}
 		<tr>
 			<td>{{olApser}}</td>
-			<td><input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser}}'"></td>
+			<td>
+			{% if commitId.ol %}
+				<input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser}}'">
+			{% endif %}
+			</td>
 		</tr>
 		{% endfor %}
 		</tbody>
