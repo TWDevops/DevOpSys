@@ -16,8 +16,10 @@
     "RUNDECK_HALF_AUTO_DEPLOY_ID":"5f5343aa-5ddc-4863-91ab-7a665b7df137",
     "RUNDECK_PORT":"4440",
     "RUNDECK_TOKEN":"vcsw1qJZpmFpBFWltqa5w0qhtQcnUEgD",
-    "GITLAB_URL":"http://192.168.122.165:3000/",
-    "GITLAB_TOKEN":"ny1xXS9B_S5U8ozJFYMf",
+    "GITLAB_URL_bak":"http://192.168.122.165:3000/",
+    "GITLAB_URL":"http://10.240.1.167/",
+    "GITLAB_TOKEN_bak":"ny1xXS9B_S5U8ozJFYMf",
+    "GITLAB_TOKEN":"EAsp9D6bQ-DmrUvpHwmx",
     "GITLAB_HOOK":"http://192.168.122.165:8080/jenkins/gitlab/build_now",
     "JENKINS_URL":"http://192.168.122.165:8080",
     "JENKINS_BUILDS":"/opt/JenKisn_WS"

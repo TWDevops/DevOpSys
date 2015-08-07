@@ -62,6 +62,13 @@ function receive(req, res, next) {
 					    console.log(error.stack);
 					    process.exit(0);
 					}
+					/*devopsDb.collection('api', function(error, apiColl){
+					    if(error){
+						console.log(error.stack);
+						process.exit(0);
+					    }
+					    apiColl.update();
+					});*/
 					db.close();
 					sendData.state = 0;
 					res.send(sendData);

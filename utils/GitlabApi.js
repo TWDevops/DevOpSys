@@ -4,6 +4,8 @@
 var config = require("nconf");
 config.env().file({ "file":"config.json" });
 
+var jsonQuery = require('json-query');
+
 this.gitlab = null;
 
 function GitlabApi(){
@@ -123,10 +125,36 @@ GitlabApi.prototype.addHook = function(pId, callback){
 		    status: 1,
 		    project: pId,
 		    message: "["+hookUrl+ "] has not been added."
-	    }
+	    };
 	}
 	callback(retData);
-    })
-}
+    });
+};
+
+GitlabApi.prototype.getCommitId = function(pid, branch, callBack){
+    var commitId = {};
+    var branchName = "";
+    if(arguments.length < 3){
+	if(typeof(branch) === 'function'){
+	    fn = branch;
+	}else{
+	    throw new Error('Need callback function.')
+	}
+    }else{
+	branchName = branch;
+	fn = callBack;
+    }
+    this.gitlab.projects.repository.showBranch(pid, branchName, function(result){
+	if(branchName === ""){
+	    commitId.lab = jsonQuery('branches[name=lab].commit.id',{data:{branches:result}}).value;
+	    commitId.ol = jsonQuery('branches[name=ol].commit.id',{data:{branches:result}}).value;
+	    commitId.master = jsonQuery('branches[name=master].commit.id',{data:{branches:result}}).value
+	}else{
+	    console.log("branchName: " + branchName);
+	    commitId[branchName] = result.commit.id;
+	}
+	fn(commitId);
+    });
+};
 
 module.exports = GitlabApi;
