@@ -165,7 +165,11 @@ LAB Location:&nbsp;
 		{% for labApser in api.apiLocation.lab %}
 		<tr>
 			<td>{{labApser}}</td>
-			<td><input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{labApser}}'"></td>
+			<td>
+			{% if commitId.lab %}
+				<input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{labApser}}'">
+			{% endif %}
+			</td>
 		</tr>
 		{% endfor %}
 		</tbody>
@@ -206,7 +210,9 @@ On-Line Location:&nbsp;
 		<tr>
 			<td>{{masterApser}}</td>
 			<td>
+			{% if commitId.master %}
 				<input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser}}'">
+			{% endif %}
 			</td>
 		</tr>
 		{% endfor %}
