@@ -51,8 +51,8 @@ DataBase.prototype.getBuildDataByDeployId = function(deployId, callback){
 				console.log(error.stack);
 				process.exit(0);
 			    }
-			    callback(buildDoc);
 			    db.close();
+			    callback(buildDoc);
 			});
 		});
 	});
@@ -83,8 +83,8 @@ DataBase.prototype.getApiAllow = function(callback){
 					allowList[doc['apiName'].toString()]= doc;
 				} else{
 					//console.log(allowList);
-					callback(allowList);
-					db.close();
+				    db.close();
+				    callback(allowList);
 				}
 			});
 		});
@@ -113,8 +113,8 @@ DataBase.prototype.getTask = function(action,callback){
 					taskList = taskDoc;
 				}
 				console.log(taskList);
-				callback(taskList);
 				db.close();
+				callback(taskList);
 			});
 		});
 	});
@@ -143,8 +143,8 @@ DataBase.prototype.getDeployList = function(findOpt,callback){
 					taskList[doc._id] = doc;
 				}else{
 					console.log(taskList);
-					callback(taskList);
 					db.close();
+					callback(taskList);
 				}
 			});
 		});
@@ -202,6 +202,7 @@ DataBase.prototype.setTask = function(setOpt, callback){
 									console.log(error.stack);
 									process.exit(0);
 								}
+								db.close();
 								if(result){
 									retData['status'] = 0;
 									retData['info'] = 'Task insert success.';
@@ -210,7 +211,6 @@ DataBase.prototype.setTask = function(setOpt, callback){
 									retData['info'] = 'Task insert fail.';
 								}
 								callback(retData);
-								db.close();
 							});
 						});
 					});
@@ -219,6 +219,7 @@ DataBase.prototype.setTask = function(setOpt, callback){
 				//}
 			//});				
 	    }else{
+		db.close();
 		callback({status:1, error: "No Ap Server."});
 	    }
 	});
@@ -247,13 +248,13 @@ DataBase.prototype.getDataByApserName = function(serName,callback){
 					console.log(error.stack);
 					process.exit(0);
 				}
+				db.close();
 				if(apSerDoc != null){
 					console.log(apSerDoc);
 					callback(apSerDoc);
 				}else{
 					callback({});
 				}
-				db.close();
 			});
 		});
 	});
@@ -276,13 +277,13 @@ DataBase.prototype.getApiGitRepo = function(apiId, callback){
 					console.log(error.stack);
 					process.exit(0);
 				}
+				db.close();
 				if(apiDoc != null){
 					console.log(apiDoc);
 					callback(apiDoc);
 				}else{
 					callback({});
 				}
-				db.close();
 			});
 		});
 	});
@@ -342,8 +343,8 @@ DataBase.prototype.updateTaskStatus = function(taskId, taskSt, callback){
 					}
 					//if(result){
 						console.log("updateTaskStatus result: " + result);
-						callback(result);
 						db.close();
+						callback(result);
 					/*}else {
 						resData["state"] = 1;
 						resData["info"] = "update error.";
