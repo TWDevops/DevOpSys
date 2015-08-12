@@ -54,7 +54,7 @@ swig.setDefaults({ cache: false });
 app.use(session({
 	secret: 'O9mITfnV0',
 	saveUninitialized: false, // don't create session until something stored 
-    resave: false, //don't save session if unmodified
+	resave: false, //don't save session if unmodified
 	store: new MongoStore({
 		db: config.get("DB_NAME"),
 		host: config.get("DB_HOST"),
