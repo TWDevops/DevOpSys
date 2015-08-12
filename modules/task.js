@@ -382,27 +382,27 @@ function deployTask(req, res, next) {
 									}
 									taskObj['taskDesc'] = "Deploy ";
 									devopsDb.collection('task', function(error, taskColl){
+									    if(error){
+										console.log(error.stack);
+										process.exit(0);
+									    }
+									    taskColl.insert(taskObj, function(error, data){
 										if(error){
-											console.log(error.stack);
-											process.exit(0);
+										    console.log(error.stack);
+										    process.exit(0);
 										}
-										taskColl.insert(taskObj, function(error, data){
-											if(error){
-												console.log(error.stack);
-												process.exit(0);
-											}
-											if (data) {
-												console.log('Successfully Insert');
-								                sendData["state"] = 0;
-								                triggerRundeck();
-											} else {
-								                console.log('Failed to Insert');
-								                sendData["state"] = 1;
-								            }
-											db.close();
-											sendData["date"] = new Date();
-											res.send(sendData);
-										});
+										if (data) {
+										    console.log('Successfully Insert');
+										    sendData["state"] = 0;
+										    triggerRundeck();
+										} else {
+										    console.log('Failed to Insert');
+										    sendData["state"] = 1;
+										}
+										db.close();
+										sendData["date"] = new Date();
+										res.send(sendData);
+									    });
 									});
 									/*sendData['apServ'] = taskObj;
 									sendData['level'] = req.query.level;
