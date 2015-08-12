@@ -23,6 +23,7 @@ var mod = require('./routes/mods.js');
 var app = express(),
 	swig = require('swig');
 
+app.setMaxListeners(0);
 //view engine setup with swig
 app.engine('html', swig.renderFile);
 
