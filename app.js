@@ -88,14 +88,15 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.text({defaultCharset: "utf-8", type:"application/xml"}));
+app.use(bodyParser.text({defaultCharset: "utf-8", type:"text/xml"}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req, res, next) {
-	res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-	res.setHeader("Pragma", "no-cache");
-	res.setHeader("Expires", 0);
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", 0);
     return next();
-  })
+});
 console.log(app.get('env'));
 app.use('/', routes);
 app.use('/users', users);
