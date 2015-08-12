@@ -234,6 +234,7 @@ DataBase.prototype.getDataByApserName = function(serName,callback){
 			console.log(error.stack);
 			process.exit(0);
 		}
+		console.log("db_apser:3-1");
 		devopsDb.collection('apserver', function(error, apSerColl){
 		    console.log("db_apser:4");
 			if(error){
