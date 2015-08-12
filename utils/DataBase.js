@@ -34,6 +34,30 @@ DataBase.prototype.ObjectID = function(o_id){
 	return oid;
 }
 
+DataBase.prototype.getBuildDataByDeployId = function(deployId, callback){
+    var db = DataBase.prototype.getDb();
+	db.open(function(error, apiDb) {
+		if(error){
+			console.log(error.stack);
+			process.exit(0);
+		}
+		apiDb.collection('builds', function(error, apiColl){
+			if(error){
+				console.log(error.stack);
+				process.exit(0);
+			}
+			apiColl.findOne({"gitCommitId": deployId}, function(error, buildDoc){
+			    if(error){
+				console.log(error.stack);
+				process.exit(0);
+			    }
+			    callback(buildDoc);
+			    db.close();
+			});
+		});
+	});
+}
+
 DataBase.prototype.getApiAllow = function(callback){
 	var allowList = {};
 	var db = DataBase.prototype.getDb();
@@ -127,13 +151,20 @@ DataBase.prototype.getDeployList = function(findOpt,callback){
 	});
 }
 
+//DataBase.prototype.setTask = function(setOpt, callback){
+    //var db = DataBase.prototype.getDb();
+//    callback("test");
+//}
 DataBase.prototype.setTask = function(setOpt, callback){
 	var db = DataBase.prototype.getDb();
 	var retData = {};
+	console.log("db:1");
 	DataBase.prototype.getDataByApserName(setOpt.apserName, function(apSerDoc){
-		if(Object.keys(apSerDoc).length > 0){
-			DataBase.prototype.getApiGitRepo(setOpt.apiId, function(apiGitData){
-				if(Object.keys(apiGitData).length > 0){
+	    console.log("db:2");
+	    if(Object.keys(apSerDoc).length > 0){
+			//DataBase.prototype.getApiGitRepo(setOpt.apiId, function(apiGitData){
+			    	console.log("db:3");
+			    	//if(Object.keys(apiGitData).length > 0){
 					var taskObj = {}
 					taskObj['taskNo'] = setOpt.taskNo;
 					taskObj['taskAction'] = 'deploy';
@@ -141,7 +172,7 @@ DataBase.prototype.setTask = function(setOpt, callback){
 					taskObj.taskParams.apServId = apSerDoc._id;
 					taskObj.taskParams.apServName = apSerDoc.apSerName;
 					taskObj.taskParams.apServIp = apSerDoc.apSerIntIp;
-					taskObj.taskParams.gitUrl = apiGitData.apiGitInfo.repo_http;
+					taskObj.taskParams.fileUrl = setOpt.fileUrl;
 					switch(apSerDoc.apSerLevel){
 						case 0:
 							taskObj.taskParams.branch = 'master';
@@ -179,20 +210,18 @@ DataBase.prototype.setTask = function(setOpt, callback){
 									retData['info'] = 'Task insert fail.';
 								}
 								callback(retData);
+								db.close();
 							});
 						});
 					});
-				}else{
-					callback({status:1, error: "No Git Repository."});
-				}
-			});				
-		}else{
-			callback({status:1, error: "No Ap Server."});
-		}
+				//}else{
+				//	callback({status:1, error: "No Git Repository."});
+				//}
+			//});				
+	    }else{
+		callback({status:1, error: "No Ap Server."});
+	    }
 	});
-	
-	
-	
 }
 
 DataBase.prototype.getDataByApserName = function(serName,callback){

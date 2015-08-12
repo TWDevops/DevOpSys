@@ -167,7 +167,8 @@ LAB Location:&nbsp;
 			<td>{{labApser}}</td>
 			<td>
 			{% if commitId.lab %}
-				<input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{labApser}}/{{commitId.lab}}'">
+				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{labApser}}/{{commitId.lab}}/true'">
+				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{labApser}}/{{commitId.lab}}/false'">
 			{% endif %}
 			</td>
 		</tr>
@@ -189,7 +190,8 @@ OL Location:&nbsp;
 			<td>{{olApser}}</td>
 			<td>
 			{% if commitId.ol %}
-				<input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser}}/{{commitId.ol}}'">
+				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser}}/{{commitId.ol}}/true'">
+				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser}}/{{commitId.ol}}/false'">
 			{% endif %}
 			</td>
 		</tr>
@@ -211,7 +213,8 @@ On-Line Location:&nbsp;
 			<td>{{masterApser}}</td>
 			<td>
 			{% if commitId.master %}
-				<input type=button value="Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser}}/{{commitId.master}}'">
+				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser}}/{{commitId.master}}/true'">
+				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser}}/{{commitId.master}}/false'">
 			{% endif %}
 			</td>
 		</tr>

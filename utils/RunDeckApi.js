@@ -137,7 +137,7 @@ RunDeckApi.prototype.deployTrigger = function(isFull, nodeName, deployId, fileUr
     if(isFull){
 	triggerFunc = "fullDeployTrigger";
     }
-    paramObj.argString= "-nodeName \"" + nodeName + "\" -deployId \"" + deployId + "\" -fileUrl \"" + fileUrl +"\"";
+    paramObj.argString= "-node \"" + nodeName + "\" -deployid \"" + deployId + "\" -src \"" + fileUrl +"\"";
     rundeck(triggerFunc, paramObj, function(xmlStr) {
 	//var parser = new xml2js.Parser();
 	//parser.parseString(xmlStr, function (err, result) {

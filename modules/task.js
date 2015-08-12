@@ -201,7 +201,7 @@ function setTaskStatus(req, res,next){
 }
 getHandler["setstatus/:taskId/:taskSt"] = setTaskStatus;
 
-function deploy(req, res, next){
+function deployApi(req, res, next){
 	var findOpt = {};
 	var query = {};
 	if (req.method == 'GET') {
@@ -268,11 +268,11 @@ function deploy(req, res, next){
 		}
 	}*/
 }
-getHandler['api/deploy'] = deploy;
-getHandler['api/deploy/:id'] = deploy;
+getHandler['api/deploy'] = deployApi;
+getHandler['api/deploy/:id'] = deployApi;
 //postHandler['api/deploy'] = deploy;
 
-function deployApi(req, res, next){
+function deploy(req, res, next){
 	if(req.session.apiId){
 		var setOpt = {};
 		setOpt['taskNo'] = req.params.deployId;
@@ -282,17 +282,26 @@ function deployApi(req, res, next){
 		if(req.params.fullAuto){
 		    setOpt['fullAuto'] = req.params.fullAuto;
 		}
-		dbase.setTask(setOpt, function(result) {
-		    //triggerRundeck();
-		    rundeck.deployTrigger(isFull, req.params.apserName, req.params.deployId, fileUrl, function(rkresult){
-			res.send(result);
+		dbase.getBuildDataByDeployId(req.params.deployId, function(buildData){
+		    setOpt['apiName'] = buildData.apiName;
+		    setOpt['fileUrl'] = config.get('DEPLOY_FILE_SERVER') + buildData.apiName + "/" + buildData.gitCommitId +"/" + buildData.fileList[0];
+		    console.log("task:1");
+		    dbase.setTask(setOpt, function(result) {
+		    	//triggerRundeck();
+			if(result.status === 0){
+        		    	rundeck.deployTrigger((req.params.isFull === "true"), setOpt['apserName'], setOpt['taskNo'], setOpt['fileUrl'], function(rkresult){
+        		    	    res.send(rkresult);
+        		    	});
+			}else{
+			    res.send(result);
+			}
 		    });
 		});
 	}else{
 		res.send("nothing!!");
 	}
 }
-getHandler['deploy/:apserName/:deployId'] = deployApi;
+getHandler['deploy/:apserName/:deployId/:isFull'] = deploy;
 
 //不再使用,準備移除
 function deployTask(req, res, next) {
