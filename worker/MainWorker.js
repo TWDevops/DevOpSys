@@ -112,6 +112,7 @@ singleton.getInstance = function(){
 	if(this.instance === null ){
 		this.instance = new singleton();
 		this.instance.setApiAcls();
+		this.instance.setMaxListeners(0);
 	}
     return this.instance;
 }
