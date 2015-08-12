@@ -16,7 +16,7 @@ var DataBase = function DataBase(){
 	mongodbServer = new mongodb.Server(config.get("DB_HOST"),
 			config.get("DB_PORT"),
 			{ auto_reconnect: true, poolSize: 20 });
-	mongodbServer.setMaxListeners(0);
+	//mongodbServer.setMaxListeners(0);
 }
 
 DataBase.prototype.getDb = function(dbName){
