@@ -15,7 +15,7 @@ var DataBase = function DataBase(){
 	console.log("DataBase DBName: " + config.get("DB_NAME"));
 	mongodbServer = new mongodb.Server(config.get("DB_HOST"),
 			config.get("DB_PORT"),
-			{ auto_reconnect: true, poolSize: 20 });
+			{ auto_reconnect: true, poolSize: 10 });
 }
 
 DataBase.prototype.getDb = function(dbName){
@@ -82,9 +82,9 @@ DataBase.prototype.getApiAllow = function(callback){
 					//console.log(doc['_id'].toString());
 					allowList[doc['apiName'].toString()]= doc;
 				} else{
-					db.close();
 					//console.log(allowList);
 					callback(allowList);
+					db.close();
 				}
 			});
 		});
@@ -112,9 +112,9 @@ DataBase.prototype.getTask = function(action,callback){
 				if(taskDoc){
 					taskList = taskDoc;
 				}
-					db.close();
-					console.log(taskList);
-					callback(taskList);
+				console.log(taskList);
+				callback(taskList);
+				db.close();
 			});
 		});
 	});
@@ -142,9 +142,9 @@ DataBase.prototype.getDeployList = function(findOpt,callback){
 				if(doc != null){
 					taskList[doc._id] = doc;
 				}else{
-					db.close();
 					console.log(taskList);
 					callback(taskList);
+					db.close();
 				}
 			});
 		});
@@ -336,8 +336,8 @@ DataBase.prototype.updateTaskStatus = function(taskId, taskSt, callback){
 					}
 					//if(result){
 						console.log("updateTaskStatus result: " + result);
-						db.close();
 						callback(result);
+						db.close();
 					/*}else {
 						resData["state"] = 1;
 						resData["info"] = "update error.";
