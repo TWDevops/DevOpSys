@@ -15,7 +15,7 @@ var DataBase = function DataBase(){
 	console.log("DataBase DBName: " + config.get("DB_NAME"));
 	mongodbServer = new mongodb.Server(config.get("DB_HOST"),
 			config.get("DB_PORT"),
-			{ auto_reconnect: true, poolSize: 10 });
+			{ auto_reconnect: true, poolSize: 20 });
 }
 
 DataBase.prototype.getDb = function(dbName){
@@ -227,17 +227,21 @@ DataBase.prototype.setTask = function(setOpt, callback){
 DataBase.prototype.getDataByApserName = function(serName,callback){
     console.log("db_apser:1");
 	var db = DataBase.prototype.getDb();
+	console.log("db_apser:2");
 	db.open(function(error, devopsDb) {
+	    console.log("db_apser:3");
 		if(error){
 			console.log(error.stack);
 			process.exit(0);
 		}
 		devopsDb.collection('apserver', function(error, apSerColl){
+		    console.log("db_apser:4");
 			if(error){
 				console.log(error.stack);
 				process.exit(0);
 			}
 			apSerColl.findOne({"apSerName" : serName},{"apSerName":1,"apSerIntIp":1,"apSerLevel":1},function(error, apSerDoc){
+			    console.log("db_apser:5");
 				if(error){
 					console.log(error.stack);
 					process.exit(0);
