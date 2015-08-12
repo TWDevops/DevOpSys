@@ -225,6 +225,7 @@ DataBase.prototype.setTask = function(setOpt, callback){
 }
 
 DataBase.prototype.getDataByApserName = function(serName,callback){
+    console.log("db_apser:1");
 	var db = DataBase.prototype.getDb();
 	db.open(function(error, devopsDb) {
 		if(error){
