@@ -41,7 +41,7 @@ function receive(req, res, next) {
 			if (data) {
 			    //console.log('Successfully Insert');
 			    if(req.body.JOB_STATUS === "SUCCESS"){
-				fse.ensureDirSync("downloads/deploy/" + req.body.JOB_NAME + "/" + req.body.COMMIT_ID);
+				fse.ensureDirSync("downloads/deploy/" + req.body.JOB_NAME + "/" + req.body.DEPLOY_ID);
 				req.body.PKG_FILE.forEach(function(fileName) {
 				    fse.copySync(config.get("JENKINS_BUILDS") + "/" + req.body.JOB_NAME + "/" + req.body.DEPLOY_ID + "/" + fileName,
 					    "downloads/deploy/" + req.body.JOB_NAME + "/" + req.body.DEPLOY_ID + "/" + fileName);
