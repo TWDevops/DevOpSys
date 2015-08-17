@@ -44,7 +44,7 @@ function receive(req, res, next) {
 				fse.ensureDirSync("downloads/deploy/" + req.body.JOB_NAME + "/" + req.body.COMMIT_ID);
 				req.body.PKG_FILE.forEach(function(fileName) {
 				    fse.copySync(config.get("JENKINS_BUILDS") + "/" + req.body.JOB_NAME + "/" + req.body.COMMIT_ID + "_" + req.body.BRANCH + "/" + fileName,
-					    "downloads/deploy/" + req.body.JOB_NAME + "/" + req.body.COMMIT_ID + "_" + req.body.BRANCH + "/" + fileName);
+					    "downloads/deploy/" + req.body.JOB_NAME + "/" + req.body.COMMIT_ID + "/" + fileName);
 				});
 				var buildDoc ={};
 				buildDoc.apiName = req.body.JOB_NAME;
