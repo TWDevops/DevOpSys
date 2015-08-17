@@ -277,13 +277,12 @@ function deploy(req, res, next){
 		var setOpt = {};
 		setOpt['taskNo'] = req.params.deployId;
 		setOpt['apserName'] = req.params.apserName;
-		setOpt['branch'] = req.params.branch;
 		setOpt['apiId'] = req.session.apiId;
 		setOpt['fullAuto'] = false;
 		if(req.params.fullAuto){
 		    setOpt['fullAuto'] = req.params.fullAuto;
 		}
-		dbase.getBuildDataByDeployId(req.params.deployId + req.params.branch, function(buildData){
+		dbase.getBuildDataByDeployId(req.params.deployId, function(buildData){
 		    setOpt['apiName'] = buildData.apiName;
 		    setOpt['fileUrl'] = config.get('DEPLOY_FILE_SERVER') + buildData.apiName + "/" + buildData.gitCommitId +"/" + buildData.fileList[0];
 		    console.log("task:1");
@@ -302,7 +301,7 @@ function deploy(req, res, next){
 		res.send("nothing!!");
 	}
 }
-getHandler['deploy/:apserName/:branch/:deployId/:isFull'] = deploy;
+getHandler['deploy/:apserName/:deployId/:isFull'] = deploy;
 
 //不再使用,準備移除
 function deployTask(req, res, next) {

@@ -167,8 +167,8 @@ LAB Location:&nbsp;
 			<td>{{labApser}}</td>
 			<td>
 			{% if commitId.lab %}
-				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/lab/{{labApser}}/{{commitId.lab}}/true'">
-				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/lab/{{labApser}}/{{commitId.lab}}/false'">
+				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{labApser}}/{{commitId.lab}}lab/true'">
+				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{labApser}}/{{commitId.lab}}lab/false'">
 			{% endif %}
 			</td>
 		</tr>
@@ -190,8 +190,8 @@ OL Location:&nbsp;
 			<td>{{olApser}}</td>
 			<td>
 			{% if commitId.ol %}
-				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/ol/{{olApser}}/{{commitId.ol}}/true'">
-				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/ol/{{olApser}}/{{commitId.ol}}/false'">
+				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser}}/{{commitId.ol}}ol/true'">
+				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser}}/{{commitId.ol}}ol/false'">
 			{% endif %}
 			</td>
 		</tr>
@@ -213,8 +213,8 @@ On-Line Location:&nbsp;
 			<td>{{masterApser}}</td>
 			<td>
 			{% if commitId.master %}
-				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/master/{{masterApser}}/{{commitId.master}}/true'">
-				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/master/{{masterApser}}/{{commitId.master}}/false'">
+				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser}}/{{commitId.master}}master/true'">
+				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser}}/{{commitId.master}}master/false'">
 			{% endif %}
 			</td>
 		</tr>
