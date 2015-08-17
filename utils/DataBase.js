@@ -47,7 +47,7 @@ DataBase.prototype.getBuildDataByDeployId = function(deployId, callback){
 				console.log(error.stack);
 				process.exit(0);
 			}
-			apiColl.findOne({"gitCommitId": deployId}, function(error, buildDoc){
+			apiColl.findOne({"deployId": deployId}, function(error, buildDoc){
 			    if(error){
 				console.log(error.stack);
 				process.exit(0);
