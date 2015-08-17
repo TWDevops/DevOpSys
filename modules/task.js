@@ -284,7 +284,7 @@ function deploy(req, res, next){
 		}
 		dbase.getBuildDataByDeployId(req.params.deployId, function(buildData){
 		    setOpt['apiName'] = buildData.apiName;
-		    setOpt['fileUrl'] = config.get('DEPLOY_FILE_SERVER') + buildData.apiName + "/" + buildData.gitCommitId +"/" + buildData.fileList[0];
+		    setOpt['fileUrl'] = config.get('DEPLOY_FILE_SERVER') + setOpt['apiName'] + "/" + setOpt['taskNo'] +"/" + buildData.fileList[0];
 		    console.log("task:1");
 		    dbase.setTask(setOpt, function(result) {
 		    	//triggerRundeck();
