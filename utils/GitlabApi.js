@@ -132,13 +132,14 @@ GitlabApi.prototype.addHook = function(pId, callback){
 };
 
 GitlabApi.prototype.getCommitId = function(pid, branch, callBack){
+    var fn = null;
     var commitId = {};
     var branchName = "";
     if(arguments.length < 3){
 	if(typeof(branch) === 'function'){
 	    fn = branch;
 	}else{
-	    throw new Error('Need callback function.')
+	    throw new Error('Need callback function.');
 	}
     }else{
 	branchName = branch;
@@ -148,7 +149,7 @@ GitlabApi.prototype.getCommitId = function(pid, branch, callBack){
 	if(branchName === ""){
 	    commitId.lab = jsonQuery('branches[name=lab].commit.id',{data:{branches:result}}).value;
 	    commitId.ol = jsonQuery('branches[name=ol].commit.id',{data:{branches:result}}).value;
-	    commitId.master = jsonQuery('branches[name=master].commit.id',{data:{branches:result}}).value
+	    commitId.master = jsonQuery('branches[name=master].commit.id',{data:{branches:result}}).value;
 	}else{
 	    console.log("branchName: " + branchName);
 	    commitId[branchName] = result.commit.id;

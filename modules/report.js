@@ -43,8 +43,8 @@ function receive(req, res, next) {
 			    if(req.body.JOB_STATUS === "SUCCESS"){
 				fse.ensureDirSync("downloads/deploy/" + req.body.JOB_NAME + "/" + req.body.COMMIT_ID);
 				req.body.PKG_FILE.forEach(function(fileName) {
-				    fse.copySync(config.get("JENKINS_BUILDS") + "/" + req.body.JOB_NAME + "/" + req.body.COMMIT_ID + "/" + fileName,
-					    "downloads/deploy/" + req.body.JOB_NAME + "/" + req.body.COMMIT_ID + "/" + fileName);
+				    fse.copySync(config.get("JENKINS_BUILDS") + "/" + req.body.JOB_NAME + "/" + req.body.COMMIT_ID + "_" + req.body.BRANCH + "/" + fileName,
+					    "downloads/deploy/" + req.body.JOB_NAME + "/" + req.body.COMMIT_ID + "_" + req.body.BRANCH + "/" + fileName);
 				});
 				var buildDoc ={};
 				buildDoc.apiName = req.body.JOB_NAME;
@@ -57,7 +57,7 @@ function receive(req, res, next) {
 					console.log(error.stack);
 					process.exit(0);
 				    }
-				    buildColl.update({"gitCommitId":req.body.COMMIT_ID},buildDoc,{"upsert":ture}, function(error, data){
+				    buildColl.update({"gitCommitId":req.body.COMMIT_ID},buildDoc,{"upsert":true}, function(error, data){
 					if(error){
 					    console.log(error.stack);
 					    process.exit(0);
