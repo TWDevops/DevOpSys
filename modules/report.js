@@ -85,12 +85,12 @@ function receive(req, res, next) {
     							    	console.log(data);
     							    	console.log(response);
     							    });*/
+    							    db.close();
     							});
     						    }
     						});
 					    });
 					}
-					db.close();
 					sendData.state = 0;
 					res.send(sendData);
 				    });
