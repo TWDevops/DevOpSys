@@ -63,8 +63,11 @@ function receive(req, res, next) {
 					    console.log(error.stack);
 					    process.exit(0);
 					}
+					db.close();
+					sendData.state = 0;
+					res.send(sendData);
 					if(req.body.BRANCH === "origin/lab"){
-    					    devopsDb.collection('api', function(error, apiColl){
+					    devopsDb.collection('api', function(error, apiColl){
     						if(error){
     						    console.log(error.stack);
     						    process.exit(0);
@@ -74,45 +77,19 @@ function receive(req, res, next) {
     							console.log(error.stack);
     							process.exit(0);
     						    }
-    						    if(apiDoc){
-    							var setOpt = {};
-    							setOpt['taskNo'] = req.body.DEPLOY_ID;
-    							setOpt['apserName'] = "";
-    							for(apser in apiDoc.apiLocation.lab){
-    							    setOpt['apserName'] = setOpt['apserName'] + " " + apser;
-    							}
-    							console.log(setOpt['apserName']);
-    							setOpt['apiId'] = apiDoc['_id'].toString;
-    							setOpt['fullAuto'] = false;
-    							setOpt['apiName'] = req.body.JOB_NAME;
-    							setOpt['fileUrl'] = config.get('DEPLOY_FILE_SERVER') + setOpt['apiName'] + "/" + setOpt['taskNo'] +"/" + req.body.PKG_FILE[0];
-    							dbase.setTask(setOpt, function(result) {
-    							    //triggerRundeck();
-    							    if(result.status === 0){
-    			        		    		rundeck.deployTrigger(true, setOpt['apserName'], setOpt['taskNo'], setOpt['fileUrl'], function(rkresult){
-    			        		    		    db.close();
-    			        		    		    console.log(rkresult);
-    			        		    		    sendData.state = 0;
-    			        		    		    sendData.autoDeploy = true;
-    			        		    		    res.send(sendData);
-    			        		    		});
-    							    }else{
-    							    	db.close();
-    							    	sendData.state = 1;
-    							    	sendData.autoDeploy = "Auto Deploy not start.";
-    							    	res.send(sendData);
-    							    }
-    						    	});
-    						    }else{
-    							db.close();
-							res.send(result);
+    						    if(apiDoc && apiDoc.apiLocation.lab.length > 0){
+    							var Client = require('node-rest-client').Client;
+    							client = new Client();
+    							apiDoc.apiLocation.lab.forEach(function(apServer) {
+    							    console.log('http://127.0.0.1/mod/task/deploy/"+ apServer + "/" + buildDoc.deployId + "/true');
+    							    /*client.get("http://127.0.0.1/mod/task/deploy/"+ apServer + "/" + buildDoc.deployId + "/true", function(data, response){
+    							    	console.log(data);
+    							    	console.log(response);
+    							    });*/
+    							});
     						    }
     						});
-    					    });
-					}else{
-					    db.close();
-					    sendData.state = 0;
-					    res.send(sendData);
+					    });
 					}
 				    });
 				});
