@@ -63,7 +63,6 @@ function receive(req, res, next) {
 					    console.log(error.stack);
 					    process.exit(0);
 					}
-					db.close();
 					console.log("BRANCH: " + req.body.BRANCH);
 					if(req.body.BRANCH === "origin/lab"){
 					    devopsDb.collection('api', function(error, apiColl){
@@ -91,6 +90,7 @@ function receive(req, res, next) {
     						});
 					    });
 					}
+					db.close();
 					sendData.state = 0;
 					res.send(sendData);
 				    });
