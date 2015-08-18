@@ -79,6 +79,9 @@ function receive(req, res, next) {
     						    if(apiDoc && apiDoc.apiLocation.lab.length > 0){
     							var Client = require('node-rest-client').Client;
     							var client = new Client();
+    							var args = {
+    								headers:{"dps-token":"BATE5LoJ"}
+    							};
     							apiDoc.apiLocation.lab.forEach(function(apServer) {
     							    //console.log('http://127.0.0.1/mod/task/deploy/'+ apServer + '/' + buildDoc.deployId + '/true');
     							    client.get("http://127.0.0.1/mod/task/deploy/"+ apServer + "/" + buildDoc.deployId + "/true", function(data, response){

@@ -3,6 +3,8 @@ var express = require('express');
 var config = require("nconf");
 config.env().file({ "file":"config.json" });
 
+dps_token = config.get('DPS_TOKEN');
+
 var session = require('express-session');
 //var DataBase = new require('./utils/DataBase.js');
 //var dbase = new require('./utils/DataBase.js');

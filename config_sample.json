@@ -4,6 +4,7 @@
 	"task":"task", "ser":"serman",
 	"report": "report", "download":"download"
     },
+    "DPS_TOKEN":"BATE5LoJ",
     "DB_HOST":"10.240.1.164",
     "DB_PORT":"27017",
     "DB_NAME":"devops",

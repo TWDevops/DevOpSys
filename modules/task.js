@@ -273,7 +273,9 @@ getHandler['api/deploy/:id'] = deployApi;
 //postHandler['api/deploy'] = deploy;
 
 function deploy(req, res, next){
-	if(req.session.apiId){
+    console.log("Server Token: " + dps_token);
+    console.log("Client Token: " + req.headers['dps-token'])
+	if(req.session.apiId || req.headers['dps-token'] === dps_token){
 		var setOpt = {};
 		setOpt['taskNo'] = req.params.deployId;
 		setOpt['apserName'] = req.params.apserName;
