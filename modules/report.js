@@ -63,16 +63,45 @@ function receive(req, res, next) {
 					    console.log(error.stack);
 					    process.exit(0);
 					}
-					/*devopsDb.collection('api', function(error, apiColl){
-					    if(error){
-						console.log(error.stack);
-						process.exit(0);
-					    }
-					    apiColl.update();
-					});*/
-					db.close();
-					sendData.state = 0;
-					res.send(sendData);
+					if(req.body.BRANCH === "lab"){
+    					    devopsDb.collection('api', function(error, apiColl){
+    						if(error){
+    						    console.log(error.stack);
+    						    process.exit(0);
+    						}
+    						apiColl.findOne({"apiName":req.body.JOB_NAME},{"apiLocation":true},function(error, apiDoc){
+    						    var setOpt = {};
+    						    setOpt['taskNo'] = req.body.DEPLOY_ID;
+    						    setOpt['apserName'] = "";
+    						    for(apser in apiDoc.Location.lab){
+    							setOpt['apserName'] = setOpt['apserName'] + " " + apser;
+    						    }
+    						    setOpt['apiId'] = apiDoc['_id'].toString;
+    						    setOpt['fullAuto'] = false;
+    						    setOpt['apiName'] = req.body.JOB_NAME;
+    						    setOpt['fileUrl'] = config.get('DEPLOY_FILE_SERVER') + setOpt['apiName'] + "/" + setOpt['taskNo'] +"/" + req.body.PKG_FILE[0];
+    						    dbase.setTask(setOpt, function(result) {
+    							//triggerRundeck();
+    							if(result.status === 0){
+    			        		    		rundeck.deployTrigger((req.params.isFull === "true"), setOpt['apserName'], setOpt['taskNo'], setOpt['fileUrl'], function(rkresult){
+    			        		    		    db.close();
+    			        		    		    console.log(rkresult);
+    			        		    		    sendData.state = 0;
+    			        		    		    sendData.autoDeploy = true;
+    			        		    		    res.send(sendData);
+    			        		    		});
+    							}else{
+    							    db.close();
+    							    res.send(result);
+    							}
+    						    });
+    						});
+    					    });
+					}else{
+					    db.close();
+					    sendData.state = 0;
+					    res.send(sendData);
+					}
 				    });
 				});
 			    }

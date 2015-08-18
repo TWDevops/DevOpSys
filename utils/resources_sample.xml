@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<node name="devops-as" description="devops-as"
+				tags="" hostname="10.240.1.3:60022"
+				osArch="amd64" osFamily="unix" osName="Linux"
+				osVersion="2.6.32-431.el6.x86_64" username="rockman"
+				ssh-authentication="privateKey"
+				ssh-password-storage-path="keys/deployprivatekey">
+		<attribute name="lb-group" value="tomcat"/>
+	</node>
+	<node name="devops-nginx" description="devops-nginx"
+				tags="" hostname="10.240.1.73:60022"
+				osArch="amd64" osFamily="unix" osName="Linux"
+				osVersion="2.6.32-431.el6.x86_64" username="rockman"
+				ssh-authentication="privateKey"
+				ssh-password-storage-path="keys/deployprivatekey">
+		<attribute name="lb-group" value="tomcat"/>
+	</node>
+</project>
