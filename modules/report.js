@@ -84,7 +84,7 @@ function receive(req, res, next) {
     							};
     							apiDoc.apiLocation.lab.forEach(function(apServer) {
     							    //console.log('http://127.0.0.1/mod/task/deploy/'+ apServer + '/' + buildDoc.deployId + '/true');
-    							    client.get("http://127.0.0.1/mod/task/deploy/"+ apServer + "/" + buildDoc.deployId + "/true", function(data, response){
+    							    client.get("http://127.0.0.1/mod/task/deploy/"+ apServer + "/" + buildDoc.deployId + "/true", args, function(data, response){
     							    	console.log(data);
     							    	console.log(response);
     							    });
