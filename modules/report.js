@@ -63,7 +63,7 @@ function receive(req, res, next) {
 					    console.log(error.stack);
 					    process.exit(0);
 					}
-					if(req.body.BRANCH === "lab"){
+					if(req.body.BRANCH === "origin/lab"){
     					    devopsDb.collection('api', function(error, apiColl){
     						if(error){
     						    console.log(error.stack);
