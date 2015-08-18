@@ -73,7 +73,7 @@ function receive(req, res, next) {
     						    var setOpt = {};
     						    setOpt['taskNo'] = req.body.DEPLOY_ID;
     						    setOpt['apserName'] = "";
-    						    for(apser in apiDoc.Location.lab){
+    						    for(apser in apiDoc.apiLocation.lab){
     							setOpt['apserName'] = setOpt['apserName'] + " " + apser;
     						    }
     						    setOpt['apiId'] = apiDoc['_id'].toString;
