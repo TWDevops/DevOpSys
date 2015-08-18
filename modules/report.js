@@ -64,8 +64,6 @@ function receive(req, res, next) {
 					    process.exit(0);
 					}
 					db.close();
-					sendData.state = 0;
-					res.send(sendData);
 					if(req.body.BRANCH === "origin/lab"){
 					    devopsDb.collection('api', function(error, apiColl){
     						if(error){
@@ -77,9 +75,10 @@ function receive(req, res, next) {
     							console.log(error.stack);
     							process.exit(0);
     						    }
+    						    console.log(apiDoc);
     						    if(apiDoc && apiDoc.apiLocation.lab.length > 0){
     							var Client = require('node-rest-client').Client;
-    							client = new Client();
+    							var client = new Client();
     							apiDoc.apiLocation.lab.forEach(function(apServer) {
     							    console.log('http://127.0.0.1/mod/task/deploy/"+ apServer + "/" + buildDoc.deployId + "/true');
     							    /*client.get("http://127.0.0.1/mod/task/deploy/"+ apServer + "/" + buildDoc.deployId + "/true", function(data, response){
@@ -91,6 +90,8 @@ function receive(req, res, next) {
     						});
 					    });
 					}
+					sendData.state = 0;
+					res.send(sendData);
 				    });
 				});
 			    }
