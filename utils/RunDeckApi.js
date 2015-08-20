@@ -31,11 +31,12 @@ var xml2Json = function(xmlStr, callback){
 var rundeck = function(func, paramObj, callback){
     var fn = null;
     var params = null;
+    var paramStr = null;
     if(arguments.length < 3){
 	if(typeof(paramObj) === 'function'){
 	    fn = paramObj;
 	}else{
-	    throw new Error('Need callback function.')
+	    throw new Error('Need callback function.');
 	}
     }else{
 	if(typeof(paramObj) !== 'object'){
@@ -59,14 +60,14 @@ var rundeck = function(func, paramObj, callback){
     	    options.path = '/api/13/system/info';
     	    break;
     	case 'fullDeployTrigger':
-    	    var paramStr = querystring.stringify(paramObj);
+    	    paramStr = querystring.stringify(paramObj);
     	    options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
     	    options.headers['Content-Length'] = paramStr.length;
     	    options.method = 'POST';
     	    options.path = '/api/13/job/' + config.get('RUNDECK_FULL_AUTO_DEPLOY_ID') + '/executions';
     	    break;
     	case 'halfDeployTrigger':
-    	var paramStr = querystring.stringify(paramObj);
+    	    paramStr = querystring.stringify(paramObj);
 	    options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 	    options.headers['Content-Length'] = paramStr.length;
 	    options.method = 'POST';
@@ -126,7 +127,7 @@ RunDeckApi.prototype.getResources = function(project, callback){
     	//parser.parseString(xmlStr, function (err, result){
 	xml2Json(xmlStr, function(result) {
 	    callback(result.project.node);
-	})
+	});
     	//});
     });
 };

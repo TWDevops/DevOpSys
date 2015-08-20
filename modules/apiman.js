@@ -94,7 +94,7 @@ function listView(req, res, next) {
 					});
 				}
 			});
-		})
+		});
 	});
 }
 getHandler["listview"]=listView;
