@@ -80,7 +80,7 @@ function receive(req, res, next) {
     							var Client = require('node-rest-client').Client;
     							var client = new Client();
     							var args = {
-    								headers:{"dps-token":"BATE5LoJ"}
+    								headers:{"dps-token":config.get('DPS_TOKEN')}
     							};
     							apiDoc.apiLocation.lab.forEach(function(apServer) {
     							    //console.log('http://127.0.0.1/mod/task/deploy/'+ apServer + '/' + buildDoc.deployId + '/true');
