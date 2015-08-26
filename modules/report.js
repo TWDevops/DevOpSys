@@ -8,6 +8,8 @@ config.env().file({ "file":"config.json" });
 
 var fse = require('fs-extra');
 
+var xml2js = require('xml2js');
+
 var headHander = {};
 var getHandler = {};
 var postHandler = {};
@@ -122,6 +124,7 @@ function receive(req, res, next) {
     			    console.log(error.stack);
     			    process.exit(0);
 			}
+    			db.close();
 			sendData.state = 0;
 			res.send(sendData);
     		    });
@@ -129,6 +132,7 @@ function receive(req, res, next) {
 	    });
 	},
 	'rundeck' : function(){
+	    var parser = new xml2js.Parser();
 	    sendData.info = req.body;
 	    db.open(function(error, devopsDb) {
 		if(error){
@@ -145,8 +149,51 @@ function receive(req, res, next) {
 			    console.log(error.stack);
 			    process.exit(0);
 			}
+			parser.parseString(sendData.info, function (err, result){
+			    //var rdDeployId = null;
+			    var queryObj = {};
+			    var updateObj = {};
+			    if(result.notification.$.status === 'running'){
+				queryObj.taskStatus = 1;
+				updateObj.taskStatus = 2;
+				updateObj.startDate = new Date();
+			    }else if(result.notification.$.status === 'succeeded'){
+				queryObj.taskStatus = 2;
+				updateObj.taskStatus = 0;
+				updateObj.endDate = new Date();
+			    }else{
+				queryObj.taskStatus = {$lt:3};
+				updateObj.taskStatus = 9;
+				updateObj.endDate = new Date();
+			    }
+			    var rdOption = result.notification.executions[0].execution[0].job[0].options[0].option;
+			    for(var i =0; i < rdOption.length; i++){
+				if(rdOption[i].$.name === 'deployid'){
+				    queryObj.taskNo = rdOption[i].$.value;
+				    break;
+				}
+			    }
+			    //queryObj.taskNo = rdDeployId;
+			    queryObj.rdExecId = result.notification.$.executionId;
+			    devopsDb.collection('task', function(error, taskColl){
+				if(error){
+					console.log(error.stack);
+					process.exit(0);
+				}
+				taskColl.update(queryObj,{$set:updateObj},function(error, result){
+				    if(error){
+					console.log(error.stack);
+					process.exit(0);
+				    }
+				    db.close();
+				    sendData.state = 0;
+				    res.send(sendData);
+				});
+			    });
+			});
+			/*db.close();
 			sendData.state = 0;
-			res.send(sendData);
+			res.send(sendData);*/
 		    });
 		});
 	    });

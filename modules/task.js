@@ -277,26 +277,29 @@ function deploy(req, res, next){
     console.log("Client Token: " + req.headers['dps-token']);
 	if(req.session.apiId || req.headers['dps-token'] === dps_token){
 		var setOpt = {};
-		setOpt['taskNo'] = req.params.deployId;
-		setOpt['apserName'] = req.params.apserName;
-		setOpt['apiId'] = req.session.apiId;
-		setOpt['fullAuto'] = false;
+		setOpt.taskNo = req.params.deployId;
+		setOpt.startDate = new Date();
+		setOpt.endDate = '';
+		setOpt.apserName = req.params.apserName;
+		setOpt.apiId = req.session.apiId;
+		setOpt.fullAuto = false;
 		if(req.params.fullAuto){
-		    setOpt['fullAuto'] = req.params.fullAuto;
+		    setOpt.fullAuto = req.params.fullAuto;
 		}
 		dbase.getBuildDataByDeployId(req.params.deployId, function(buildData){
-		    setOpt['apiName'] = buildData.apiName;
-		    setOpt['fileUrl'] = config.get('DEPLOY_FILE_SERVER') + setOpt['apiName'] + "/" + setOpt['taskNo'] +"/" + buildData.fileList[0];
+		    setOpt.apiName = buildData.apiName;
+		    setOpt.fileUrl = config.get('DEPLOY_FILE_SERVER') + setOpt.apiName + "/" + setOpt.taskNo +"/" + buildData.fileList[0];
 		    console.log("task:1");
-		    dbase.setTask(setOpt, function(result) {
-		    	//triggerRundeck();
-			if(result.status === 0){
-        		    	rundeck.deployTrigger((req.params.isFull === "true"), setOpt['apserName'], setOpt['taskNo'], setOpt['fileUrl'], function(rkresult){
-        		    	    res.send(rkresult);
-        		    	});
-			}else{
-			    res.send(result);
-			}
+		    rundeck.deployTrigger((req.params.isFull === "true"), setOpt.apserName, setOpt.taskNo, setOpt.fileUrl, function(rkresult){
+			setOpt.rdExecId = rkresult.executions.execution[0].$.id;
+			dbase.setTask(setOpt, function(result) {
+			    //triggerRundeck();
+			    if(result.status === 0){
+				res.send(rkresult);
+			    }else{
+				res.send(result);
+			    }
+		    	});
 		    });
 		});
 	}else{
