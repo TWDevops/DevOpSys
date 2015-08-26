@@ -159,12 +159,12 @@ DataBase.prototype.getDeployList = function(findOpt,callback){
 DataBase.prototype.setTask = function(setOpt, callback){
 	var db = DataBase.prototype.getDb();
 	var retData = {};
-	console.log("db:1");
+	//console.log("db:1");
 	DataBase.prototype.getDataByApserName(setOpt.apserName, function(apSerDoc){
-	    console.log("db:2");
+	    //console.log("db:2");
 	    if(Object.keys(apSerDoc).length > 0){
 			//DataBase.prototype.getApiGitRepo(setOpt.apiId, function(apiGitData){
-			    	console.log("db:3");
+			    	//console.log("db:3");
 			    	//if(Object.keys(apiGitData).length > 0){
 					var taskObj = {}
 					taskObj['taskNo'] = setOpt.taskNo;
@@ -224,6 +224,25 @@ DataBase.prototype.setTask = function(setOpt, callback){
 		callback({status:1, error: "No Ap Server."});
 	    }
 	});
+}
+
+DataBase.prototype.updateTask = function(taskId, updateObj, callback){
+    var db = DataBase.prototype.getDb();
+    var retData = {};
+    var taskOid = DataBase.prototype.ObjectID(taskId);
+    db.open(function(error,devopsDb){
+	devopsDb.collection('task', function(error, taskColl){
+	    taskColl.update({ "_id" : taskOid }, { $set : updateObj }, function(error, result){
+		if(error){
+			console.log(error.stack);
+			process.exit(0);
+		}
+		console.log("updateTask result: " + result);
+		db.close();
+		callback(result);
+	    });
+	});
+    });
 }
 
 DataBase.prototype.getDataByApserName = function(serName,callback){
@@ -301,7 +320,7 @@ DataBase.prototype.updateTaskStatus = function(taskId, taskSt, callback){
 	var resData = {};
 	var db = DataBase.prototype.getDb();
 	//if(taskId){
-		var taskId = DataBase.prototype.ObjectID(taskId);
+		var taskOid = DataBase.prototype.ObjectID(taskId);
 		//var nowTaskSt = 1;
 		var nexTaskSt = 1;
 		console.log("updateTaskStatus action: " + taskSt);
@@ -337,7 +356,7 @@ DataBase.prototype.updateTaskStatus = function(taskId, taskSt, callback){
 					console.log(error.stack);
 					process.exit(0);
 				}
-				taskColl.update({"_id":taskId},{'$set':{'taskStatus':nexTaskSt}},{"w":1},function(error, result){
+				taskColl.update({"_id":taskOid},{'$set':{'taskStatus':nexTaskSt}},{"w":1},function(error, result){
 					if(error){
 						console.log(error.stack);
 						process.exit(0);

@@ -53,6 +53,7 @@ function receive(req, res, next) {
 				buildDoc.gitBranch = req.body.BRANCH;
 				buildDoc.gitCommitId = req.body.COMMIT_ID;
 				buildDoc.fileList = req.body.PKG_FILE;
+				buildDoc.status = 1;
 				devopsDb.collection('builds', function(error, buildColl){
 				    if(error){
 					console.log(error.stack);
@@ -84,7 +85,7 @@ function receive(req, res, next) {
     							};
     							apiDoc.apiLocation.lab.forEach(function(apServer) {
     							    //console.log('http://127.0.0.1/mod/task/deploy/'+ apServer + '/' + buildDoc.deployId + '/true');
-    							    client.get("http://127.0.0.1/mod/task/deploy/"+ apServer + "/" + buildDoc.deployId + "/true", args, function(data, response){
+    							    client.get("http://127.0.0.1:"+ (config.get("HTTP_PORT") || '80') + "/mod/task/deploy/"+ apServer + "/" + buildDoc.deployId + "/true", args, function(data, response){
     							    	console.log(data);
     							    	console.log(response);
     							    });

@@ -274,7 +274,7 @@ getHandler['api/deploy/:id'] = deployApi;
 
 function deploy(req, res, next){
     console.log("Server Token: " + dps_token);
-    console.log("Client Token: " + req.headers['dps-token'])
+    console.log("Client Token: " + req.headers['dps-token']);
 	if(req.session.apiId || req.headers['dps-token'] === dps_token){
 		var setOpt = {};
 		setOpt['taskNo'] = req.params.deployId;
