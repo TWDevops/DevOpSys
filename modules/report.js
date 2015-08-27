@@ -153,6 +153,7 @@ function receive(req, res, next) {
 			    //var rdDeployId = null;
 			    var queryObj = {};
 			    var updateObj = {};
+			    console.log("rundeck status: " + result.notification.$.status);
 			    if(result.notification.$.status === 'running'){
 				queryObj.taskStatus = 1;
 				updateObj.taskStatus = 2;
