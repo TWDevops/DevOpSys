@@ -168,6 +168,8 @@ DataBase.prototype.setTask = function(setOpt, callback){
 			    	//if(Object.keys(apiGitData).length > 0){
 					var taskObj = {}
 					taskObj['taskNo'] = setOpt.taskNo;
+					taskObj.startDate = new Date();
+					taskObj.endDate = '';
 					taskObj['taskAction'] = 'deploy';
 					taskObj['taskParams'] = {};
 					taskObj.taskParams.apServId = apSerDoc._id;
@@ -188,6 +190,7 @@ DataBase.prototype.setTask = function(setOpt, callback){
 					taskObj.taskStatus = 1;
 					taskObj.taskLog = ["Preparing to deploy"];
 					taskObj.taskDesc = "Deploy";
+					taskObj.rdExecId = setOpt.rdExecId;
 					db.open(function(error,devopsDb){
 						if(error){
 							console.log(error.stack);

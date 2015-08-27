@@ -186,6 +186,7 @@ function receive(req, res, next) {
 					console.log(error.stack);
 					process.exit(0);
 				    }
+				    console.log(result);
 				    db.close();
 				    sendData.state = 0;
 				    res.send(sendData);

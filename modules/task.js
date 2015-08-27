@@ -278,8 +278,6 @@ function deploy(req, res, next){
 	if(req.session.apiId || req.headers['dps-token'] === dps_token){
 		var setOpt = {};
 		setOpt.taskNo = req.params.deployId;
-		setOpt.startDate = new Date();
-		setOpt.endDate = '';
 		setOpt.apserName = req.params.apserName;
 		setOpt.apiId = req.session.apiId;
 		setOpt.fullAuto = false;
