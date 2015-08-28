@@ -233,6 +233,12 @@ On-Line Location:&nbsp;
 			<td>
 			{% if masterApser.deploy == 9 %}
 				Not deployed
+			{% elif masterApser.deploy == 1 %}
+				Preparing
+			{% elif masterApser.deploy == 2 %}
+				Deploying
+			{% elif masterApser.deploy == 0 %}
+				Deployed
 			{% endif %}
 			</td>
 		</tr>

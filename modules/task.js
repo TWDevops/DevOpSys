@@ -303,17 +303,24 @@ function deploy(req, res, next){
 					process.exit(0);
 				    }
 				    var queryObj = {};
+				    var updateObj = {};
 				    if(buildData.gitBranch === "origin/master"){
 					queryObj.apiName = buildData.apiName;
 					queryObj['apiLocation.master.name'] = setOpt.apserName;
+					updateObj['apiLocation.master.$.deploy'] = 1;
+					updateObj['apiLocation.master.$.rdExecId'] = setOpt.rdExecId;
 				    }else if(buildData.gitBranch === "origin/ol"){
 					queryObj.apiName = buildData.apiName;
 					queryObj['apiLocation.ol.name'] = setOpt.apserName;
+					updateObj['apiLocation.ol.$.deploy'] = 1;
+					updateObj['apiLocation.ol.$.rdExecId'] = setOpt.rdExecId;
 				    }else if(buildData.gitBranch === "origin/lab"){
 					queryObj.apiName = buildData.apiName;
 					queryObj['apiLocation.lab.name'] = setOpt.apserName;
+					updateObj['apiLocation.lab.$.deploy'] = 1;
+					updateObj['apiLocation.lab.$.rdExecId'] = setOpt.rdExecId;
 				    }
-				    apiColl.update(queryObj,{$set:{"apiLocation.lab.$.rdExecId":setOpt.rdExecId}});
+				    apiColl.update(queryObj,{$set:updateObj});
 				});
 			    });
 			    //triggerRundeck();
