@@ -362,30 +362,30 @@ function selectAPServer(req, res, next){
 			console.log(typeof req.body['callApiId']);
 			if(Array.isArray(req.body.labServers)){
 				req.body.labServers.forEach(function(labSer){
-					labSers.push(labSer);
+					labSers.push({"name":labSer,"deploy":9});
 				});
 			}else{
-				labSers.push(req.body.labServers);
+				labSers.push({"name":req.body.labServers,"deploy":9});
 			}
 			apiLoc['lab'] = labSers;
 			
 			var olSers = [];
 			if(Array.isArray(req.body.olServers)){
 				req.body.olServers.forEach(function(olSer){
-					olSers.push(olSer);
+					olSers.push({"name":olSer,"deploy":9});
 				});
 			}else{
-				olSers.push(req.body.olServers);
+				olSers.push({"name":req.body.olServers,"deploy":9});
 			}
 			apiLoc['ol'] = olSers;
 			
 			var masterSers = [];
 			if(Array.isArray(req.body.masterServers)){
 				req.body.masterServers.forEach(function(masterSer){
-					masterSers.push(masterSer);
+					masterSers.push({"name":masterSer,"deploy":9});
 				});
 			}else{
-				masterSers.push(req.body.masterServers);
+				masterSers.push({"name":req.body.masterServers,"deploy":9});
 			}
 			apiLoc['master'] = masterSers;
 			
@@ -428,14 +428,32 @@ function selectAPServer(req, res, next){
 						}
 						devopsDb.collection('api', function(error,apiColl){
 							apiColl.findOne({'_id': dbase.ObjectID(req.session.apiId)},{apiLocation:true},function(error,apiDoc){
-								db.close();
-								//console.log(sendData);
-								res.render('selectapser',{
-									 title: "AP Server Select",
-									 apiKey: req.session.apiId,
-									 apiDoc: apiDoc,
-									 apSerList: apSerDocs
-								});
+							    if(error){
+								console.log(error.stack);
+								process.exit(0);
+							    }
+							    
+							    var apiLocations = {};
+							    apiLocations.lab = [];
+							    apiLocations.ol=[];
+							    apiLocations.master=[];
+							    for(var alIdx=0;alIdx < apiDoc.apiLocation.lab.length; alIdx++){
+								apiLocations.lab.push(apiDoc.apiLocation.lab[alIdx].name);
+							    }
+							    for(var alIdx=0;alIdx < apiDoc.apiLocation.ol.length; alIdx++){
+								apiLocations.ol.push(apiDoc.apiLocation.ol[alIdx].name);
+							    }
+							    for(var alIdx=0;alIdx < apiDoc.apiLocation.master.length; alIdx++){
+								apiLocations.master.push(apiDoc.apiLocation.master[alIdx].name);
+							    }
+							    db.close();
+							    //console.log(sendData);
+							    res.render('selectapser',{
+								title: "AP Server Select",
+								apiKey: req.session.apiId,
+								apiLoc: apiLocations,
+								apSerList: apSerDocs
+							    });
 							})
 						})
 					});

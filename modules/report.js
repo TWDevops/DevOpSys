@@ -87,7 +87,7 @@ function receive(req, res, next) {
     							};
     							apiDoc.apiLocation.lab.forEach(function(apServer) {
     							    //console.log('http://127.0.0.1/mod/task/deploy/'+ apServer + '/' + buildDoc.deployId + '/true');
-    							    client.get("http://127.0.0.1:"+ (config.get("HTTP_PORT") || '80') + "/mod/task/deploy/"+ apServer + "/" + buildDoc.deployId + "/true", args, function(data, response){
+    							    client.get("http://127.0.0.1:"+ (config.get("HTTP_PORT") || '80') + "/mod/task/deploy/"+ apServer.name + "/" + buildDoc.deployId + "/true", args, function(data, response){
     							    	console.log(data);
     							    	console.log(response);
     							    });
@@ -181,15 +181,41 @@ function receive(req, res, next) {
 					console.log(error.stack);
 					process.exit(0);
 				}
-				taskColl.update(queryObj,{$set:updateObj},function(error, result){
+				taskColl.update(queryObj,{$set:updateObj},function(error, taskResult){
 				    if(error){
 					console.log(error.stack);
 					process.exit(0);
 				    }
-				    console.log(result);
-				    db.close();
-				    sendData.state = 0;
-				    res.send(sendData);
+				    console.log(taskResult);
+				    taskColl.findOne({"taskNo":queryObj.taskNo,"rdExecId":queryObj.rdExecId},{taskParams:1}, function(error, taskDoc){
+					if(error){
+					    console.log(error.stack);
+					    process.exit(0);
+					}
+					var branch = taskDoc.taskParams.branch;
+					devopsDb.collection('api', function(error, apiColl){
+					    if(error){
+						console.log(error.stack);
+						process.exit(0);
+					    }
+					    var apiQueryObj = {};
+					    for(var i =0; i < rdOption.length; i++){
+						if(rdOption[i].$.name === 'node'){
+						    apiQueryObj['apiLocation.' + branch + '.name'] = rdOption[i].$.value;
+						    break;
+						}
+					    }
+					    apiQueryObj['apiLocation.' + branch + '.rdExecId'] = queryObj.rdExecId;
+					    var apiUpdateObj = {};
+					    apiUpdateObj['apiLocation.' + branch + 'deploy'] = updateObj.taskStatus;
+					    apiColl.update(apiQueryObj, {$set:apiUpdateObj}, function(error, apiResult){
+						console.log(apiResult);
+						db.close();
+						sendData.state = 0;
+						res.send(sendData);
+					    });
+					});
+				    });
 				});
 			    });
 			});

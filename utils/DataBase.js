@@ -249,24 +249,24 @@ DataBase.prototype.updateTask = function(taskId, updateObj, callback){
 }
 
 DataBase.prototype.getDataByApserName = function(serName,callback){
-    console.log("db_apser:1");
+    //console.log("db_apser:1");
 	var db = DataBase.prototype.getDb();
-	console.log("db_apser:2");
+	//console.log("db_apser:2");
 	db.open(function(error, devopsDb) {
-	    console.log("db_apser:3");
+	    //console.log("db_apser:3");
 		if(error){
 			console.log(error.stack);
 			process.exit(0);
 		}
-		console.log("db_apser:3-1");
+		//console.log("db_apser:3-1");
 		devopsDb.collection('apserver', function(error, apSerColl){
-		    console.log("db_apser:4");
+		    //console.log("db_apser:4");
 			if(error){
 				console.log(error.stack);
 				process.exit(0);
 			}
 			apSerColl.findOne({"apSerName" : serName},{"apSerName":1,"apSerIntIp":1,"apSerLevel":1},function(error, apSerDoc){
-			    console.log("db_apser:5");
+			    //console.log("db_apser:5");
 				if(error){
 					console.log(error.stack);
 					process.exit(0);

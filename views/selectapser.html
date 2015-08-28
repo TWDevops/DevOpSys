@@ -24,7 +24,7 @@
 		{% for apServer in apSerList %}
 		{% if apServer.apSerLevel == 2 %}
 		<tr>
-			<td><input type="checkbox" name="labServers" value="{{apServer.apSerName}}"  {% if apiDoc.apiLocation.lab %}{% if apiDoc.apiLocation.lab.indexOf(apServer.apSerName) > -1 %}checked="checked"{% endif %}{% endif %}></td>
+			<td><input type="checkbox" name="labServers" value="{{apServer.apSerName}}"  {% if apiLoc.lab %}{% if apiLoc.lab.indexOf(apServer.apSerName) > -1 %}checked="checked"{% endif %}{% endif %}></td>
 			<td>{{apServer.apSerName}}</td>
 		</tr>
 		{% endif %}
@@ -41,7 +41,7 @@
 		{% for apServer in apSerList %}
 		{% if apServer.apSerLevel == 1 %}
 		<tr>
-			<td><input type="checkbox" name="olServers" value="{{apServer.apSerName}}"  {% if apiDoc.apiLocation.ol %}{% if apiDoc.apiLocation.ol.indexOf(apServer.apSerName) > -1 %}checked="checked"{% endif %}{% endif %}></td>
+			<td><input type="checkbox" name="olServers" value="{{apServer.apSerName}}"  {% if apiLoc.ol %}{% if apiLoc.ol.indexOf(apServer.apSerName) > -1 %}checked="checked"{% endif %}{% endif %}></td>
 			<td>{{apServer.apSerName}}</td>
 		</tr>
 		{% endif %}
@@ -58,7 +58,7 @@
 		{% for apServer in apSerList %}
 		{% if apServer.apSerLevel == 0 %}
 		<tr>
-			<td><input type="checkbox" name="masterServers" value="{{apServer.apSerName}}" {% if apiDoc.apiLocation.master %}{% if apiDoc.apiLocation.master.indexOf(apServer.apSerName) >-1 %}checked="checked"{% endif %}{% endif %}></td>
+			<td><input type="checkbox" name="masterServers" value="{{apServer.apSerName}}" {% if apiLoc.master %}{% if apiLoc.master.indexOf(apServer.apSerName) >-1 %}checked="checked"{% endif %}{% endif %}></td>
 			<td>{{apServer.apSerName}}</td>
 		</tr>
 		{% endif %}

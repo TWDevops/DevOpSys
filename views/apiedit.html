@@ -157,18 +157,24 @@ LAB Location:&nbsp;
 	<table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
 		<thead>
 		<tr>
-			<th width="150px">Name</th>
+			<th width="90px">Name</th>
 			<th width="60px">Deploy</th>
+			<th width="60px">Status</th>
 		</tr>
 		</thead>
 		<tbody>
 		{% for labApser in api.apiLocation.lab %}
 		<tr>
-			<td>{{labApser}}</td>
+			<td>{{labApser.name}}</td>
 			<td>
 			{% if commitId.lab %}
-				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{labApser}}/{{commitId.lab}}lab/true'">
-				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{labApser}}/{{commitId.lab}}lab/false'">
+				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{labApser.name}}/{{commitId.lab}}lab/true'">
+				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{labApser.name}}/{{commitId.lab}}lab/false'">
+			{% endif %}
+			</td>
+			<td>
+			{% if labApser.deploy == 9 %}
+				Not deployed
 			{% endif %}
 			</td>
 		</tr>
@@ -180,18 +186,24 @@ OL Location:&nbsp;
 	<table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
 		<thead>
 		<tr>
-			<th width="150px">Name</th>
+			<th width="90px">Name</th>
 			<th width="60px">Deploy</th>
+			<th width="60px">Status</th>
 		</tr>
 		</thead>
 		<tbody>
 		{% for olApser in api.apiLocation.ol %}
 		<tr>
-			<td>{{olApser}}</td>
+			<td>{{olApser.name}}</td>
 			<td>
 			{% if commitId.ol %}
-				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser}}/{{commitId.ol}}ol/true'">
-				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser}}/{{commitId.ol}}ol/false'">
+				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser.name}}/{{commitId.ol}}ol/true'">
+				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser.name}}/{{commitId.ol}}ol/false'">
+			{% endif %}
+			</td>
+			<td>
+			{% if olApser.deploy == 9 %}
+				Not deployed
 			{% endif %}
 			</td>
 		</tr>
@@ -203,18 +215,24 @@ On-Line Location:&nbsp;
 	<table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
 		<thead>
 		<tr>
-			<th width="150px">Name</th>
+			<th width="90px">Name</th>
 			<th width="60px">Deploy</th>
+			<th width="60px">Status</th>
 		</tr>
 		</thead>
 		<tbody>
 		{% for masterApser in api.apiLocation.master %}
 		<tr>
-			<td>{{masterApser}}</td>
+			<td>{{masterApser.name}}</td>
 			<td>
 			{% if commitId.master %}
-				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser}}/{{commitId.master}}master/true'">
-				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser}}/{{commitId.master}}master/false'">
+				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser.name}}/{{commitId.master}}master/true'">
+				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser.name}}/{{commitId.master}}master/false'">
+			{% endif %}
+			</td>
+			<td>
+			{% if masterApser.deploy == 9 %}
+				Not deployed
 			{% endif %}
 			</td>
 		</tr>

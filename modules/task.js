@@ -291,6 +291,31 @@ function deploy(req, res, next){
 		    rundeck.deployTrigger((req.params.isFull === "true"), setOpt.apserName, setOpt.taskNo, setOpt.fileUrl, function(rkresult){
 			setOpt.rdExecId = rkresult.executions.execution[0].$.id;
 			dbase.setTask(setOpt, function(result) {
+			    var db = dbase.getDb();
+			    db.open(function(error, devopsDb){
+				if(error){
+				    console.log(error.stack);
+				    process.exit(0);
+				}
+				devopsDb.collection('api', function(error, apiColl){
+				    if(error){
+					console.log(error.stack);
+					process.exit(0);
+				    }
+				    var queryObj = {};
+				    if(buildData.gitBranch === "origin/master"){
+					queryObj.apiName = buildData.apiName;
+					queryObj['apiLocation.master.name'] = setOpt.apserName;
+				    }else if(buildData.gitBranch === "origin/ol"){
+					queryObj.apiName = buildData.apiName;
+					queryObj['apiLocation.ol.name'] = setOpt.apserName;
+				    }else if(buildData.gitBranch === "origin/lab"){
+					queryObj.apiName = buildData.apiName;
+					queryObj['apiLocation.lab.name'] = setOpt.apserName;
+				    }
+				    apiColl.update(queryObj,{$set:{"apiLocation.lab.$.rdExecId":setOpt.rdExecId}});
+				});
+			    });
 			    //triggerRundeck();
 			    if(result.status === 0){
 				res.send(rkresult);
