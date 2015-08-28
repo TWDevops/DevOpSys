@@ -208,7 +208,6 @@ function receive(req, res, next) {
 					    apiQueryObj['apiLocation.' + branch + '.rdExecId'] = queryObj.rdExecId;
 					    var apiUpdateObj = {};
 					    apiUpdateObj['apiLocation.' + branch + '.$.deploy'] = updateObj.taskStatus;
-					    console.log()
 					    apiColl.update(apiQueryObj, {$set:apiUpdateObj}, function(error, apiResult){
 						console.log(apiResult);
 						db.close();
