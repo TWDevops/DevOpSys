@@ -42,6 +42,11 @@ function receive(req, res, next) {
 			}
 			if (data) {
 			    //console.log('Successfully Insert');
+			    /*if(req.body.JOB_STATUS === "RUNNING"){
+				devopsDb.collection('api',function(error, apiColl){
+				    
+				});
+			    }else*/
 			    if(req.body.JOB_STATUS === "SUCCESS"){
 				fse.ensureDirSync("downloads/deploy/" + req.body.JOB_NAME + "/" + req.body.DEPLOY_ID);
 				req.body.PKG_FILE.forEach(function(fileName) {
@@ -101,7 +106,7 @@ function receive(req, res, next) {
 					res.send(sendData);
 				    });
 				});
-			    }
+			    } // end of if(req.body.JOB_STATUS === "SUCCESS")
 			}
 		    });
 		});

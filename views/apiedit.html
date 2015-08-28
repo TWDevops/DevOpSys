@@ -173,7 +173,13 @@ LAB Location:&nbsp;
 			{% endif %}
 			</td>
 			<td>
-			{% if labApser.deploy == 9 %}
+			{% if labApser.deploy == 0 %}
+				Deployed
+			{% elseif labApser.deploy == 1 %}
+				Preparing
+			{% elseif labApser.deploy == 2 %}
+				Deploying
+			{% elseif labApser.deploy == 9 %}
 				Not deployed
 			{% endif %}
 			</td>
@@ -202,7 +208,13 @@ OL Location:&nbsp;
 			{% endif %}
 			</td>
 			<td>
-			{% if olApser.deploy == 9 %}
+			{% if olApser.deploy == 0 %}
+				Deployed
+			{% elseif olApser.deploy == 1 %}
+				Preparing
+			{% elseif olApser.deploy == 2 %}
+				Deploying
+			{% elseif olApser.deploy == 9 %}
 				Not deployed
 			{% endif %}
 			</td>
@@ -231,14 +243,14 @@ On-Line Location:&nbsp;
 			{% endif %}
 			</td>
 			<td>
-			{% if masterApser.deploy == 9 %}
-				Not deployed
-			{% elif masterApser.deploy == 1 %}
-				Preparing
-			{% elif masterApser.deploy == 2 %}
-				Deploying
-			{% elif masterApser.deploy == 0 %}
+			{% if masterApser.deploy == 0 %}
 				Deployed
+			{% elseif masterApser.deploy == 1 %}
+				Preparing
+			{% elseif masterApser.deploy == 2 %}
+				Deploying
+			{% elseif masterApser.deploy == 9 %}
+				Not deployed
 			{% endif %}
 			</td>
 		</tr>
