@@ -437,6 +437,7 @@ function selectAPServer(req, res, next){
 							    apiLocations.lab = [];
 							    apiLocations.ol=[];
 							    apiLocations.master=[];
+							    if (apiDoc.apiLocation){
 								if (apiDoc.apiLocation.lab) {
 									for(var labIdx=0; labIdx < apiDoc.apiLocation.lab.length; labIdx++){
 										apiLocations.lab.push(apiDoc.apiLocation.lab[labIdx].name);
@@ -454,7 +455,7 @@ function selectAPServer(req, res, next){
 										apiLocations.master.push(apiDoc.apiLocation.master[matIdx].name);
 									}
 								}
-							    
+							    }
 							    db.close();
 							    //console.log(sendData);
 							    res.render('selectapser',{
