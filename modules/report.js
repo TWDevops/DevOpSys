@@ -15,7 +15,7 @@ var getHandler = {};
 var postHandler = {};
 
 function receive(req, res, next) {
-    var db = dbase.getDb(); 
+    var db = dbase.getDb();
     var sendData = {};
     sendData.SERVICE = req.params.sender;
     sendData.date = new Date();

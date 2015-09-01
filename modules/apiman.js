@@ -437,15 +437,24 @@ function selectAPServer(req, res, next){
 							    apiLocations.lab = [];
 							    apiLocations.ol=[];
 							    apiLocations.master=[];
-							    for(var alIdx=0;alIdx < apiDoc.apiLocation.lab.length; alIdx++){
-								apiLocations.lab.push(apiDoc.apiLocation.lab[alIdx].name);
-							    }
-							    for(var alIdx=0;alIdx < apiDoc.apiLocation.ol.length; alIdx++){
-								apiLocations.ol.push(apiDoc.apiLocation.ol[alIdx].name);
-							    }
-							    for(var alIdx=0;alIdx < apiDoc.apiLocation.master.length; alIdx++){
-								apiLocations.master.push(apiDoc.apiLocation.master[alIdx].name);
-							    }
+								if (apiDoc.apiLocation.lab) {
+									for(var labIdx=0; labIdx < apiDoc.apiLocation.lab.length; labIdx++){
+										apiLocations.lab.push(apiDoc.apiLocation.lab[labIdx].name);
+									}
+								}
+								
+								if (apiDoc.apiLocation.ol) {
+									for(var olIdx=0; olIdx < apiDoc.apiLocation.ol.length; olIdx++){
+										apiLocations.ol.push(apiDoc.apiLocation.ol[olIdx].name);
+									}
+								}
+							    
+								if (apiDoc.apiLocation.master) {
+									for(var matIdx=0; matIdx < apiDoc.apiLocation.master.length; matIdx++){
+										apiLocations.master.push(apiDoc.apiLocation.master[matIdx].name);
+									}
+								}
+							    
 							    db.close();
 							    //console.log(sendData);
 							    res.render('selectapser',{
@@ -485,60 +494,6 @@ function selectAPServer(req, res, next){
 }
 getHandler['selectapser'] = selectAPServer;
 postHandler['selectapser'] = selectAPServer;
-
-//準備移除
-/*function updateLevel(req, res, next){
-	var db = dbase.getDb();
-	var sendData = {};
-	var apiOid = null;
-	if(req.params.apiId && req.params.level && req.params.verIdx){
-		db.open(function(error, devopsDb) {
-			if(error){
-				console.log(error.stack);
-				process.exit(0);
-			}
-			devopsDb.collection('api', function(error, apiColl){
-				if(error){
-					console.log(error.stack);
-					process.exit(0);
-				}
-				apiOid = dbase.ObjectID(req.params.apiId);
-				var queryObj = {};
-				queryObj['_id'] = apiOid;
-				queryObj['apiVer.'+ req.params.verIdx.toString()] = {'$exists':true}
-				var updateObj = {};
-				updateObj['apiVer.'+ req.params.verIdx.toString() + '.deploy'] = parseInt(req.params.level);
-				console.log("queryObj: " + JSON.stringify(queryObj));
-				console.log("updateObj: " + JSON.stringify(updateObj));
-				apiColl.update( queryObj, {'$set': updateObj }, {"w":1}, function(error, result){
-					if(error){
-						console.log(error.stack);
-						process.exit(0);
-					}
-					if(result){
-						console.log("result: " + result);
-						if(JSON.parse(result)['ok'] == 1){
-							sendData["state"] = 0;
-						}else{
-							sendData["state"] = 1;
-						}
-						//sendData["UPDATE"] = doc;
-						sendData["date"] = new Date();
-						sendData["result"] = result;
-						res.send(sendData);
-						db.close();
-					}else{
-						sendData["state"] = 1;
-						sendData["info"] = "update error.";
-						sendData["date"] = new Date();
-					}
-				});
-			});
-		});
-	}
-}
-getHandler["updatelv/:apiId/:level/:verIdx"] = updateLevel;
-*/
 
 function register(req, res, next){
 	//console.log("use api");
