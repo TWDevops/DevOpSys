@@ -1,4 +1,5 @@
 {
+    "VERSION":"0.0.1-websocket"
     "MOD_LIST":{
 	"apiman":"apiman", "hello":"hello",
 	"task":"task", "ser":"serman",
