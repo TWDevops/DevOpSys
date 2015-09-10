@@ -230,14 +230,14 @@ function edit(req, res, next){
 					//}else{
 						gitlab.getGroupList(function(groupList) {
 						    gitlab.getCommitId(doc.apiGitInfo.id, function(commitId){
-							res.render('apiedit', {
-								title:"API Editor",
-								apiKey:req.session.apiId,
-								api:doc,
-								commitId:commitId,
-								apiIdHex:req.query.apiId,
-								owners: groupList
-							});
+								res.render('apiedit', {
+									title:"API Editor",
+									apiKey:req.session.apiId,
+									api:doc,
+									commitId:commitId,
+									apiIdHex:req.query.apiId,
+									owners: groupList
+								});
 						    });
 						});
 					}
