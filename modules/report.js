@@ -28,17 +28,17 @@ function receive(req, res, next) {
             db.open(function(error, devopsDb) {
                 if(error){
                     console.log(error.stack);
-                    process.exit(0);
+                    //process.exit(0);
                 }
                 devopsDb.collection('log', function(error, logColl){
                     if(error){
                         console.log(error.stack);
-                        process.exit(0);
+                        //process.exit(0);
                     }
                     logColl.insert(sendData, function(error, data){
                         if(error){
                             console.log(error.stack);
-                            process.exit(0);
+                            //process.exit(0);
                         }
                         if (data) {
                             //console.log('Successfully Insert');
@@ -64,24 +64,24 @@ function receive(req, res, next) {
                                 devopsDb.collection('builds', function(error, buildColl){
                                     if(error){
                                         console.log(error.stack);
-                                        process.exit(0);
+                                        //process.exit(0);
                                     }
                                     buildColl.update({"deployId":req.body.DEPLOY_ID},buildDoc,{"upsert":true}, function(error, data){
                                         if(error){
                                             console.log(error.stack);
-                                            process.exit(0);
+                                            //process.exit(0);
                                         }
                                         console.log("BRANCH: " + req.body.BRANCH);
                                         if(req.body.BRANCH === "origin/lab"){
                                             devopsDb.collection('api', function(error, apiColl){
                                                 if(error){
                                                     console.log(error.stack);
-                                                    process.exit(0);
+                                                    //process.exit(0);
                                                 }
                                                 apiColl.findOne({"apiName":req.body.JOB_NAME},{"apiLocation":true},function(error, apiDoc){
                                                     if(error){
                                                         console.log(error.stack);
-                                                        process.exit(0);
+                                                        //process.exit(0);
                                                     }
                                                     console.log(apiDoc);
                                                     if(apiDoc && apiDoc.apiLocation.lab.length > 0){
@@ -117,17 +117,17 @@ function receive(req, res, next) {
             db.open(function(error, devopsDb) {
                 if(error){
                     console.log(error.stack);
-                    process.exit(0);
+                    //process.exit(0);
                 }
                 devopsDb.collection('log', function(error, logColl){
                     if(error){
                         console.log(error.stack);
-                        process.exit(0);
+                        //process.exit(0);
                     }
                     logColl.insert(sendData, function(error, data){
                         if(error){
                             console.log(error.stack);
-                            process.exit(0);
+                            //process.exit(0);
                         }
                         db.close();
                         sendData.state = 0;
@@ -142,17 +142,17 @@ function receive(req, res, next) {
             db.open(function(error, devopsDb) {
                 if(error){
                     console.log(error.stack);
-                    process.exit(0);
+                    //process.exit(0);
                 }
                 devopsDb.collection('log', function(error, logColl){
                     if(error){
                         console.log(error.stack);
-                        process.exit(0);
+                        //process.exit(0);
                     }
                     logColl.insert(sendData, function(error, data){
                         if(error){
                             console.log(error.stack);
-                            process.exit(0);
+                            //process.exit(0);
                         }
                         parser.parseString(sendData.info, function (err, result){
                         //var rdDeployId = null;
@@ -184,24 +184,24 @@ function receive(req, res, next) {
                             devopsDb.collection('task', function(error, taskColl){
                                 if(error){
                                     console.log(error.stack);
-                                    process.exit(0);
+                                    //process.exit(0);
                                 }
                                 taskColl.update(queryObj,{$set:updateObj},function(error, taskResult){
                                     if(error){
                                         console.log(error.stack);
-                                        process.exit(0);
+                                        //process.exit(0);
                                     }
                                     console.log(taskResult);
                                     taskColl.findOne({"taskNo":queryObj.taskNo,"rdExecId":queryObj.rdExecId},{taskParams:1}, function(error, taskDoc){
                                         if(error){
                                             console.log(error.stack);
-                                            process.exit(0);
+                                            //process.exit(0);
                                         }
                                         var branch = taskDoc.taskParams.branch;
                                         devopsDb.collection('api', function(error, apiColl){
                                             if(error){
                                                 console.log(error.stack);
-                                                process.exit(0);
+                                                //process.exit(0);
                                             }
                                             var apiQueryObj = {};
                                             for(var i =0; i < rdOption.length; i++){
@@ -254,30 +254,29 @@ getHandler['receive'] = receive;
 function log(req, res, next){
     var db = dbase.getDb();
     db.open(function(error, devopsDb) {
-    if(error){
-        console.log(error.stack);
-        process.exit(0);
-    }
-    devopsDb.collection('log', function(error, logColl){
-        if(error){
-        console.log(error.stack);
-        process.exit(0);
-        }
-        var logCursor = logColl.find({}).sort({"date":-1});
-        logCursor.toArray(function(error, logDocArray){
         if(error){
             console.log(error.stack);
-            process.exit(0);
+            //process.exit(0);
         }
-        db.close();
-        console.log(logDocArray);
-        res.render('loglist',{
-             title: "Log",
-             logList: logDocArray
+        devopsDb.collection('log', function(error, logColl){
+            if(error){
+               console.log(error.stack);
+                //process.exit(0);
+            }
+            var logCursor = logColl.find({}).sort({"date":-1});
+            logCursor.toArray(function(error, logDocArray){
+                if(error){
+                    console.log(error.stack);
+                    //process.exit(0);
+                }
+                db.close();
+                console.log(logDocArray);
+                res.render('loglist',{
+                    title: "Log",
+                    logList: logDocArray
+                });
+            });
         });
-        });
-            
-    });
     });
 }
 getHandler['log'] = log;

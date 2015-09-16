@@ -30,18 +30,18 @@ function list(req, res, next) {
 	db.open(function(error, devopsDb) {
 		if(error){
 			console.log(error.stack);
-			process.exit(0);
+			//process.exit(0);
 		}
 		devopsDb.collection('api', function(error, apiColl){
 			if(error){
 				console.log(error.stack);
-				process.exit(0);
+				//process.exit(0);
 			}
 			var cursor = apiColl.find({});
 			cursor.each(function(error, doc){
 				if(error){
 					console.log(error.stack);
-					process.exit(0);
+					//process.exit(0);
 				}
 				if(doc != null){
 					console.log(doc);
@@ -69,18 +69,18 @@ function listView(req, res, next) {
 	db.open(function(error, devopsDb) {
 		if(error){
 			console.log(error.stack);
-			process.exit(0);
+			//process.exit(0);
 		}
 		devopsDb.collection('api', function(error, apiColl){
 			if(error){
 				console.log(error.stack);
-				process.exit(0);
+				//process.exit(0);
 			}
 			var cursor = apiColl.find({});
 			cursor.each(function(error, doc){
 				if(error){
 					console.log(error.stack);
-					process.exit(0);
+					//process.exit(0);
 				}
 				if(doc != null){
 					console.log(doc['_id'].toString());
@@ -110,19 +110,19 @@ function edit(req, res, next){
 		db.open(function(error, devopsDb) {
 			if(error){
 				console.log(error.stack);
-				process.exit(0);
+				//process.exit(0);
 			}
 			devopsDb.collection('api', function(error, apiColl){
 				if(error){
 					console.log(error.stack);
-					process.exit(0);
+					//process.exit(0);
 				}
 				apiOid = dbase.ObjectID(req.session.apiId);
 				console.log(apiOid);
 				apiColl.findOne({"_id": apiOid}, function(error, doc){
 					if(error){
 						console.log(error.stack);
-						process.exit(0);
+						//process.exit(0);
 					}
 					if(doc != null){
 						console.log(doc);
@@ -173,7 +173,7 @@ function edit(req, res, next){
 						apiColl.update({"_id": apiOid},{'$set':doc},{"w":1},function(error, result){
 							if(error){
 								console.log(error.stack);
-								process.exit(0);
+								//process.exit(0);
 							}
 							console.log("result: " + result);
 							console.log("ok: " + JSON.parse(result)['ok']);
@@ -204,7 +204,7 @@ function edit(req, res, next){
 		db.open(function(error, devopsDb) {
 			if(error){
 				console.log(error.stack);
-				process.exit(0);
+				//process.exit(0);
 			}
 			console.log(req.session.apiId);
 			req.session.apiId = req.query.apiId;
@@ -212,7 +212,7 @@ function edit(req, res, next){
 			devopsDb.collection('api', function(error, apiColl){
 				if(error){
 					console.log(error.stack);
-					process.exit(0);
+					//process.exit(0);
 				}
 				apiOid = dbase.ObjectID(req.query.apiId);
 				//var cursor = collection.find({"_id": apiOid});
@@ -221,7 +221,7 @@ function edit(req, res, next){
 				apiColl.findOne({"_id": apiOid}, function(error, doc){
 					if(error){
 						console.log(error.stack);
-						process.exit(0);
+						//process.exit(0);
 					}
 					if(doc != null){
 						console.log(doc);
@@ -275,17 +275,17 @@ function setCallingApi(req, res, next){
 			db.open(function(error, devopsDb){
 				if(error){
 					console.log(error.stack);
-					process.exit(0);
+					//process.exit(0);
 				}
 				devopsDb.collection('api',function(error,apiColl){
 					if(error){
 						console.log(error.stack);
-						process.exit(0);
+						//process.exit(0);
 					}
 					apiColl.update({"apiAllow":req.session.apiId},{$pull:{"apiAllow":req.session.apiId}},{multi:true},function(error,result){
 						if(error){
 							console.log(error.stack);
-							process.exit(0);
+							//process.exit(0);
 						}
 						sendData['1']=result;
 						if(req.body.callApiId){
@@ -315,18 +315,18 @@ function setCallingApi(req, res, next){
 			db.open(function(error, devopsDb){
 				if(error){
 					console.log(error.stack);
-					process.exit(0);
+					//process.exit(0);
 				}
 				devopsDb.collection('api', function(error,apiColl){
 					if(error){
 						console.log(error.stack);
-						process.exit(0);
+						//process.exit(0);
 					}
 					var cursor = apiColl.find({'_id':{$ne: dbase.ObjectID(req.session.apiId)}},{'apiName':true, 'apiAllow':true});
 					cursor.each(function(error, doc){
 						if(error){
 							console.log(error.stack);
-							process.exit(0);
+							//process.exit(0);
 						}
 						if(doc != null){
 							console.log(doc['_id'].toString());
@@ -392,17 +392,17 @@ function selectAPServer(req, res, next){
 			db.open(function(error, devopsDb){
 				if(error){
 					console.log(error.stack);
-					process.exit(0);
+					//process.exit(0);
 				}
 				devopsDb.collection('api',function(error,apiColl){
 					if(error){
 						console.log(error.stack);
-						process.exit(0);
+						//process.exit(0);
 					}
 					apiColl.update({'_id': dbase.ObjectID(req.session.apiId)},{$set:{'apiLocation': apiLoc}},function(error, result){
 						if(error){
 							console.log(error.stack);
-							process.exit(0);
+							//process.exit(0);
 						}
 						sendData = result;
 						res.send(sendData);
@@ -414,23 +414,23 @@ function selectAPServer(req, res, next){
 			db.open(function(error, devopsDb){
 				if(error){
 					console.log(error.stack);
-					process.exit(0);
+					//process.exit(0);
 				}
 				devopsDb.collection('apserver', function(error,apSerColl){
 					if(error){
 						console.log(error.stack);
-						process.exit(0);
+						//process.exit(0);
 					}
 					apSerColl.find({"apSerActivated":true},{'apSerName':true,'apSerLevel':true}).toArray(function(error,apSerDocs){
 						if(error){
 							console.log(error.stack);
-							process.exit(0);
+							//process.exit(0);
 						}
 						devopsDb.collection('api', function(error,apiColl){
 							apiColl.findOne({'_id': dbase.ObjectID(req.session.apiId)},{apiLocation:true},function(error,apiDoc){
 							    if(error){
 								console.log(error.stack);
-								process.exit(0);
+								//process.exit(0);
 							    }
 							    
 							    var apiLocations = {};
@@ -520,17 +520,17 @@ function register(req, res, next){
         				db.open(function(error, devopsDb) {
         					if(error){
         						console.log(error.stack);
-        						process.exit(0);
+        						//process.exit(0);
         					}
         					devopsDb.collection('api', function(error, apiColl){
         						if(error){
         							console.log(error.stack);
-        							process.exit(0);
+        							//process.exit(0);
         						}
         						var cursor = apiColl.insert(insertObj, function(error,data){
         							if(error){
         								console.log(error.stack);
-        								process.exit(0);
+        								//process.exit(0);
         							}
         							if (data) {
         				                console.log('Successfully Insert');

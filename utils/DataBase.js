@@ -40,17 +40,17 @@ DataBase.prototype.getBuildDataByDeployId = function(deployId, callback){
 	db.open(function(error, apiDb) {
 		if(error){
 			console.log(error.stack);
-			process.exit(0);
+			//process.exit(0);
 		}
 		apiDb.collection('builds', function(error, apiColl){
 			if(error){
 				console.log(error.stack);
-				process.exit(0);
+				//process.exit(0);
 			}
 			apiColl.findOne({"deployId": deployId}, function(error, buildDoc){
 			    if(error){
 				console.log(error.stack);
-				process.exit(0);
+				//process.exit(0);
 			    }
 			    db.close();
 			    callback(buildDoc);
@@ -65,18 +65,18 @@ DataBase.prototype.getApiAllow = function(callback){
 	db.open(function(error, apiDb) {
 		if(error){
 			console.log(error.stack);
-			process.exit(0);
+			//process.exit(0);
 		}
 		apiDb.collection('api', function(error, apiColl){
 			if(error){
 				console.log(error.stack);
-				process.exit(0);
+				//process.exit(0);
 			}
 			var cursor = apiColl.find({},{apiActivated:true,apiAllow:true,apiName:true});
 			cursor.each(function(error, doc){
 				if(error){
 					console.log(error.stack);
-					process.exit(0);
+					//process.exit(0);
 				}
 				if(doc != null){
 					//console.log(doc['apiName']);
@@ -98,17 +98,17 @@ DataBase.prototype.getTask = function(action,callback){
 	db.open(function(error, devopsDb) {
 		if(error){
 			console.log(error.stack);
-			process.exit(0);
+			//process.exit(0);
 		}
 		devopsDb.collection('task', function(error, taskColl){
 			if(error){
 				console.log(error.stack);
-				process.exit(0);
+				//process.exit(0);
 			}
 			taskColl.findOne({'taskAction':action, 'taskStatus': 1},function(error, taskDoc){
 				if(error){
 					console.log(error.stack);
-					process.exit(0);
+					//process.exit(0);
 				}
 				if(taskDoc){
 					taskList = taskDoc;
@@ -126,19 +126,19 @@ DataBase.prototype.getDeployList = function(findOpt,callback){
 	db.open(function(error, devopsDb) {
 		if(error){
 			console.log(error.stack);
-			process.exit(0);
+			//process.exit(0);
 		}
 		devopsDb.collection('task', function(error, taskColl){
 			if(error){
 				console.log(error.stack);
-				process.exit(0);
+				//process.exit(0);
 			}
 			var cursor = taskColl.find(findOpt.query).limit(findOpt.limit|0);
 			var taskList = {};
 			cursor.each(function(error,doc){
 				if(error){
 					console.log(error.stack);
-					process.exit(0);
+					//process.exit(0);
 				}
 				if(doc != null){
 					taskList[doc._id] = doc;
@@ -194,17 +194,17 @@ DataBase.prototype.setTask = function(setOpt, callback){
 					db.open(function(error,devopsDb){
 						if(error){
 							console.log(error.stack);
-							process.exit(0);
+							//process.exit(0);
 						}
 						devopsDb.collection('task', function(error, taskColl){
 							if(error){
 								console.log(error.stack);
-								process.exit(0);
+								//process.exit(0);
 							}
 							taskColl.insert(taskObj, function(error,result){
 								if(error){
 									console.log(error.stack);
-									process.exit(0);
+									//process.exit(0);
 								}
 								db.close();
 								if(result){
@@ -238,7 +238,7 @@ DataBase.prototype.updateTask = function(taskId, updateObj, callback){
 	    taskColl.update({ "_id" : taskOid }, { $set : updateObj }, function(error, result){
 		if(error){
 			console.log(error.stack);
-			process.exit(0);
+			//process.exit(0);
 		}
 		console.log("updateTask result: " + result);
 		db.close();
@@ -256,20 +256,20 @@ DataBase.prototype.getDataByApserName = function(serName,callback){
 	    //console.log("db_apser:3");
 		if(error){
 			console.log(error.stack);
-			process.exit(0);
+			//process.exit(0);
 		}
 		//console.log("db_apser:3-1");
 		devopsDb.collection('apserver', function(error, apSerColl){
 		    //console.log("db_apser:4");
 			if(error){
 				console.log(error.stack);
-				process.exit(0);
+				//process.exit(0);
 			}
 			apSerColl.findOne({"apSerName" : serName},{"apSerName":1,"apSerIntIp":1,"apSerLevel":1},function(error, apSerDoc){
 			    //console.log("db_apser:5");
 				if(error){
 					console.log(error.stack);
-					process.exit(0);
+					//process.exit(0);
 				}
 				db.close();
 				if(apSerDoc != null){
@@ -288,17 +288,17 @@ DataBase.prototype.getApiGitRepo = function(apiId, callback){
 	db.open(function(error, devopsDb) {
 		if(error){
 			console.log(error.stack);
-			process.exit(0);
+			//process.exit(0);
 		}
 		devopsDb.collection('api', function(error, apiColl){
 			if(error){
 				console.log(error.stack);
-				process.exit(0);
+				//process.exit(0);
 			}
 			apiColl.findOne({'_id': DataBase.prototype.ObjectID(apiId)},{"apiGitInfo":1},function(error, apiDoc){
 				if(error){
 					console.log(error.stack);
-					process.exit(0);
+					//process.exit(0);
 				}
 				db.close();
 				if(apiDoc != null){
@@ -352,17 +352,17 @@ DataBase.prototype.updateTaskStatus = function(taskId, taskSt, callback){
 		db.open(function(error, devopsDb) {
 			if(error){
 				console.log(error.stack);
-				process.exit(0);
+				//process.exit(0);
 			}
 			devopsDb.collection('task', function(error, taskColl){
 				if(error){
 					console.log(error.stack);
-					process.exit(0);
+					//process.exit(0);
 				}
 				taskColl.update({"_id":taskOid},{'$set':{'taskStatus':nexTaskSt}},{"w":1},function(error, result){
 					if(error){
 						console.log(error.stack);
-						process.exit(0);
+						//process.exit(0);
 					}
 					//if(result){
 						console.log("updateTaskStatus result: " + result);
