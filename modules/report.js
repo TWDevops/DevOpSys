@@ -113,7 +113,7 @@ function receive(req, res, next) {
 	    });
 	},
 	'test' : function(){
-	    sendData.info = req.body;
+	    sendData.info = JSON.stringify(req.body);
 	    db.open(function(error, devopsDb) {
 		if(error){
 		    console.log(error.stack);

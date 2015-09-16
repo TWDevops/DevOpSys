@@ -467,25 +467,6 @@ function selectAPServer(req, res, next){
 							})
 						})
 					});
-					/*var cursor = apSerColl.find({"apSerActivated":true},{'apSerName':true,'apSerLevel':true});
-					cursor.each(function(error, doc){
-						if(error){
-							console.log(error.stack);
-							process.exit(0);
-						}
-						if(doc != null){
-							console.log(doc['_id'].toString());
-							sendData[doc['_id'].toString()]= doc;
-						}else{
-							devopsDb.close();
-							console.log(sendData);
-							res.render('selectapser',{
-								 title: "AP Server Select",
-								 apiKey:req.session.apiId,
-								 apSerList: sendData
-							});
-						}
-					});*/
 				});
 			});
 		}
@@ -599,6 +580,11 @@ function deploy(req, res, next){
     
 }
 getHandler["deploy"] = deploy;
+
+function apiVerify (req, res, next){
+	
+}
+getHandler["verify"] = apiVerify;
 
 exports.headHander = headHander;
 exports.getHandler = getHandler;
