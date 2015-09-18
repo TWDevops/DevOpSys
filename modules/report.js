@@ -242,7 +242,10 @@ function receive(req, res, next) {
                 res.send(sendData);
             }
             break;
-
+        case 'GET':
+            res.send({});
+            break;
+        
         default:
             res.send({});
             break;

@@ -11,14 +11,12 @@ var postHandler = {};
  */
 function apiFileDl(req, res, next) {
     var apiFile = req.params.file,
-    	path = __dirname + '/../downloads/deploy/' + apiFile;
+        path = __dirname + '/../downloads/deploy/' + apiFile;
     
     res.download(path);
     
 }
 getHandler['api/:file(*)'] = apiFileDl;
-
-
 
 exports.headHander = headHander;
 exports.getHandler = getHandler;

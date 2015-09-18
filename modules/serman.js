@@ -5,7 +5,7 @@ var dbase = new require('../utils/DataBase.js');
 
 var fs = require('fs');
 
-var headHander = {}
+var headHander = {};
 var getHandler = {};
 var postHandler = {};
 
