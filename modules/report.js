@@ -1,5 +1,6 @@
+/*jshint sub: true es5:true*/
 /**
- * New node file
+ * Report module.
  */
 var dbase = new require('../utils/DataBase.js');
 

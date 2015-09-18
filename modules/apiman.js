@@ -1,3 +1,4 @@
+/*jshint sub: true es5:true*/
 /**
  * API Manager Module
  */

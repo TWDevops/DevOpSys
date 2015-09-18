@@ -1,3 +1,4 @@
+/*jshint sub: true es5:true*/
 var express = require('express');
 var router = express.Router();
 

@@ -1,5 +1,6 @@
+/*jshint sub: true es5:true*/
 /**
- * New node file
+ * Files download modules.
  */
 var headHander = {};
 var getHandler = {};
