@@ -159,12 +159,16 @@ function receive(req, res, next) {
                         //var rdDeployId = null;
                             var queryObj = {};
                             var updateObj = {};
+                            var isAutoDeploy = false;
                             console.log("rundeck status: " + result.notification.$.status);
                             if(result.notification.$.status === 'running'){
                                 queryObj.taskStatus = 1;
                                 updateObj.taskStatus = 2;
                                 updateObj.startDate = new Date();
                             }else if(result.notification.$.status === 'succeeded'){
+                                if(result.notification.executions[0].execution[0].job[0].$.id === config.get("RUNDECK_FULL_AUTO_DEPLOY_ID")){
+                                    isAutoDeploy = true;
+                                }
                                 queryObj.taskStatus = 2;
                                 updateObj.taskStatus = 0;
                                 updateObj.endDate = new Date();
@@ -217,8 +221,21 @@ function receive(req, res, next) {
                                             apiColl.update(apiQueryObj, {$set:apiUpdateObj}, function(error, apiResult){
                                                 console.log(apiResult);
                                                 db.close();
-                                                sendData.state = 0;
-                                                res.send(sendData);
+                                                /*if(isAutoDeploy){
+                                                    var Client = require('node-rest-client').Client;
+                                                    var client = new Client();
+                                                    var args = {
+                                                        data:{"API":[{"workId":"uuid","URL":"http://172.19.7.217/ajax/plus/monitor/monitor-entrance?checkKey=plus10400","Error":""}],"error":"","Seleniume":[],"data":"","success":"false"},
+                                                        headers:{"dps-token":config.get('DPS_TOKEN')}
+                                                    };
+                                                    client.post("http://172.19.9.14:8080/qaServer/service/testcase", args, function(data, response){
+                                                        sendData.state = 0;
+                                                        res.send(sendData);
+                                                    });
+                                                }else{*/
+                                                    sendData.state = 0;
+                                                    res.send(sendData);
+                                                //}
                                             });
                                         });
                                     });

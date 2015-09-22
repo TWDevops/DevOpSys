@@ -10,9 +10,9 @@
   ], 
   "cwd": "%i", 
   "version": "1.0.12", 
-  "env": "", 
+  "env": "DEBUG=DevOpSys:*", 
   "showParsedOutputList": 0, 
   "type": "command", 
   "parseOutput": 0, 
-  "runIn": "command-output-window"
+  "runIn": "new-console"
 }
