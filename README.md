@@ -32,15 +32,15 @@
 
 
 ## Usage
-API註冊: 註冊 API 並在 Gitlab 及 Jenkins 建立 project.
-API清單: 列出已註冊的 API.
-AP Server列表: 列出目前的AP Server.
-LOG: 記錄 Jenkins 及 Rundeck 的回傳訊息.
+- API註冊: 註冊 API 並在 Gitlab 及 Jenkins 建立 project.
+- API清單: 列出已註冊的 API.
+- AP Server列表: 列出目前的AP Server.
+- LOG: 記錄 Jenkins 及 Rundeck 的回傳訊息.
 
 
 ## Developing
-已經可以透過 Rundeck 將打包好的 war檔, deploy 到 tomcat 上.
-現在在串接 Test Server.
+-已經可以透過 Rundeck 將打包好的 war檔, deploy 到 tomcat 上.
+-現在在串接 Test Server.
 
 ### Tools
 
@@ -48,3 +48,5 @@ Created with [Nodeclipse](https://github.com/Nodeclipse/nodeclipse-1)
  ([Eclipse Marketplace](http://marketplace.eclipse.org/content/nodeclipse), [site](http://www.nodeclipse.org)) 
 
 Nodeclipse is free open-source project that grows with your contributions.
+
+Now, I am developing on Komodo EDIT.
