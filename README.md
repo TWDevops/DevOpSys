@@ -39,8 +39,9 @@
 
 
 ## Developing
--已經可以透過 Rundeck 將打包好的 war檔, deploy 到 tomcat 上.
--現在在串接 Test Server.
+已經可以透過 Rundeck 將打包好的 war檔, deploy 到 tomcat 上.
+
+現在在串接 Test Server.
 
 ### Tools
 

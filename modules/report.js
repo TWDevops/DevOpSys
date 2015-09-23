@@ -284,7 +284,7 @@ function log(req, res, next){
         console.log(error.stack);
         process.exit(0);
         }
-        var logCursor = logColl.find({}).sort({"date":-1});
+        var logCursor = logColl.find({},{"limit":20}).sort({"date":-1});
         logCursor.toArray(function(error, logDocArray){
         if(error){
             console.log(error.stack);
