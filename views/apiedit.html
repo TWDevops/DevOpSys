@@ -98,7 +98,7 @@
 				<!-- <input name="Deploy" type="button" value="Deploy" onclick="javascript:location.href='/mod/task/setdeploy/{{ver.no}}'" /> -->
 			</td>
 		</tr>
-		{% endfor %}
+    {% endfor %}
 		<tr>
 			<td scope="col"><input name="verNo" size="2" type="text"  /></td>
 			<td scope="col"><input name="verApiUDate" readonly="readonly" size="18" type="text"  /></td>
@@ -167,7 +167,7 @@ LAB Location:&nbsp;
 		<tr>
 			<td>{{labApser.name}}</td>
 			<td>
-			{% if commitId.lab %}
+			{% if commitId.lab && labApser.name %}
 				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{labApser.name}}/{{commitId.lab}}lab/true'">
 				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{labApser.name}}/{{commitId.lab}}lab/false'">
 			{% endif %}
@@ -202,7 +202,7 @@ OL Location:&nbsp;
 		<tr>
 			<td>{{olApser.name}}</td>
 			<td>
-			{% if commitId.ol %}
+			{% if commitId.ol && olApser.name %}
 				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser.name}}/{{commitId.ol}}ol/true'">
 				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser.name}}/{{commitId.ol}}ol/false'">
 			{% endif %}
@@ -237,7 +237,7 @@ On-Line Location:&nbsp;
 		<tr>
 			<td>{{masterApser.name}}</td>
 			<td>
-			{% if commitId.master %}
+			{% if commitId.master && masterApser.name %}
 				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser.name}}/{{commitId.master}}master/true'">
 				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser.name}}/{{commitId.master}}master/false'">
 			{% endif %}
