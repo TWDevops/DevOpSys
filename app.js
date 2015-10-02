@@ -71,6 +71,7 @@ app.use(session({
 
 app.use(favicon(path.join(__dirname,'public','images','favicon.ico')));
 app.use("/styles", express.static(__dirname + '/views/styles'));
+app.use("/ext", express.static(__dirname + '/views/ext'));
 app.use(logger('dev'));
 /*app.use(function(req, res, next) {
     if(req.is("application/xml")){

@@ -1,0 +1,68 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ pagename|title }}{% endblock %}
+
+{% block content %}
+
+<input type="button" style="width:150px;height:40px" value="測試" name="tryTestCase" onclick="tryTestcase()">
+
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="/ext/json-viewer/jquery.json-viewer.js"></script>
+<link href="/ext/json-viewer/jquery.json-viewer.css" type="text/css" rel="stylesheet" />
+
+
+<script language=javascript>
+    function tryTestcase(){
+		console.log("tryTestCase");
+		var cb = document.getElementsByName("checkTestCase");
+		console.log(cb.length);
+		
+		for( i=0; i<cb.length; i++){
+			if(cb[i].checked == true){
+				console.log(cb[i].value);
+			}
+		}
+	}
+
+	function json_viewer(data){
+		//console.log(data);
+		//console.log(JSON.stringify(data));
+		//var jv = document.getElementsByName("json-renderer");
+		//jv.jsonViewer(data);
+		//var input = JSON.stringify(data);
+		$('#'+data.testid).jsonViewer(data.testdata);
+		//$('.json-toggle').click();
+	}
+
+
+
+</script> 
+<table cellpadding="5" rules="all" style="border:3px #FFAC55 double;padding:5px;">
+	<thead style="border:3px #FFAC55 double;padding:5px;">
+		<tr>
+			<th> </td>
+			<th>ID</td>
+			<th>type</td>
+			<th>class</td>
+			<th>description</td>
+			<th>testdata</th>
+			<!--<th>On-line</th>-->
+		</tr>
+	</thead>
+	<tbody>
+	{% for testCast in testCaseList %}
+		<tr>
+			<th><input type=checkbox name="checkTestCase" value={{testCast.testid}}></td>
+			<td>{{testCast.testid}}</td>
+			<td>{{testCast.type}}</td>
+			<td>{{testCast.class}}</td>
+			<td>{{testCast.description}}</td>
+			<td><pre id='{{testCast.testid}}'></pre></td>
+			<script> json_viewer({{JSON.stringify(testCast)}})</script>
+		</tr>
+	{% endfor %}
+	<script>$('pre > .json-toggle').click()</script>
+	</tbody>
+</table>
+{% endblock %}
