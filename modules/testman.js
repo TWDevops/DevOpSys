@@ -62,6 +62,18 @@ function testcaseview(req, res, next) {
 }
 getHandler["testcaseview"]=testcaseview;
 
+function trytestcase(req, res, next) {
+    if(req.session.apiId){
+        console.log("session.apiId: " + req.session.apiId);
+        req.session.apiId=null;
+    }
+
+    console.log("session.apiId: " + req.session.apiId);
+    console.log("req: " + JSON.stringify(req.body));
+
+    res.send('OK');
+}
+postHandler["tryTestCase"]=trytestcase;
 
 function testserverview(req, res, next){
     var db = dbase.getDb();
