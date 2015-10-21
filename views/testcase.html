@@ -20,11 +20,13 @@
 		var testidArray = [];
 		for( i=0; i<cb.length; i++){
 			if(cb[i].checked == true){
-				console.log(cb[i].value);
-				testidArray.push(cb[i].value);
+				tempObj = {};
+				tempObj.testid = cb[i].value
+				//console.log(cb[i].value);
+				testidArray.push(tempObj);
 			}
 		}
-		postData["testid"] = testidArray;
+		postData["testIdArray"] = testidArray;
 		var pathArray = window.location.pathname.split( '/' );
 		var newPathname = "";
 		for(i=0;i<pathArray.length-1;i++) {	
