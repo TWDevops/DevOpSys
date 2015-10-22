@@ -14,16 +14,55 @@
 
 <script language=javascript>
     function tryTestcase(){
-		console.log("tryTestCase");
-		var cb = document.getElementsByName("checkTestCase");
-		console.log(cb.length);
-		
+		console.log("tryTestCase:");
+		var postData={};
+		var cb = document.getElementsByName("checkTestCase");		
+		var testidArray = [];
 		for( i=0; i<cb.length; i++){
 			if(cb[i].checked == true){
-				console.log(cb[i].value);
+				tempObj = {};
+				tempObj.testid = cb[i].value
+				//console.log(cb[i].value);
+				testidArray.push(tempObj);
 			}
 		}
-	}
+		postData["testIdArray"] = testidArray;
+		var pathArray = window.location.pathname.split( '/' );
+		var newPathname = "";
+		for(i=0;i<pathArray.length-1;i++) {	
+			newPathname += pathArray[i]+'/';
+		}
+		var url = window.location.origin  + newPathname + 'tryTestCase';
+		var method = "POST";
+		var contentType = "application/json;charset=UTF-8"
+		var request = new XMLHttpRequest();
+
+		request.onload = function () {
+
+		   // Because of javascript's fabulous closure concept, the XMLHttpRequest "request"
+		   // object declared above is available in this function even though this function
+		   // executes long after the request is sent and long after this function is
+		   // instantiated. This fact is CRUCIAL to the workings of XHR in ordinary
+		   // applications.
+
+		   // You can get all kinds of information about the HTTP response.
+		   var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+		   var data = request.responseText; // Returned data, e.g., an HTML document.
+		   console.log(data);
+		}
+
+		request.open(method, url, true);
+
+		request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+		// Or... request.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+		// Or... whatever
+		//postData = "{\"test\":123}"
+		// Actually sends the request to the server.
+		console.log(JSON.stringify(postData));
+		request.send(JSON.stringify(postData));
+		
+
+	};
 
 	function json_viewer(data){
 		//console.log(data);
@@ -45,6 +84,7 @@
 			<th>ID</td>
 			<th>type</td>
 			<th>class</td>
+			<th>defaultHost</td>
 			<th>description</td>
 			<th>testdata</th>
 			<!--<th>On-line</th>-->
@@ -57,6 +97,7 @@
 			<td>{{testCast.testid}}</td>
 			<td>{{testCast.type}}</td>
 			<td>{{testCast.class}}</td>
+			<td>{{testCast.defaultHost}}</td>
 			<td>{{testCast.description}}</td>
 			<td><pre id='{{testCast.testid}}'></pre></td>
 			<script> json_viewer({{JSON.stringify(testCast)}})</script>

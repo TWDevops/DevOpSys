@@ -5,7 +5,7 @@
 //var DataBase = new require('../utils/DataBase.js');
 //var dbase = new DataBase();
 var dbase = new require('../utils/DataBase.js');
-
+var testModule = new require('./testModules.js');
 /*
  *  Method List(head, get, post)
  */
@@ -27,8 +27,14 @@ function testcaseview(req, res, next) {
     console.log("session.apiId: " + req.session.apiId);
     
 
-
-
+    testModule.getAllTestCase(null, null, function(sucess, result){
+        //console.log(result);
+        res.render('testcase',{
+            title: "Test Case List",
+            testCaseList: result
+        });
+    });
+    /*
     var db = dbase.getDb();
     var sendData = {};
     //console.log("use api");
@@ -58,10 +64,32 @@ function testcaseview(req, res, next) {
             });
         });
     });
+    */
 
 }
 getHandler["testcaseview"]=testcaseview;
 
+function trytestcase(req, res, next) {
+    if(req.session.apiId){
+        console.log("session.apiId: " + req.session.apiId);
+        req.session.apiId=null;
+    }
+
+    //console.log("session.apiId: " + req.session.apiId);
+    //console.log("req: " + JSON.stringify(req.body));
+
+    var deployid = 'ui_test01';
+    var seleniumtaskid = 'ui_test01';
+    if(req.body.testIdArray[0].testid != null){
+        testModule.sendToTestServer (deployid, null, seleniumtaskid, req.body.testIdArray, function(sucess, result){
+            //console.log(result);
+            res.send(result);
+        });
+    }else{
+        res.send('prem error');
+    }
+}
+postHandler["tryTestCase"]=trytestcase;
 
 function testserverview(req, res, next){
     var db = dbase.getDb();
