@@ -21,7 +21,7 @@ module.exports = {
 					process.exit(0);
 				}
 
-				mongoColl.find({},{'testid':true, 'type':true, 'class':true, 'description': true,"testdata":true}).toArray(function(error, result){
+				mongoColl.find({},{'testid':true, 'type':true, 'class':true, 'description': true,"testdata":true, 'defaultHost':true}).toArray(function(error, result){
 					if(error){
 						console.log(error.stack);
 						process.exit(0);
@@ -45,7 +45,7 @@ module.exports = {
 					process.exit(0);
 				}
 
-				mongoColl.find( {$or: testIdArray } , {"testid":true, "testdata":true, 'type':true}).toArray(function(error, result){
+				mongoColl.find( {$or: testIdArray } , {"testid":true, "testdata":true, 'type':true, 'defaultHost':true}).toArray(function(error, result){
 					if(error){
 						console.log(error.stack);
 						process.exit(0);
@@ -76,7 +76,7 @@ module.exports = {
 	}
 
 	*/
-	sendToTestServer : function(deployid, seleniumtaskid, testIdArray, callback){
+	sendToTestServer : function(deployid, targetHost, seleniumtaskid, testIdArray, callback){
 		var postData = {};
 		postData.deployid = deployid;
 		postData.seleniumtaskid = seleniumtaskid;
@@ -99,14 +99,24 @@ module.exports = {
 			//console.log(JSON.stringify(testCase));
 			
 			for(i=0; i<testCase.length; i++){
+				var tempString = JSON.stringify((testCase[i]));
+				if(targetHost == null){
+					tempString = tempString.replace('$(HOST)', testCase[i].defaultHost);
+				}else{
+					tempString = tempString.replace('$(HOST)', targetHost);
+				}
+
+				console.log(tempString);
+
+
 				if(testCase[i].type == 'selenium'){
-					postData.selenium.push(testCase[i]);
+					postData.selenium.push(JSON.parse(tempString));
 				}else if(testCase[i].type == 'api'){
-					postData.selenium.push(testCase[i]);
+					var testObj = JSON.parse(tempString);
+					postData.api.push(testObj.testdata[0]);
 				}
 			}
 
-			console.log(JSON.stringify(postData));
 
 			//http post
 			var body = '';
@@ -119,18 +129,21 @@ module.exports = {
 
 				res.on('end', function() {
 					testServerResponse = JSON.parse(body);
+					callback(true, 'Test start: '+ JSON.stringify(testServerResponse));
 				})
 			});
 
 			req.on('error', function(e) {
 				console.log('problem with request: ' + e.message);
+				callback(false, 'Test error: '+ e.message);
 			});
 
 			// write data to request body
+			console.log(JSON.stringify(postData));
 			req.write(JSON.stringify(postData));
 			req.end();
 			
-			callback(true, 'Test start: '+ testServerResponse);
+			//callback(true, 'Test start: '+ testServerResponse);
 		});
 	}
 }

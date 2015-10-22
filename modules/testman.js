@@ -75,13 +75,13 @@ function trytestcase(req, res, next) {
         req.session.apiId=null;
     }
 
-    console.log("session.apiId: " + req.session.apiId);
-    console.log("req: " + JSON.stringify(req.body));
+    //console.log("session.apiId: " + req.session.apiId);
+    //console.log("req: " + JSON.stringify(req.body));
 
     var deployid = 'ui_test01';
     var seleniumtaskid = 'ui_test01';
     if(req.body.testIdArray[0].testid != null){
-        testModule.sendToTestServer (deployid, seleniumtaskid, req.body.testIdArray, function(sucess, result){
+        testModule.sendToTestServer (deployid, null, seleniumtaskid, req.body.testIdArray, function(sucess, result){
             //console.log(result);
             res.send(result);
         });
