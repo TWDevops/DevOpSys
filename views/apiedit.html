@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<form action="/mod/apiman/edit" method="post" name="apiUpdate">
+<form action="/mod/apiman/modify/{{ apiKey }}/edit" method="post" name="apiUpdate">
 <!-- <input type="hidden" name="apiId" value="{{ apiIdHex }}"> -->
 <table border="0" cellpadding="0" cellspacing="1">
 	<tbody>
@@ -81,24 +81,7 @@
 		</tr>
 	</thead>
 	<tbody>
-	{% for key,ver in api.apiVer %}
-		<tr>
-			<td scope="col"><input name="verNo" readonly="readonly" size="2" type="text" value="{{ver.no}}" /></td>
-			<td scope="col"><input name="verApiUDate" readonly="readonly" size="18" type="text" value="{{ver.apiUDate.toString()}}" /></td>
-			<td scope="col"><input name="verCtrlType" size="5" type="text" value="{{ver.verCtrlType}}" /></td>
-			<td scope="col"><input name="verSrcUrl" size="30" type="text" value="{{ver.srcUrl}}"/></td>
-			<td scope="col">
-				<textarea name="verFileList" readonly="readonly">{{ver.fileList}}</textarea>
-			</td>
-			<td scope="col">
-				<input {% if ver.deploy == 0 %}checked="checked"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="0" /><label>Disable</label>&nbsp;&nbsp;
-				<!-- <input {% if ver.deploy == 3 %}checked="checked"{% else %}onclick="javascript:location.href='/mod/task/deploy/{{ver.no}}?idxk={{key}}&deploy=3'"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="3" /><label>Dev</label>&nbsp;&nbsp;
-				<input {% if ver.deploy == 2 %}checked="checked"{% else %}onclick="javascript:location.href='/mod/task/deploy/{{ver.no}}?idxk={{key}}&deploy=2'"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="2" /><label>Test</label>&nbsp;&nbsp;-->
-				<input {% if ver.deploy == 1 %}checked="checked"{% else %}onclick="javascript:location.href='/mod/task/deploy/{{ver.no}}?idxk={{key}}&deploy=1'"{% endif %} name="verDeploy{{ver.no}}" type="radio" value="1" /><label>On</label>&nbsp;
-				<!-- <input name="Deploy" type="button" value="Deploy" onclick="javascript:location.href='/mod/task/setdeploy/{{ver.no}}'" /> -->
-			</td>
-		</tr>
-    {% endfor %}
+
 		<tr>
 			<td scope="col"><input name="verNo" size="2" type="text"  /></td>
 			<td scope="col"><input name="verApiUDate" readonly="readonly" size="18" type="text"  /></td>
@@ -118,8 +101,18 @@
 <input name="重設" type="reset" value="reset" />
 </form>
 <br>
-<input name="location" type=button value="select location" onclick="document.location.href='/mod/apiman/selectapser'">
-<input name="callee" type="button" value="select calling api" onclick="document.location.href='/mod/apiman/selectapi'">
+<input name="location" type=button value="select location" onclick="document.location.href='/mod/apiman/view/{{ apiKey }}/selectapser';">
+<input name="callee" type="button" value="select calling api" onclick="document.location.href='/mod/apiman/view/{{ apiKey }}/selectapi';">
+<br>
+<br>
+Test Case:
+<table cellpadding="2" rules="all" style="border:1px #000000 solid;padding:2px;">
+    <tr>
+        <td>Test id:</td>
+        <td>{{api.tcId}}</td>
+        <td><input name="testCase" type="button" value="select test case" onclick="document.location.href='/mod/apiman/view/{{ apiKey }}/selecttc';"></td>
+    </tr>
+</table>
 <br>
 <br>
 GIT:
@@ -168,8 +161,8 @@ LAB Location:&nbsp;
 			<td>{{labApser.name}}</td>
 			<td>
 			{% if commitId.lab && labApser.name %}
-				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{labApser.name}}/{{commitId.lab}}lab/true'">
-				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{labApser.name}}/{{commitId.lab}}lab/false'">
+				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{labApser.name}}/{{commitId.lab}}lab/true';">
+				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{labApser.name}}/{{commitId.lab}}lab/false';">
 			{% endif %}
 			</td>
 			<td>
@@ -203,8 +196,8 @@ OL Location:&nbsp;
 			<td>{{olApser.name}}</td>
 			<td>
 			{% if commitId.ol && olApser.name %}
-				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser.name}}/{{commitId.ol}}ol/true'">
-				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser.name}}/{{commitId.ol}}ol/false'">
+				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser.name}}/{{commitId.ol}}ol/true';">
+				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{olApser.name}}/{{commitId.ol}}ol/false';">
 			{% endif %}
 			</td>
 			<td>
@@ -238,8 +231,8 @@ On-Line Location:&nbsp;
 			<td>{{masterApser.name}}</td>
 			<td>
 			{% if commitId.master && masterApser.name %}
-				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser.name}}/{{commitId.master}}master/true'">
-				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser.name}}/{{commitId.master}}master/false'">
+				<input type=button value="Full Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser.name}}/{{commitId.master}}master/true';">
+				<input type=button value="Half Deploy" onclick="document.location.href='/mod/task/deploy/{{masterApser.name}}/{{commitId.master}}master/false';">
 			{% endif %}
 			</td>
 			<td>

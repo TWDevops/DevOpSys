@@ -25,7 +25,7 @@ function RunDeckApi(){
 var xml2Json = function(xmlStr, callback){
     var parser = new xml2js.Parser();
     parser.parseString(xmlStr, function (err, result){
-    callback(result);
+        callback(result);
     });
 };
 
@@ -34,18 +34,18 @@ var rundeck = function(func, paramObj, callback){
     var params = null;
     var paramStr = null;
     if(arguments.length < 3){
-    if(typeof(paramObj) === 'function'){
-        fn = paramObj;
+        if(typeof(paramObj) === 'function'){
+            fn = paramObj;
+        }else{
+            throw new Error('Need callback function.');
+        }
     }else{
-        throw new Error('Need callback function.');
-    }
-    }else{
-    if(typeof(paramObj) !== 'object'){
-        throw new Error('param must be object');
-    }else{
-        fn = callback;
-        params = paramObj;
-    }
+        if(typeof(paramObj) !== 'object'){
+            throw new Error('param must be object');
+        }else{
+            fn = callback;
+            params = paramObj;
+        }
     }
     
     //headers.method = 'GET';
@@ -69,9 +69,9 @@ var rundeck = function(func, paramObj, callback){
             break;
         case 'halfDeployTrigger':
             paramStr = querystring.stringify(paramObj);
-        options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-        options.headers['Content-Length'] = paramStr.length;
-        options.method = 'POST';
+            options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+            options.headers['Content-Length'] = paramStr.length;
+            options.method = 'POST';
             options.path = '/api/13/job/' + config.get('RUNDECK_HALF_AUTO_DEPLOY_ID') + '/executions';
             break;
         case 'projects':
@@ -85,19 +85,19 @@ var rundeck = function(func, paramObj, callback){
     }
     
     var req = http.request(options,function(res){
-    res.setEncoding('utf-8');
-    var resStr = '';
-    res.on('data', function (chunk) {
-        //console.log(String(chunk));
-        resStr += chunk;
-    });
-    res.on('end', function () {
-        fn(resStr);
-    });
+        res.setEncoding('utf-8');
+        var resStr = '';
+        res.on('data', function (chunk) {
+            //console.log(String(chunk));
+            resStr += chunk;
+        });
+        res.on('end', function () {
+            fn(resStr);
+        });
     });
     
     if(options.method === 'POST'){
-    req.write(paramStr);
+        req.write(paramStr);
     }
     
     req.end();
@@ -105,19 +105,19 @@ var rundeck = function(func, paramObj, callback){
 
 RunDeckApi.prototype.getSystemInfo = function(callback){
     rundeck('systeminfo', function(xmlStr){
-    xml2Json(xmlStr, function(result) {
-        callback(result);
-    });
+        xml2Json(xmlStr, function(result) {
+            callback(result);
+        });
     });
 };
 
 RunDeckApi.prototype.getProjects = function(callback){
     rundeck('projects', function(xmlStr){
-    //var parser = new xml2js.Parser();
-    //parser.parseString(xmlStr, function (err, result){
-    xml2Json(xmlStr, function(result) {
-        callback(result.projects.project);
-    });
+        //var parser = new xml2js.Parser();
+        //parser.parseString(xmlStr, function (err, result){
+        xml2Json(xmlStr, function(result) {
+            callback(result.projects.project);
+        });
     });
 };
 
@@ -126,9 +126,9 @@ RunDeckApi.prototype.getResources = function(project, callback){
         //var parser = new xml2js.Parser();
         //console.log(xmlStr);
         //parser.parseString(xmlStr, function (err, result){
-    xml2Json(xmlStr, function(result) {
-        callback(result.project.node);
-    });
+        xml2Json(xmlStr, function(result) {
+            callback(result.project.node);
+        });
         //});
     });
 };
@@ -137,17 +137,18 @@ RunDeckApi.prototype.deployTrigger = function(isFull, nodeName, deployId, fileUr
     var triggerFunc = "halfDeployTrigger";
     var paramObj = {};
     if(isFull){
-    triggerFunc = "fullDeployTrigger";
+        triggerFunc = "fullDeployTrigger";
     }
     paramObj.argString= "-node \"" + nodeName + "\" -deployid \"" + deployId + "\" -src \"" + fileUrl +"\"";
     rundeck(triggerFunc, paramObj, function(xmlStr) {
+        console.log(xmlStr);
     //var parser = new xml2js.Parser();
     //parser.parseString(xmlStr, function (err, result) {
-    xml2Json(xmlStr, function(result) {
-        //console.dir(result['executions']['execution'][0]['$']['status']);
-        //console.log(xmlStr);
-        callback(result);
-    });
+        xml2Json(xmlStr, function(result) {
+            //console.dir(result['executions']['execution'][0]['$']['status']);
+            //console.log(xmlStr);
+            callback(result);
+        });
     });
 };
 

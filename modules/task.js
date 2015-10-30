@@ -8,6 +8,9 @@ var config = require("nconf");
 config.env().file({ "file":"config.json" });
 var dbase = new require('../utils/DataBase.js');
 
+var Auth = require('../utils/Auth.js');
+var auth = new Auth();
+
 var assert = require('assert');
 var mainWorker = require('../worker/MainWorker.js');
 
@@ -276,7 +279,8 @@ getHandler['api/deploy/:id'] = deployApi;
 function deploy(req, res, next){
     console.log("Server Token: " + dps_token);
     console.log("Client Token: " + req.headers['dps-token']);
-    if(req.session.apiId || req.headers['dps-token'] === dps_token){
+    //if(req.session.apiId || req.headers['dps-token'] === dps_token){
+    if(req.session.apiId || auth.checkHttpToken(req.headers['dps-token'])){
         var setOpt = {};
         setOpt.taskNo = req.params.deployId;
         setOpt.apserName = req.params.apserName;

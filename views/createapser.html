@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ title }}
+{% endblock %}
+
+{% block content %}
+
+<form action="/mod/ser/modify/create" method="post" name="apiUpdate">
+    <table border="0" cellpadding="0" cellspacing="1">
+        <tr>
+            <td>Server&nbsp;Name&nbsp;</td>
+        	<td><input name="apSerName" type="text" /></td>
+            <td>Server&nbsp;Level&nbsp;</td>
+            <td>
+                <select name="apSerLevel">
+                    <option value="0">Prodection</option>
+                    <option value="1">OL</option>
+                    <option value="2" selected="true">LAB</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+</form>
+{% endblock %}

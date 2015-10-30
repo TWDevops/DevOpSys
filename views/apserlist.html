@@ -3,6 +3,9 @@
 {% block title %}{{ pagename|title }}{% endblock %}
 
 {% block content %}
+<input name="newApSer" type=button value="新增Server" onclick="document.location.href='/mod/apiman/view/register';">
+<br>
+<br>
 <table cellpadding="5" rules="all" style="border:3px #FFAC55 double;padding:5px;">
 	<thead style="border:3px #FFAC55 double;padding:5px;">
 		<tr>
@@ -16,7 +19,7 @@
 	<tbody>
 	{% for apSer in apSerList %}
 		<tr>
-			<td>{{apSer._id.toString()}}</td>
+			<td><a href="/mod/ser/view/{{apSer._id.toString()}}/edit">{{apSer._id.toString()}}</td>
 			<td>{{apSer.apSerName}}</td>
 			<td>{{apSer.apSerType}}</td>
 			<td>{{apSer.apSerActivated}}</td>

@@ -14,9 +14,11 @@ var DataBase = function DataBase(){
     console.log("DataBase Host: " + config.get("DB_HOST"));
     console.log("DataBase Port: " + config.get("DB_PORT"));
     console.log("DataBase DBName: " + config.get("DB_NAME"));
-    mongodbServer = new mongodb.Server(config.get("DB_HOST"),
-            config.get("DB_PORT"),
-            { auto_reconnect: true, poolSize: 20 });
+    mongodbServer = new mongodb.Server(
+        config.get("DB_HOST"),
+        config.get("DB_PORT"),
+        { auto_reconnect: true, poolSize: 20 }
+    );
     //mongodbServer.setMaxListeners(0);
 };
 
@@ -50,11 +52,60 @@ DataBase.prototype.getBuildDataByDeployId = function(deployId, callback){
             }
             apiColl.findOne({"deployId": deployId}, function(error, buildDoc){
                 if(error){
-                console.log(error.stack);
-                process.exit(0);
+                    console.log(error.stack);
+                    process.exit(0);
                 }
                 db.close();
                 callback(buildDoc);
+            });
+        });
+    });
+};
+
+DataBase.prototype.getApiList = function(apiId, callBack){
+    var fn = null;
+    var queryObj = {};
+    var apiList = {};
+    if(arguments.length < 2){
+        if(typeof(apiId) === 'function'){
+            fn = apiId;
+        }else{
+            throw new Error('Need callback function.');
+        }
+    }else{
+        queryObj = {"_id": DataBase.prototype.ObjectID(apiId)};
+        fn = callBack;
+    }
+    var db = DataBase.prototype.getDb();
+    db.open(function(error, devopsDb){
+        if(error){
+            console.log(error.stack);
+            process.exit(0);
+        }
+        devopsDb.collection('api', function(error, apiColl){
+            if(error){
+                console.log(error.stack);
+                process.exit(0);
+            }
+            //console.log(queryObj);
+            var cursor = apiColl.find(queryObj);
+            cursor.each(function(error, doc){
+                if(error){
+                    console.log(error.stack);
+                    process.exit(0);
+                }
+                if(doc !== null){
+                    console.log(doc['_id'].toString());
+                    apiList[doc['_id'].toString()]= doc;
+                } else{
+                    db.close();
+                    console.log(apiList);
+                    fn(apiList);
+                    /*res.render('apilist',{
+                         title: "API List",
+                         apiList: sendData
+                    });*/
+                }
             });
         });
     });
@@ -93,34 +144,36 @@ DataBase.prototype.getApiAllow = function(callback){
     });
 };
 
-DataBase.prototype.getTask = function(action,callback){
-    var taskList = {};
+
+DataBase.prototype.getApiGitRepo = function(apiId, callback){
     var db = DataBase.prototype.getDb();
     db.open(function(error, devopsDb) {
         if(error){
             console.log(error.stack);
             process.exit(0);
         }
-        devopsDb.collection('task', function(error, taskColl){
+        devopsDb.collection('api', function(error, apiColl){
             if(error){
                 console.log(error.stack);
                 process.exit(0);
             }
-            taskColl.findOne({'taskAction':action, 'taskStatus': 1},function(error, taskDoc){
+            apiColl.findOne({'_id': DataBase.prototype.ObjectID(apiId)},{"apiGitInfo":1},function(error, apiDoc){
                 if(error){
                     console.log(error.stack);
                     process.exit(0);
                 }
-                if(taskDoc){
-                    taskList = taskDoc;
-                }
-                console.log(taskList);
                 db.close();
-                callback(taskList);
+                if(apiDoc !== null){
+                    console.log(apiDoc);
+                    callback(apiDoc);
+                }else{
+                    callback({});
+                }
             });
         });
     });
 };
+
 
 DataBase.prototype.getDeployList = function(findOpt,callback){
     var db = DataBase.prototype.getDb();
@@ -148,6 +201,110 @@ DataBase.prototype.getDeployList = function(findOpt,callback){
                     db.close();
                     callback(taskList);
                 }
+            });
+        });
+    });
+};
+
+
+DataBase.prototype.getApSerList = function(apSerId, callBack){
+    var fn = null;
+    var queryObj = {};
+    if(arguments.length < 2){
+        if(typeof(apSerId) === 'function'){
+            fn = apSerId;
+        }else{
+            throw new Error('Need callback function.');
+        }
+    }else{
+        queryObj = {"_id": DataBase.prototype.ObjectID(apSerId)};
+        fn = callBack;
+    }
+    var db = DataBase.prototype.getDb();
+    db.open(function(error, devopsDb){
+        if(error){
+            console.log(error.stack);
+            process.exit(0);
+        }
+        devopsDb.collection('apserver', function(error, apserColl){
+            if(error){
+                console.log(error.stack);
+                process.exit(0);
+            }
+            apserColl.find(queryObj).toArray(function(error, apSerList){
+                if(error){
+                    console.log(error.stack);
+                    process.exit(0);
+                }
+                db.close();
+                //console.log(sendData);
+                fn(apSerList);
+            });
+        });
+    });
+};
+
+
+DataBase.prototype.getDataByApserName = function(serName,callback){
+    //console.log("db_apser:1");
+    var db = DataBase.prototype.getDb();
+    //console.log("db_apser:2");
+    db.open(function(error, devopsDb) {
+        //console.log("db_apser:3");
+        if(error){
+            console.log(error.stack);
+            process.exit(0);
+        }
+        //console.log("db_apser:3-1");
+        devopsDb.collection('apserver', function(error, apSerColl){
+            //console.log("db_apser:4");
+            if(error){
+                console.log(error.stack);
+                process.exit(0);
+            }
+            apSerColl.findOne({"apSerName" : serName},{"apSerName":1,"apSerIntIp":1,"apSerLevel":1,"apSerType":1,"apSerPort":1},function(error, apSerDoc){
+                //console.log("db_apser:5");
+                if(error){
+                    console.log(error.stack);
+                    process.exit(0);
+                }
+                db.close();
+                if(apSerDoc !== null){
+                    console.log(apSerDoc);
+                    callback(apSerDoc);
+                }else{
+                    callback({});
+                }
+            });
+        });
+    });
+};
+
+
+DataBase.prototype.getTask = function(action,callback){
+    var taskList = {};
+    var db = DataBase.prototype.getDb();
+    db.open(function(error, devopsDb) {
+        if(error){
+            console.log(error.stack);
+            process.exit(0);
+        }
+        devopsDb.collection('task', function(error, taskColl){
+            if(error){
+                console.log(error.stack);
+                process.exit(0);
+            }
+            taskColl.findOne({'taskAction':action, 'taskStatus': 1},function(error, taskDoc){
+                if(error){
+                    console.log(error.stack);
+                    process.exit(0);
+                }
+                if(taskDoc){
+                    taskList = taskDoc;
+                }
+                console.log(taskList);
+                db.close();
+                callback(taskList);
             });
         });
     });
@@ -224,94 +381,32 @@ DataBase.prototype.setTask = function(setOpt, callback){
                 //}
             //});                
         }else{
-        db.close();
-        callback({status:1, error: "No Ap Server."});
+            db.close();
+            callback({status:1, error: "No Ap Server."});
         }
     });
 };
+
 
 DataBase.prototype.updateTask = function(taskId, updateObj, callback){
     var db = DataBase.prototype.getDb();
     //var retData = {};
     var taskOid = DataBase.prototype.ObjectID(taskId);
     db.open(function(error,devopsDb){
-    devopsDb.collection('task', function(error, taskColl){
-        taskColl.update({ "_id" : taskOid }, { $set : updateObj }, function(error, result){
-        if(error){
-            console.log(error.stack);
-            process.exit(0);
-        }
-        console.log("updateTask result: " + result);
-        db.close();
-        callback(result);
-        });
-    });
-    });
-};
-
-DataBase.prototype.getDataByApserName = function(serName,callback){
-    //console.log("db_apser:1");
-    var db = DataBase.prototype.getDb();
-    //console.log("db_apser:2");
-    db.open(function(error, devopsDb) {
-        //console.log("db_apser:3");
-        if(error){
-            console.log(error.stack);
-            process.exit(0);
-        }
-        //console.log("db_apser:3-1");
-        devopsDb.collection('apserver', function(error, apSerColl){
-            //console.log("db_apser:4");
-            if(error){
-                console.log(error.stack);
-                process.exit(0);
-            }
-            apSerColl.findOne({"apSerName" : serName},{"apSerName":1,"apSerIntIp":1,"apSerLevel":1},function(error, apSerDoc){
-                //console.log("db_apser:5");
+        devopsDb.collection('task', function(error, taskColl){
+            taskColl.update({ "_id" : taskOid }, { $set : updateObj }, function(error, result){
                 if(error){
                     console.log(error.stack);
                     process.exit(0);
                 }
+                console.log("updateTask result: " + result);
                 db.close();
-                if(apSerDoc !== null){
-                    console.log(apSerDoc);
-                    callback(apSerDoc);
-                }else{
-                    callback({});
-                }
+                callback(result);
             });
         });
     });
 };
 
-DataBase.prototype.getApiGitRepo = function(apiId, callback){
-    var db = DataBase.prototype.getDb();
-    db.open(function(error, devopsDb) {
-        if(error){
-            console.log(error.stack);
-            process.exit(0);
-        }
-        devopsDb.collection('api', function(error, apiColl){
-            if(error){
-                console.log(error.stack);
-                process.exit(0);
-            }
-            apiColl.findOne({'_id': DataBase.prototype.ObjectID(apiId)},{"apiGitInfo":1},function(error, apiDoc){
-                if(error){
-                    console.log(error.stack);
-                    process.exit(0);
-                }
-                db.close();
-                if(apiDoc !== null){
-                    console.log(apiDoc);
-                    callback(apiDoc);
-                }else{
-                    callback({});
-                }
-            });
-        });
-    });
-};
 
 /*
  * Update task status

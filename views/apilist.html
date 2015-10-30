@@ -3,7 +3,8 @@
 {% block title %}{{ pagename|title }}{% endblock %}
 
 {% block content %}
-
+<input name="register" type=button value="API註冊" onclick="document.location.href='/mod/apiman/view/register';">
+<br><br>
 <table cellpadding="5" rules="all" style="border:3px #FFAC55 double;padding:5px;">
 	<thead style="border:3px #FFAC55 double;padding:5px;">
 		<tr>
@@ -26,7 +27,7 @@
 	<tbody>
 		 {% for apiKey, api in apiList %}
 		<tr>
-			<td><a href="/mod/apiman/edit?apiId={{apiKey}}">{{ api.apiName }}</a></td>
+			<td><a href="/mod/apiman/view/{{apiKey}}/edit">{{ api.apiName }}</a></td>
 			<td>{{ api.apiOwner}}</td>
 			<td>{{ api.apiDesc}}</td>
 			<!-- <td>

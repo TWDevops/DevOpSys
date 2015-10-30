@@ -221,21 +221,26 @@ function receive(req, res, next) {
                                             apiColl.update(apiQueryObj, {$set:apiUpdateObj}, function(error, apiResult){
                                                 console.log(apiResult);
                                                 db.close();
-                                                /*if(isAutoDeploy){
+                                                if(isAutoDeploy){
                                                     var Client = require('node-rest-client').Client;
                                                     var client = new Client();
                                                     var args = {
-                                                        data:{"API":[{"workId":"uuid","URL":"http://172.19.7.217/ajax/plus/monitor/monitor-entrance?checkKey=plus10400","Error":""}],"error":"","Seleniume":[],"data":"","success":"false"},
+                                                        data:{"deployid":queryObj.taskNo,"seleniumtaskid":"uuid","selenium":[],"api":[{"url":"http://172.19.7.217/ajax/plus/monitor/monitor-entrance?checkKey=plus10400","method":"get","input":"","output":"OK","whiteList":"","blackList":""}]},
                                                         headers:{"dps-token":config.get('DPS_TOKEN')}
                                                     };
                                                     client.post("http://172.19.9.14:8080/qaServer/service/testcase", args, function(data, response){
-                                                        sendData.state = 0;
+                                                        var testServerRes = JSON.parse(data.toString("UTF-8"));
+                                                        if(testServerRes.success === 'true'){
+                                                            sendData.state = 0;
+                                                        }else{
+                                                            sendData.state = success;
+                                                        }
                                                         res.send(sendData);
                                                     });
-                                                }else{*/
+                                                }else{
                                                     sendData.state = 0;
                                                     res.send(sendData);
-                                                //}
+                                                }
                                             });
                                         });
                                     });
@@ -275,30 +280,30 @@ getHandler['receive'] = receive;
 function log(req, res, next){
     var db = dbase.getDb();
     db.open(function(error, devopsDb) {
-    if(error){
-        console.log(error.stack);
-        process.exit(0);
-    }
-    devopsDb.collection('log', function(error, logColl){
-        if(error){
-        console.log(error.stack);
-        process.exit(0);
-        }
-        var logCursor = logColl.find({},{"limit":20}).sort({"date":-1});
-        logCursor.toArray(function(error, logDocArray){
         if(error){
             console.log(error.stack);
             process.exit(0);
         }
-        db.close();
-        console.log(logDocArray);
-        res.render('loglist',{
-             title: "Log",
-             logList: logDocArray
-        });
-        });
+        devopsDb.collection('log', function(error, logColl){
+            if(error){
+                console.log(error.stack);
+                process.exit(0);
+            }
+            var logCursor = logColl.find({},{"limit":20}).sort({"date":-1});
+            logCursor.toArray(function(error, logDocArray){
+                if(error){
+                    console.log(error.stack);
+                    process.exit(0);
+                }
+                db.close();
+                console.log(logDocArray);
+                res.render('loglist',{
+                     title: "Log",
+                     logList: logDocArray
+                });
+            });
             
-    });
+        });
     });
 }
 getHandler['log'] = log;

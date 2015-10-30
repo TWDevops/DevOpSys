@@ -1,0 +1,84 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ title }}
+{% endblock %}
+
+{% block content %}
+
+<form action="/mod/ser/modify/{{ apserDoc._id.toString() }}/edit" method="post" name="apiUpdate">
+    <table border="0" cellpadding="0" cellspacing="1">
+        <tr>
+            <td>Server&nbsp;Name&nbsp;</td>
+        	<td><input name="apSerName" type="text" value="{{ apserDoc.apSerName }}" /></td>
+            <td>Server&nbsp;Level&nbsp;</td>
+            <td>
+                <select name="apSerLevel">
+                    <option value="0" {% if apserDoc.apSerLevel == 0 %}selected="true" {% endif %}>Prodection</option>
+                    <option value="1" {% if apserDoc.apSerLevel == 1 %}selected="true" {% endif %}>OL</option>
+                    <option value="2" {% if apserDoc.apSerLevel == 2 %}selected="true" {% endif %}>LAB</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>SSH&nbsp;User&nbsp;</td>
+            <td><input name="apSerManUser" type="text" value="{{ apserDoc.apSerManUser }}" /></td>
+            <td>Server&nbsp;SSH&nbsp;Port&nbsp;</td>
+            <td><input name="apSerManPort" type="text" value="{{ apserDoc.apSerManPort }}" /></td>
+        </tr>
+        <tr>
+            <td>SSH&nbsp;auth&nbsp;</td>
+            <td><input name="sshAuth" type="text" value="{{ apserDoc['ssh-auth'] }}" /></td>
+            <td>Server&nbsp;SSH&nbsp;Port&nbsp;</td>
+            <td><input name="sshPassStorage" type="text" value="{{ apserDoc['ssh-pass-storage'] }}" /></td>
+        </tr>
+        <tr>
+            <td>Server&nbsp;IP&nbsp;</td>
+            <td><input name="apSerIntIp" type="text" value="{{ apserDoc.apSerIntIp }}" /></td>
+            <td>Server&nbsp;Port&nbsp;</td>
+            <td><input name="apSerPort" type="text" value="{{ apserDoc.apSerPort }}" /></td>
+        </tr>
+        <tr>
+            <td>Server&nbsp;Type&nbsp;</td>
+            <td><input name="apSerType" type="text" value="{{ apserDoc.apSerType }}" /></td>
+            <td>Server&nbsp;Version&nbsp;</td>
+            <td><input name="apSerVer" type="text" value="{{ apserDoc.apSerVer }}" /></td>
+        </tr>
+        <tr>
+            <td>OS&nbsp;Arch&nbsp;</td>
+            <td><input name="apSerOsArch" type="text" value="{{ apserDoc.apSerOsArch }}" /></td>
+            <td>OS&nbsp;Family&nbsp;</td>
+            <td><input name="apSerOsFamily" type="text" value="{{ apserDoc.apSerOsFamily }}" /></td>
+        </tr>
+        <tr>
+            <td>OS&nbsp;Name&nbsp;</td>
+            <td><input name="apSerOsName" type="text" value="{{ apserDoc.apSerOsName }}" /></td>
+            <td>OS&nbsp;Version&nbsp;</td>
+            <td><input name="apSerOsVersion" type="text" value="{{ apserDoc.apSerOsVersion }}" /></td>
+        </tr>
+        <tr>
+            <td>Server&nbsp;Tags&nbsp;</td>
+            <td><input name="apSerTags" type="text" value="{{ apserDoc.apSerTags }}" /></td>
+            <td>Server&nbsp;Activated&nbsp;</td>
+            <td><input name="apSerActivated" type="text" value="{{ apserDoc.apSerActivated }}" /></td>
+        </tr>
+        <tr>
+            <td>Server&nbsp;Status&nbsp;</td>
+            <td><input name="apSerStat" type="text" value="{{ apserDoc.apSerStat }}" /></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    <div>
+        <table>
+            <tr>
+                <td style="vertical-align: top;">Descript:&nbsp;</td>
+                <td style="vertical-align: top;"><textarea name="apSerDesc" style="margin: 0px; width: 343px; height: 62px;">{{ apserDoc.apSerDesc}}</textarea></td>
+            </tr>
+        </table>
+    </div>
+    <br/>
+    <input name="confirm" type="submit" value="confirm" />
+    <input name="reset_form" type="reset" value="reset" />
+</form>
+
+{% endblock %}
