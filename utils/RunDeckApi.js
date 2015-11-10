@@ -1,7 +1,8 @@
-/*jshint sub: true es5:true*/
+/*jshint sub: true es5:true unsafechars:true*/
 /**
  * New node file
  */
+//中文
 var config = require("nconf");
 config.env().file({ "file":"config.json" });
 
@@ -145,9 +146,16 @@ RunDeckApi.prototype.deployTrigger = function(isFull, nodeName, deployId, fileUr
     //var parser = new xml2js.Parser();
     //parser.parseString(xmlStr, function (err, result) {
         xml2Json(xmlStr, function(result) {
+            var error = null;
+            if(result.result && result.result.$.error){
+                //console.log("error");
+                //console.log(result.result.$.error);
+                error = result.result;
+            }
             //console.dir(result['executions']['execution'][0]['$']['status']);
             //console.log(xmlStr);
-            callback(result);
+            
+            callback(error,result);
         });
     });
 };
