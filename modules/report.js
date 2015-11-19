@@ -74,7 +74,32 @@ function receive(req, res, next) {
                                         }
                                         console.log("BRANCH: " + req.body.BRANCH);
                                         if(req.body.BRANCH === "origin/lab"){
-                                            devopsDb.collection('api', function(error, apiColl){
+                                            dbase.getApiLocation(req.body.JOB_NAME, "lab", function(error, apiLocation){
+                                                if(error){
+                                                    console.log(error.stack);
+                                                    sendData.state = 1;
+                                                    res.send({error: error.stack});
+                                                }
+                                                if(apiLocation && apiLocation.length > 0){
+                                                    var Client = require('node-rest-client').Client;
+                                                    var client = new Client();
+                                                    var args = {
+                                                        headers:{"dps-token":config.get('DPS_TOKEN')}
+                                                    };
+                                                    apiLocation.forEach(function(apServer){
+                                                        client.get("http://127.0.0.1:"+ (config.get("HTTP_PORT") || '80') + "/mod/task/deploy/"+ apServer.name + "/" + buildDoc.deployId + "/true", args, function(data, response){
+                                                            console.log(data);
+                                                            console.log(response);
+                                                        });
+                                                    });
+                                                    sendData.state = 0;
+                                                    res.send(sendData);
+                                                }else{
+                                                    sendData.state = 0;
+                                                    res.send(sendData);
+                                                }
+                                            });
+                                            /*devopsDb.collection('api', function(error, apiColl){
                                                 if(error){
                                                     console.log(error.stack);
                                                     process.exit(0);
@@ -99,12 +124,42 @@ function receive(req, res, next) {
                                                             });
                                                         });
                                                         db.close();
+                                                        sendData.state = 0;
+                                                        res.send(sendData);
+                                                    }else{
+                                                        sendData.state = 0;
+                                                        res.send(sendData);
                                                     }
                                                 });
+                                            });*/
+                                        } else if(req.body.BRANCH === "origin/ol"){
+                                            dbase.getApiLocation(req.body.JOB_NAME, "ol", function(error, apiLocation){
+                                                if(error){
+                                                    console.log(error.stack);
+                                                    sendData.state = 1;
+                                                    res.send({error: error.stack});
+                                                }
+                                                if(apiLocation && apiLocation.length > 0){
+                                                    var Client = require('node-rest-client').Client;
+                                                    var client = new Client();
+                                                    var args = {
+                                                        headers:{"dps-token":config.get('DPS_TOKEN')}
+                                                    };
+                                                    client.get("http://127.0.0.1:"+ (config.get("HTTP_PORT") || '80') + "/mod/task/deploy/"+ apServer.name + "/" + buildDoc.deployId + "/true", args, function(data, response){
+                                                        console.log(data);
+                                                        console.log(response);
+                                                    });
+                                                    sendData.state = 0;
+                                                    res.send(sendData);
+                                                }else{
+                                                    sendData.state = 0;
+                                                    res.send(sendData);
+                                                }
                                             });
+                                        } else{
+                                            sendData.state = 0;
+                                            res.send(sendData);
                                         }
-                                        sendData.state = 0;
-                                        res.send(sendData);
                                     });
                                 });
                             } // end of if(req.body.JOB_STATUS === "SUCCESS")
@@ -160,13 +215,17 @@ function receive(req, res, next) {
                             var queryObj = {};
                             var updateObj = {};
                             var isAutoDeploy = false;
+                            var rdAction = 'deploy';
+                            if(result.notification.executions[0].execution[0].job[0].$.id === config.get("RUNDECK_OL_AUTO_GET_FILE")){
+                                rdAction = 'getfile';
+                            }
                             console.log("rundeck status: " + result.notification.$.status);
                             if(result.notification.$.status === 'running'){
                                 queryObj.taskStatus = 1;
                                 updateObj.taskStatus = 2;
                                 updateObj.startDate = new Date();
                             }else if(result.notification.$.status === 'succeeded'){
-                                if(result.notification.executions[0].execution[0].job[0].$.id === config.get("RUNDECK_FULL_AUTO_DEPLOY_ID")){
+                                if(result.notification.executions[0].execution[0].job[0].$.id === config.get("RUNDECK_LAB_FULL_AUTO_DEPLOY_ID")){
                                     isAutoDeploy = true;
                                 }
                                 queryObj.taskStatus = 2;
@@ -194,56 +253,64 @@ function receive(req, res, next) {
                                 taskColl.update(queryObj,{$set:updateObj},function(error, taskResult){
                                     if(error){
                                         console.log(error.stack);
-                                        process.exit(0);
+                                        //process.exit(0);
+                                        sendData.state = 1;
+                                        sendData.info = error.stack;
+                                        res.send(sendData);
                                     }
                                     console.log(taskResult);
-                                    taskColl.findOne({"taskNo":queryObj.taskNo,"rdExecId":queryObj.rdExecId},{taskParams:1}, function(error, taskDoc){
-                                        if(error){
-                                            console.log(error.stack);
-                                            process.exit(0);
-                                        }
-                                        var branch = taskDoc.taskParams.branch;
-                                        devopsDb.collection('api', function(error, apiColl){
+                                    if(rdAction === 'deploy'){
+                                        taskColl.findOne({"taskNo":queryObj.taskNo,"rdExecId":queryObj.rdExecId},{taskParams:1}, function(error, taskDoc){
                                             if(error){
                                                 console.log(error.stack);
                                                 process.exit(0);
                                             }
-                                            var apiQueryObj = {};
-                                            for(var i =0; i < rdOption.length; i++){
-                                                if(rdOption[i].$.name === 'node'){
-                                                    apiQueryObj['apiLocation.' + branch + '.name'] = rdOption[i].$.value;
-                                                    break;
+                                            var branch = taskDoc.taskParams.branch;
+                                            devopsDb.collection('api', function(error, apiColl){
+                                                if(error){
+                                                    console.log(error.stack);
+                                                    process.exit(0);
                                                 }
-                                            }
-                                            apiQueryObj['apiLocation.' + branch + '.rdExecId'] = queryObj.rdExecId;
-                                            var apiUpdateObj = {};
-                                            apiUpdateObj['apiLocation.' + branch + '.$.deploy'] = updateObj.taskStatus;
-                                            apiColl.update(apiQueryObj, {$set:apiUpdateObj}, function(error, apiResult){
-                                                console.log(apiResult);
-                                                db.close();
-                                                if(isAutoDeploy){
-                                                    var Client = require('node-rest-client').Client;
-                                                    var client = new Client();
-                                                    var args = {
-                                                        data:{"deployid":queryObj.taskNo,"seleniumtaskid":"uuid","selenium":[],"api":[{"url":"http://172.19.7.217/ajax/plus/monitor/monitor-entrance?checkKey=plus10400","method":"get","input":"","output":"OK","whiteList":"","blackList":""}]},
-                                                        headers:{"dps-token":config.get('DPS_TOKEN')}
-                                                    };
-                                                    client.post("http://172.19.9.14:8080/qaServer/service/testcase", args, function(data, response){
-                                                        var testServerRes = JSON.parse(data.toString("UTF-8"));
-                                                        if(testServerRes.success === 'true'){
-                                                            sendData.state = 0;
-                                                        }else{
-                                                            sendData.state = success;
-                                                        }
+                                                var apiQueryObj = {};
+                                                for(var i =0; i < rdOption.length; i++){
+                                                    if(rdOption[i].$.name === 'node'){
+                                                        apiQueryObj['apiLocation.' + branch + '.name'] = rdOption[i].$.value;
+                                                        break;
+                                                    }
+                                                }
+                                                apiQueryObj['apiLocation.' + branch + '.rdExecId'] = queryObj.rdExecId;
+                                                var apiUpdateObj = {};
+                                                apiUpdateObj['apiLocation.' + branch + '.$.deploy'] = updateObj.taskStatus;
+                                                apiColl.update(apiQueryObj, {$set:apiUpdateObj}, function(error, apiResult){
+                                                    console.log(apiResult);
+                                                    db.close();
+                                                    if(isAutoDeploy){
+                                                        var Client = require('node-rest-client').Client;
+                                                        var client = new Client();
+                                                        var args = {
+                                                            data:{"deployid":queryObj.taskNo,"seleniumtaskid":"uuid","selenium":[],"api":[{"url":"http://172.19.7.217/ajax/plus/monitor/monitor-entrance?checkKey=plus10400","method":"get","input":"","output":"OK","whiteList":"","blackList":""}]},
+                                                            headers:{"dps-token":config.get('DPS_TOKEN')}
+                                                        };
+                                                        client.post("http://172.19.9.14:8080/qaServer/service/testcase", args, function(data, response){
+                                                            var testServerRes = JSON.parse(data.toString("UTF-8"));
+                                                            if(testServerRes.success === 'true'){
+                                                                sendData.state = 0;
+                                                            }else{
+                                                                sendData.state = 1;
+                                                            }
+                                                            res.send(sendData);
+                                                        });
+                                                    }else{
+                                                        sendData.state = 0;
                                                         res.send(sendData);
-                                                    });
-                                                }else{
-                                                    sendData.state = 0;
-                                                    res.send(sendData);
-                                                }
+                                                    }
+                                                });
                                             });
                                         });
-                                    });
+                                    }else{
+                                        sendData.state = 0;
+                                        res.send(sendData);
+                                    }
                                 });
                             });
                         });

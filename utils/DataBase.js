@@ -111,6 +111,32 @@ DataBase.prototype.getApiList = function(apiId, callBack){
     });
 };
 
+
+DataBase.prototype.getApiLocation = function(apiName, apiBranch, callback){
+    var db = DataBase.prototype.getDb();
+    db.open(function(error, devopsDb) {
+        if(error){
+            console.log(error.stack);
+            callback(error,null);
+        }
+        devopsDb.collection('api', function(error, apiColl){
+            if(error){
+                console.log(error.stack);
+                callback(error, null);
+            }
+            apiColl.findOne({"apiName":apiName},{"apiLocation":true},function(error, apiDoc){
+                if(error){
+                    console.log(error.stack);
+                    callback(error, null);
+                }
+                var apiLoc = apiDoc.apiLocation[apiBranch];
+                db.close();
+                callback( null, apiLoc);
+            });
+        });
+    });
+};
+
 DataBase.prototype.getApiAllow = function(callback){
     var allowList = {};
     var db = DataBase.prototype.getDb();
@@ -318,10 +344,12 @@ DataBase.prototype.setTask = function(setOpt, callback){
     var db = DataBase.prototype.getDb();
     var retData = {};
     //console.log("db:1");
-    DataBase.prototype.getDataByApserName(setOpt.apserName, function(apSerDoc){
-        //console.log("db:2");
-        if(Object.keys(apSerDoc).length > 0){
-            //DataBase.prototype.getApiGitRepo(setOpt.apiId, function(apiGitData){
+    console.log("SetTask Action:" + setOpt.action);
+    if(setOpt.action === 'deploy'){
+        DataBase.prototype.getDataByApserName(setOpt.apserName, function(apSerDoc){
+            //console.log("db:2");
+            if(Object.keys(apSerDoc).length > 0){
+                //DataBase.prototype.getApiGitRepo(setOpt.apiId, function(apiGitData){
                     //console.log("db:3");
                     //if(Object.keys(apiGitData).length > 0){
                     var taskObj = {};
@@ -376,15 +404,27 @@ DataBase.prototype.setTask = function(setOpt, callback){
                             });
                         });
                     });
-                //}else{
-                //    callback({status:1, error: "No Git Repository."});
-                //}
-            //});                
-        }else{
-            db.close();
-            callback({status:1, error: "No Ap Server."});
-        }
-    });
+                    //}else{
+                    //    callback({status:1, error: "No Git Repository."});
+                    //}
+                //});                
+            }else{
+                db.close();
+                callback({status:1, error: "No Ap Server."});
+            }
+        });
+    }else if(setOpt.action === 'getfile'){
+        var taskObj = {};
+        taskObj['taskNo'] = setOpt.taskNo;
+        taskObj.startDate = new Date();
+        taskObj.endDate = '';
+        taskObj['taskAction'] = 'getfile';
+        taskObj['taskParams'] = {};
+        taskObj.taskParams.apiId = setOpt.apiId;
+        taskObj.taskParams.apiName = setOpt.apiNam;
+        taskObj.taskParams.fileUrl = setOpt.fileUrl;
+        callback({status:0, info:taskObj});
+    }
 };
 
 

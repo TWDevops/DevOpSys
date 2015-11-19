@@ -15,7 +15,7 @@ var assert = require('assert');
 var mainWorker = require('../worker/MainWorker.js');
 
 var RunDeckApi = require('../utils/RunDeckApi.js');
-var rundeck = new RunDeckApi();
+//var rundeck = new RunDeckApi();
 
 var headHander = {};
 var getHandler = {};
@@ -280,20 +280,49 @@ function deploy(req, res, next){
     console.log("Server Token: " + dps_token);
     console.log("Client Token: " + req.headers['dps-token']);
     //if(req.session.apiId || req.headers['dps-token'] === dps_token){
-    if(req.session.apiId || auth.checkHttpToken(req.headers['dps-token'])){
+    if(req.session.modName === 'apiman' || auth.checkHttpToken(req.headers['dps-token'])){
         var setOpt = {};
         setOpt.taskNo = req.params.deployId;
         setOpt.apserName = req.params.apserName;
-        setOpt.apiId = req.session.apiId;
+        setOpt.modName = req.session.modName;
         setOpt.fullAuto = false;
+        setOpt.action = 'deploy';
         if(req.params.fullAuto){
             setOpt.fullAuto = req.params.fullAuto;
         }
         dbase.getBuildDataByDeployId(req.params.deployId, function(buildData){
+            var rdJobId = "";
+            var fileUrlPrefix = "";
             setOpt.apiName = buildData.apiName;
-            setOpt.fileUrl = config.get('DEPLOY_FILE_SERVER') + setOpt.apiName + "/" + setOpt.taskNo +"/" + buildData.fileList[0];
+            //setOpt.fileUrl = config.get('DEPLOY_FILE_SERVER') + setOpt.apiName + "/" + setOpt.taskNo +"/" + buildData.fileList[0];
             console.log("task:1");
-            rundeck.deployTrigger((req.params.isFull === "true"), setOpt.apserName, setOpt.taskNo, setOpt.fileUrl, function(error,rkresult){
+            if(buildData.gitBranch === "origin/lab"){
+                rundeck = new RunDeckApi(config.get('RUNDECK_LAB_HOST'), config.get('RUNDECK_LAB_PORT'), config.get('RUNDECK_LAB_TOKEN'));
+                fileUrlPrefix = config.get('LAB_DEPLOY_FILE_SERVER');
+                if(req.params.isFull === "true"){
+                    rdJobId = config.get('RUNDECK_LAB_FULL_AUTO_DEPLOY_ID');
+                }else{
+                    rdJobId = config.get('RUNDECK_LAB_HALF_AUTO_DEPLOY_ID');
+                }
+            }else{
+                rundeck = new RunDeckApi(config.get('RUNDECK_OL_HOST'), config.get('RUNDECK_OL_PORT'), config.get('RUNDECK_OL_TOKEN'), 'https');
+                fileUrlPrefix = 'http://' + config.get('OL_DEPLOY_FILE_SERVER') + "/mod/download/api/";
+                if(req.params.isFull === "true"){
+                    rdJobId = config.get('RUNDECK_OL_FULL_AUTO_DEPLOY_ID');
+                }else{
+                    rdJobId = config.get('RUNDECK_OL_HALF_AUTO_DEPLOY_ID');
+                }
+            }
+            
+            //for( var fileName in buildData.fileList){
+            for( var fileIdx in buildData.fileList){
+                if(buildData.fileList[fileIdx].length > 4 && (buildData.fileList[fileIdx].substr(buildData.fileList[fileIdx].length-4, 4).toLowerCase() === ".war")){
+                    setOpt.fileUrl = fileUrlPrefix + setOpt.apiName + "/" + setOpt.taskNo +"/" + buildData.fileList[fileIdx];
+                    break;
+                }
+            }
+            
+            rundeck.deployTrigger(rdJobId, setOpt.apserName, setOpt.taskNo, setOpt.fileUrl, function(error,rkresult){
                 if(error){
                     console.log("Error:" + JSON.stringify(error));
                     res.send(error);
@@ -353,6 +382,46 @@ function deploy(req, res, next){
     }
 }
 getHandler['deploy/:apserName/:deployId/:isFull'] = deploy;
+
+
+function getDeployFile(req, res, next){
+    console.log("Server Token: " + dps_token);
+    console.log("Client Token: " + req.headers['dps-token']);
+    if(req.session.modName === 'apiman' || auth.checkHttpToken(req.headers['dps-token'])){
+        var setOpt = {};
+        setOpt.taskNo = req.params.deployId;
+        setOpt.modName = req.session.modName;
+        setOpt.action = 'getfile';
+        dbase.getBuildDataByDeployId(req.params.deployId, function(buildData){
+            var rdJobId = config.get('RUNDECK_OL_AUTO_GET_FILE');
+            setOpt.apiName = buildData.apiName;
+            for( var fileIdx in buildData.fileList){
+                if(buildData.fileList[fileIdx].length > 4 && (buildData.fileList[fileIdx].substr(buildData.fileList[fileIdx].length-4, 4).toLowerCase() === ".war")){
+                    setOpt.fileUrl = config.get('LAB_DEPLOY_FILE_SERVER') + setOpt.apiName + "/" + setOpt.taskNo +"/" + buildData.fileList[fileIdx];
+                    break;
+                }
+            }
+            console.log(setOpt);
+            rundeck = new RunDeckApi(config.get('RUNDECK_OL_HOST'), config.get('RUNDECK_OL_PORT'), config.get('RUNDECK_OL_TOKEN'), 'https');
+            rundeck.deployTrigger(rdJobId, config.get('OL_DEPLOY_FILE_SERVER'), setOpt.taskNo, setOpt.fileUrl, function(error,rkresult){
+                if(error){
+                    console.log("Error:" + JSON.stringify(error));
+                    res.send(error);
+                    return;
+                }
+                setOpt.rdExecId = rkresult.executions.execution[0].$.id;
+                dbase.setTask(setOpt, function(result) {
+                    if(result.status === 0){
+                        res.send(rkresult);
+                    }else{
+                        res.send(result);
+                    }
+                });
+            });
+        });
+    }
+}
+getHandler['getfile/:deployId'] = getDeployFile;
 
 exports.headHander = headHander;
 exports.getHandler = getHandler;

@@ -65,6 +65,7 @@ function list(req, res, next) {
 getHandler["list"]=list;
 
 function view(req, res, next){
+    req.session.modName = 'apiman';
     var db = dbase.getDb();
     switch(req.params.action){
         case 'selecttc':

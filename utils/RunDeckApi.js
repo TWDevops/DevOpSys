@@ -9,18 +9,27 @@ config.env().file({ "file":"config.json" });
 var querystring = require('querystring');
 
 var xml2js = require('xml2js');
-var http = require('http');
+//var http = require('http');
+var http = null;
 var host = null;
 var port = null;
 var headers = {};
 
-function RunDeckApi(){
+function RunDeckApi(rdHost, rdPort, rdToken, rdProto){
+    if(rdProto){
+        http = require(rdProto);
+    }else{
+        http = require('http');
+    }
     http.globalAgent.maxSockets = 10;
-    host = config.get('RUNDECK_HOST');
-    port = config.get('RUNDECK_PORT');
+    //host = config.get('RUNDECK_HOST');
+    //port = config.get('RUNDECK_PORT');
+    host = rdHost;
+    port = rdPort;
     headers = {
-        'X-Rundeck-Auth-Token':config.get('RUNDECK_TOKEN')
+            'X-Rundeck-Auth-Token':rdToken
         };
+        //'X-Rundeck-Auth-Token':config.get('RUNDECK_TOKEN')
 }
 
 var xml2Json = function(xmlStr, callback){
@@ -30,10 +39,11 @@ var xml2Json = function(xmlStr, callback){
     });
 };
 
-var rundeck = function(func, paramObj, callback){
+var rundeck = function(func, paramObj, rdJobId, callback){
     var fn = null;
     var params = null;
     var paramStr = null;
+    var jobId = null;
     if(arguments.length < 3){
         if(typeof(paramObj) === 'function'){
             fn = paramObj;
@@ -44,7 +54,16 @@ var rundeck = function(func, paramObj, callback){
         if(typeof(paramObj) !== 'object'){
             throw new Error('param must be object');
         }else{
-            fn = callback;
+            if(arguments.length < 4){
+                if(typeof(rdJobId) === 'function'){
+                    fn = rdJobId;
+                }else{
+                    throw new Error('Need callback function.');
+                }
+            }else{
+                fn = callback;
+                jobId = rdJobId;
+            }
             params = paramObj;
         }
     }
@@ -61,7 +80,18 @@ var rundeck = function(func, paramObj, callback){
         case 'systeminfo':
             options.path = '/api/13/system/info';
             break;
-        case 'fullDeployTrigger':
+        case 'deployFunc':
+            paramStr = querystring.stringify(paramObj);
+            options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+            options.headers['Content-Length'] = paramStr.length;
+            options.method = 'POST';
+            options.rejectUnauthorized=false;
+            options.path = '/api/13/job/' + rdJobId + '/executions';
+            console.log(paramStr);
+            console.log(options);
+            //options.path = '/api/13/job/' + config.get('RUNDECK_FULL_AUTO_DEPLOY_ID') + '/executions';
+            break;
+        /*case 'fullDeployTrigger':
             paramStr = querystring.stringify(paramObj);
             options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
             options.headers['Content-Length'] = paramStr.length;
@@ -74,7 +104,7 @@ var rundeck = function(func, paramObj, callback){
             options.headers['Content-Length'] = paramStr.length;
             options.method = 'POST';
             options.path = '/api/13/job/' + config.get('RUNDECK_HALF_AUTO_DEPLOY_ID') + '/executions';
-            break;
+            break;*/
         case 'projects':
             //options.headers.method = 'GET';
             options.path = '/api/13/projects';
@@ -134,17 +164,11 @@ RunDeckApi.prototype.getResources = function(project, callback){
     });
 };
 
-RunDeckApi.prototype.deployTrigger = function(isFull, nodeName, deployId, fileUrl, callback ){
-    var triggerFunc = "halfDeployTrigger";
+RunDeckApi.prototype.deployTrigger = function(rdJobId, nodeName, deployId, fileUrl, callback ){
     var paramObj = {};
-    if(isFull){
-        triggerFunc = "fullDeployTrigger";
-    }
     paramObj.argString= "-node \"" + nodeName + "\" -deployid \"" + deployId + "\" -src \"" + fileUrl +"\"";
-    rundeck(triggerFunc, paramObj, function(xmlStr) {
+    rundeck('deployFunc', paramObj, rdJobId, function(xmlStr) {
         console.log(xmlStr);
-    //var parser = new xml2js.Parser();
-    //parser.parseString(xmlStr, function (err, result) {
         xml2Json(xmlStr, function(result) {
             var error = null;
             if(result.result && result.result.$.error){

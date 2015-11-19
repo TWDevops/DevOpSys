@@ -53,6 +53,7 @@ function setApSerStatus(apSerIp, apSerStatJson, callback){
 }
 
 function view(req, res, next){
+    req.session.modName = 'serman';
     switch(req.params.action){
         case 'list':
             if(req.params.apSerId){
@@ -131,7 +132,7 @@ function modify(req, res, next){
                         apSerInsObj.apSerOsName = req.body.apSerOsName;
                         apSerInsObj.apSerOsVersion = req.body.apSerOsVersion;
                         apSerInsObj.apSerTags = req.body.apSerTags;
-                        apSerInsObj.apSerActivated = req.body.apSerActivated;
+                        apSerInsObj.apSerActivated = (req.body.apSerActivated === 'true');
                         apSerInsObj.apSerStat = req.body.apSerStat;
                         apSerInsObj.apSerDesc = req.body.apSerDesc;
                         var db = dbase.getDb();
@@ -191,7 +192,7 @@ function modify(req, res, next){
                         apSerList[0].apSerOsName = req.body.apSerOsName;
                         apSerList[0].apSerOsVersion = req.body.apSerOsVersion;
                         apSerList[0].apSerTags = req.body.apSerTags;
-                        apSerList[0].apSerActivated = req.body.apSerActivated;
+                        apSerList[0].apSerActivated = (req.body.apSerActivated === 'true');
                         apSerList[0].apSerStat = req.body.apSerStat;
                         apSerList[0].apSerDesc = req.body.apSerDesc;
                         var db = dbase.getDb();
