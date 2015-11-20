@@ -395,10 +395,10 @@ DataBase.prototype.setTask = function(setOpt, callback){
                                 db.close();
                                 if(result){
                                     retData['status'] = 0;
-                                    retData['info'] = 'Task insert success.';
+                                    retData['info'] = 'Deploy: Task insert success.';
                                 }else{
                                     retData['status'] = 1;
-                                    retData['info'] = 'Task insert fail.';
+                                    retData['info'] = 'Deploy: Task insert fail.';
                                 }
                                 callback(retData);
                             });
@@ -420,10 +420,42 @@ DataBase.prototype.setTask = function(setOpt, callback){
         taskObj.endDate = '';
         taskObj['taskAction'] = 'getfile';
         taskObj['taskParams'] = {};
-        taskObj.taskParams.apiId = setOpt.apiId;
-        taskObj.taskParams.apiName = setOpt.apiNam;
+        taskObj.taskParams.modName = setOpt.modName;
+        taskObj.taskParams.apiName = setOpt.apiName;
         taskObj.taskParams.fileUrl = setOpt.fileUrl;
-        callback({status:0, info:taskObj});
+        taskObj.taskParams.isDeploy = setOpt.isDeploy;
+        taskObj.taskStatus = 1;
+        taskObj.taskLog = ["Put deploy to OL"];
+        taskObj.taskDesc = "Put deploy to OL";
+        taskObj.rdExecId = setOpt.rdExecId;
+        db.open(function(error,devopsDb){
+            if(error){
+                console.log(error.stack);
+                process.exit(0);
+            }
+            devopsDb.collection('task', function(error, taskColl){
+                if(error){
+                    console.log(error.stack);
+                    process.exit(0);
+                }
+                taskColl.insert(taskObj, function(error,result){
+                    if(error){
+                        console.log(error.stack);
+                        process.exit(0);
+                    }
+                    db.close();
+                    if(result){
+                        retData['status'] = 0;
+                        retData['info'] = 'Getfile: Task insert success.';
+                    }else{
+                        retData['status'] = 1;
+                        retData['info'] = 'Getfile: Task insert fail.';
+                    }
+                    callback(retData);
+                });
+            });
+        });
+        //callback({status:0, info:taskObj});
     }
 };
 
@@ -452,7 +484,7 @@ DataBase.prototype.updateTask = function(taskId, updateObj, callback){
  * Update task status
  * 0:done,
  * 1:prepare,
- * 2:deploy,
+ * 2:deploy or running,
  * 9:error
  */
 DataBase.prototype.updateTaskStatus = function(taskId, taskSt, callback){

@@ -74,7 +74,8 @@ var rundeck = function(func, paramObj, rdJobId, callback){
         host: host,
         port: port,
         method: 'GET',
-        headers: headers
+        headers: headers,
+        rejectUnauthorized: false
     };
     switch(func){
         case 'systeminfo':
@@ -85,7 +86,6 @@ var rundeck = function(func, paramObj, rdJobId, callback){
             options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
             options.headers['Content-Length'] = paramStr.length;
             options.method = 'POST';
-            options.rejectUnauthorized=false;
             options.path = '/api/13/job/' + rdJobId + '/executions';
             console.log(paramStr);
             console.log(options);

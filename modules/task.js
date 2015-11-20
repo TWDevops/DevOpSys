@@ -392,6 +392,7 @@ function getDeployFile(req, res, next){
         setOpt.taskNo = req.params.deployId;
         setOpt.modName = req.session.modName;
         setOpt.action = 'getfile';
+        setOpt.isDeploy = (req.params.isDeploy === 'true');
         dbase.getBuildDataByDeployId(req.params.deployId, function(buildData){
             var rdJobId = config.get('RUNDECK_OL_AUTO_GET_FILE');
             setOpt.apiName = buildData.apiName;
@@ -412,7 +413,7 @@ function getDeployFile(req, res, next){
                 setOpt.rdExecId = rkresult.executions.execution[0].$.id;
                 dbase.setTask(setOpt, function(result) {
                     if(result.status === 0){
-                        res.send(rkresult);
+                        res.send(result);
                     }else{
                         res.send(result);
                     }
@@ -422,6 +423,7 @@ function getDeployFile(req, res, next){
     }
 }
 getHandler['getfile/:deployId'] = getDeployFile;
+getHandler['getfile/:deployId/:isDeploy'] = getDeployFile;
 
 exports.headHander = headHander;
 exports.getHandler = getHandler;

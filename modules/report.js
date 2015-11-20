@@ -145,7 +145,7 @@ function receive(req, res, next) {
                                                     var args = {
                                                         headers:{"dps-token":config.get('DPS_TOKEN')}
                                                     };
-                                                    client.get("http://127.0.0.1:"+ (config.get("HTTP_PORT") || '80') + "/mod/task/deploy/"+ apServer.name + "/" + buildDoc.deployId + "/true", args, function(data, response){
+                                                    client.get("http://127.0.0.1:"+ (config.get("HTTP_PORT") || '80') + "/mod/task/getfile/" + buildDoc.deployId + "/true", args, function(data, response){
                                                         console.log(data);
                                                         console.log(response);
                                                     });
@@ -259,8 +259,8 @@ function receive(req, res, next) {
                                         res.send(sendData);
                                     }
                                     console.log(taskResult);
-                                    if(rdAction === 'deploy'){
-                                        taskColl.findOne({"taskNo":queryObj.taskNo,"rdExecId":queryObj.rdExecId},{taskParams:1}, function(error, taskDoc){
+                                    taskColl.findOne({"taskNo":queryObj.taskNo,"rdExecId":queryObj.rdExecId},{taskParams:1}, function(error, taskDoc){
+                                        if(rdAction === 'deploy'){
                                             if(error){
                                                 console.log(error.stack);
                                                 process.exit(0);
@@ -306,11 +306,23 @@ function receive(req, res, next) {
                                                     }
                                                 });
                                             });
-                                        });
-                                    }else{
-                                        sendData.state = 0;
-                                        res.send(sendData);
-                                    }
+                                        }else if(rdAction === 'getfile'){
+                                            if(updateObj.taskStatus === 0){
+                                                if(taskDoc.taskParams.isDeploy){
+                                                    console.log("Getfile: need to deploy");
+                                                }else{
+                                                    console.log("Getfile: does't deploy");
+                                                }
+                                            }
+                                            db.close();
+                                            sendData.state = 0;
+                                            res.send(sendData);
+                                        }else{
+                                            db.close();
+                                            sendData.state = 0;
+                                            res.send(sendData);
+                                        }
+                                    });
                                 });
                             });
                         });
