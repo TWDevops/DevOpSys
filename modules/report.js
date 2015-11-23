@@ -306,17 +306,42 @@ function receive(req, res, next) {
                                                     }
                                                 });
                                             });
-                                        }else if(rdAction === 'getfile'){
+                                        /*}else if(rdAction === 'getfile'){
                                             if(updateObj.taskStatus === 0){
                                                 if(taskDoc.taskParams.isDeploy){
                                                     console.log("Getfile: need to deploy");
+                                                    dbase.getApiLocation(taskDoc.taskParams.apiName, "ol", function(error, apiLocation){
+                                                        if(error){
+                                                            console.log(error.stack);
+                                                            sendData.state = 1;
+                                                            res.send({error: error.stack});
+                                                        }
+                                                        if(apiLocation && apiLocation.length > 0){
+                                                            var Client = require('node-rest-client').Client;
+                                                            var client = new Client();
+                                                            var args = {
+                                                                headers:{"dps-token":config.get('DPS_TOKEN')}
+                                                            };
+                                                            apiLocation.forEach(function(apServer){
+                                                                client.get("http://127.0.0.1:"+ (config.get("HTTP_PORT") || '80') + "/mod/task/deploy/"+ apServer.name + "/" + buildDoc.deployId + "/true", args, function(data, response){
+                                                                    console.log(data);
+                                                                    console.log(response);
+                                                                });
+                                                            });
+                                                            sendData.state = 0;
+                                                            res.send(sendData);
+                                                        }else{
+                                                            sendData.state = 0;
+                                                            res.send(sendData);
+                                                        }
+                                                    });
                                                 }else{
                                                     console.log("Getfile: does't deploy");
                                                 }
                                             }
                                             db.close();
                                             sendData.state = 0;
-                                            res.send(sendData);
+                                            res.send(sendData);*/
                                         }else{
                                             db.close();
                                             sendData.state = 0;
