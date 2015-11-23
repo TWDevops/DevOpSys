@@ -250,6 +250,7 @@ function receive(req, res, next) {
                                     console.log(error.stack);
                                     process.exit(0);
                                 }
+                                console.log("queryObj: " + JSON.stringify(queryObj));
                                 taskColl.update(queryObj,{$set:updateObj},function(error, taskResult){
                                     if(error){
                                         console.log(error.stack);
