@@ -287,24 +287,30 @@ function receive(req, res, next) {
                                                     console.log(apiResult);
                                                     db.close();
                                                     if(isAutoDeploy){
-                                                        dbase.getDataByApserName(apiQueryObj['apiLocation.' + branch + '.name'],function(apSerDoc){
-                                                            var Client = require('node-rest-client').Client;
-                                                            var client = new Client();
-                                                            var args = {
-                                                                data:{"deployid":queryObj.taskNo,"seleniumtaskid":"uuid","selenium":[],"api":[{"url":"http://" + apSerDoc.apSerIntIp + "/ajax/plus/monitor/monitor-entrance?checkKey=plus10400","method":"get","input":"","output":"OK","whiteList":"","blackList":""}]},
-                                                                headers:{"dps-token":config.get('DPS_TOKEN')}
-                                                            };
-                                                            client.post("http://172.19.9.14:8080/qaServer/service/testcase", args, function(data, response){
-                                                                var testServerRes = JSON.parse(data.toString("UTF-8"));
-                                                                if(testServerRes.success === 'true'){
-                                                                    sendData.state = 0;
-                                                                }else{
-                                                                    sendData.state = 1;
-                                                                }
+                                                        dbase.getBuildDataByDeployId(queryObj.taskNo,function(buildDoc){
+                                                            if(buildDoc.apiName === 'PlusFE' || buildDoc.apiName === 'PlusBE'){
+                                                                dbase.getDataByApserName(apiQueryObj['apiLocation.' + branch + '.name'],function(apSerDoc){
+                                                                    var Client = require('node-rest-client').Client;
+                                                                    var client = new Client();
+                                                                    var args = {
+                                                                        data:{"deployid":queryObj.taskNo,"seleniumtaskid":"uuid","selenium":[],"api":[{"url":"http://" + apSerDoc.apSerIntIp + "/ajax/plus/monitor/monitor-entrance?checkKey=plus10400","method":"get","input":"","output":"OK","whiteList":"","blackList":""}]},
+                                                                        headers:{"dps-token":config.get('DPS_TOKEN')}
+                                                                    };
+                                                                    client.post("http://172.19.9.14:8080/qaServer/service/testcase", args, function(data, response){
+                                                                        var testServerRes = JSON.parse(data.toString("UTF-8"));
+                                                                        if(testServerRes.success === 'true'){
+                                                                            sendData.state = 0;
+                                                                        }else{
+                                                                            sendData.state = 1;
+                                                                        }
+                                                                        res.send(sendData);
+                                                                    });
+                                                                });
+                                                            }else{
+                                                                sendData.state = 0;
                                                                 res.send(sendData);
-                                                            });
+                                                            }
                                                         });
-                                                        
                                                     }else{
                                                         sendData.state = 0;
                                                         res.send(sendData);
