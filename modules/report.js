@@ -255,6 +255,7 @@ function receive(req, res, next) {
                                     console.log(error.stack);
                                     process.exit(0);
                                 }
+                                console.log("queryObj: " + JSON.stringify(queryObj));
                                 taskColl.update(queryObj,{$set:updateObj},function(error, taskResult){
                                     if(error){
                                         console.log(error.stack);
@@ -286,24 +287,34 @@ function receive(req, res, next) {
                                                 apiQueryObj['apiLocation.' + branch + '.rdExecId'] = queryObj.rdExecId;
                                                 var apiUpdateObj = {};
                                                 apiUpdateObj['apiLocation.' + branch + '.$.deploy'] = updateObj.taskStatus;
+                                                console.log("apiQueryObj: " + JSON.stringify(apiQueryObj));
                                                 apiColl.update(apiQueryObj, {$set:apiUpdateObj}, function(error, apiResult){
                                                     console.log(apiResult);
                                                     db.close();
                                                     if(isAutoDeploy){
-                                                        var Client = require('node-rest-client').Client;
-                                                        var client = new Client();
-                                                        var args = {
-                                                            data:{"deployid":queryObj.taskNo,"seleniumtaskid":"uuid","selenium":[],"api":[{"url":"http://172.19.7.217/ajax/plus/monitor/monitor-entrance?checkKey=plus10400","method":"get","input":"","output":"OK","whiteList":"","blackList":""}]},
-                                                            headers:{"dps-token":config.get('DPS_TOKEN')}
-                                                        };
-                                                        client.post("http://172.19.9.14:8080/qaServer/service/testcase", args, function(data, response){
-                                                            var testServerRes = JSON.parse(data.toString("UTF-8"));
-                                                            if(testServerRes.success === 'true'){
-                                                                sendData.state = 0;
+                                                        dbase.getBuildDataByDeployId(queryObj.taskNo,function(buildDoc){
+                                                            if(buildDoc.apiName === 'PlusFE' || buildDoc.apiName === 'PlusBE'){
+                                                                dbase.getDataByApserName(apiQueryObj['apiLocation.' + branch + '.name'],function(apSerDoc){
+                                                                    var Client = require('node-rest-client').Client;
+                                                                    var client = new Client();
+                                                                    var args = {
+                                                                        data:{"deployid":queryObj.taskNo,"seleniumtaskid":"uuid","selenium":[],"api":[{"url":"http://" + apSerDoc.apSerIntIp + "/ajax/plus/monitor/monitor-entrance?checkKey=plus10400","method":"get","input":"","output":"OK","whiteList":"","blackList":""}]},
+                                                                        headers:{"dps-token":config.get('DPS_TOKEN')}
+                                                                    };
+                                                                    client.post("http://172.19.9.14:8080/qaServer/service/testcase", args, function(data, response){
+                                                                        var testServerRes = JSON.parse(data.toString("UTF-8"));
+                                                                        if(testServerRes.success === 'true'){
+                                                                            sendData.state = 0;
+                                                                        }else{
+                                                                            sendData.state = 1;
+                                                                        }
+                                                                        res.send(sendData);
+                                                                    });
+                                                                });
                                                             }else{
-                                                                sendData.state = 1;
+                                                                sendData.state = 0;
+                                                                res.send(sendData);
                                                             }
-                                                            res.send(sendData);
                                                         });
                                                     }else{
                                                         sendData.state = 0;
