@@ -27,12 +27,12 @@ module.exports = {
 		    res.setEncoding('utf8');
 		    res.on('data', function (chunk) {
 		    	console.log('Response: ' + chunk);
-		    	callback(true, chunk);
+		    	//callback(true, chunk);
 		    });
 
 		    res.on('error', function(error) {
     			console.log('error: ' + error);
-    			callback(false, error);
+    			//callback(false, error);
  			 });
 		});
 
