@@ -3,7 +3,7 @@
  * Report module.
  */
 var dbase = new require('../utils/DataBase.js');
-
+var slackbot = new require('./slackbotModule.js');
 var config = require("nconf");
 config.env().file({ "file":"config.json" });
 
@@ -180,6 +180,11 @@ function receive(req, res, next) {
                         console.log(error.stack);
                         process.exit(0);
                     }
+
+                    slackbot.sendMsg(sendData, function(sucess, result){
+                        console.log(result);
+                    });
+
                     logColl.insert(sendData, function(error, data){
                         if(error){
                             console.log(error.stack);

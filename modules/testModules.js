@@ -56,26 +56,28 @@ module.exports = {
 			});
 		});
 	},
-	/* sample data
-	{"deployid":"uuid","seleniumtaskid":"uuid","chrome":"true","localflag":"false",
-		"selenium":[ 
-			{"testid":"testuuid","testdata":[
-				{"event":"get","type":"","value":"http://plus.s104.com.tw"},
-				{"event":"click","type":"Id::btn-login","value":""},
-				{"event":"sleep","type":"","value":"2000"},
-				{"event":"clear","type":"Id::username","value":""},
-				{"event":"sendKeys","type":"Id::username","value":"V111044428"},
-				{"event":"clear","type":"Id::password","value":""},
-				{"event":"sendKeys","type":"Id::password","value":"123qwe"},
-				{"event":"click","type":"Id::btn-login","value":""},
-				{"event":"sleep","type":"","value":"5000"}
-				]
-			}
-		],
-		"api":[]
-	}
-
-	*/
+	
+	/*** sample data
+	*
+	*	{"deployid":"uuid","seleniumtaskid":"uuid","chrome":"true","localflag":"false",
+	*		"selenium":[ 
+	*			{"testid":"testuuid","testdata":[
+	*				{"event":"get","type":"","value":"http://plus.s104.com.tw"},
+	*				{"event":"click","type":"Id::btn-login","value":""},
+	*				{"event":"sleep","type":"","value":"2000"},
+	*				{"event":"clear","type":"Id::username","value":""},
+	*				{"event":"sendKeys","type":"Id::username","value":"V111044428"},
+	*				{"event":"clear","type":"Id::password","value":""},
+	*				{"event":"sendKeys","type":"Id::password","value":"123qwe"},
+	*				{"event":"click","type":"Id::btn-login","value":""},
+	*				{"event":"sleep","type":"","value":"5000"}
+	*				]
+	*			}
+	*		],
+	*		"api":[]
+	*	}
+	*
+	***/
 	sendToTestServer : function(deployid, targetHost, seleniumtaskid, testIdArray, callback){
 		var postData = {};
 		postData.deployid = deployid;
