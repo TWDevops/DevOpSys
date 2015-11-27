@@ -180,9 +180,10 @@ function receive(req, res, next) {
                         console.log(error.stack);
                         process.exit(0);
                     }
-                    var testRes = JSON.parse(req.body);
-                    console.log("Test server res: " +testRes);
-                    slackbot.sendMsg("DepolyID: " + testRes.API[0].deployid + ", Test Result:" + testRes.API[0].Error === ''?"OK":"Fail" , function(sucess, result){
+                    //var testRes = JSON.parse(req.body);
+                    //console.log("Test server res: " +testRes);
+                    //slackbot.sendMsg("DepolyID: " + testRes.API[0].deployid + ", Test Result:" + testRes.API[0].Error === ''?"OK":"Fail" , function(sucess, result){
+                    slackbot.sendMsg("Test Result: " + JSON.stringify(req.body) , function(sucess, result){
                         console.log(result);
                     });
 
