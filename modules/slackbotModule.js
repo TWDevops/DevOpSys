@@ -24,17 +24,21 @@ module.exports = {
 	  	};
 
 		  // Set up the request
+		var body = '';
 		var post_req = https.request(post_options, function(res) {
 		    res.setEncoding('utf8');
 		    res.on('data', function (chunk) {
-		    	console.log('Response: ' + chunk);
+		    	body += chunk;
+		    	//console.log('Response: ' + chunk);
 		    	//callback(true, chunk);
 		    });
 
-		    res.on('error', function(error) {
-    			console.log('error: ' + error);
-    			//callback(false, error);
- 			 });
+		    res.on('end', function() {
+		    	 console.log("Slack Response: ", body);
+		    }).on('error', function(e) {
+                    console.log("Got error: ", e);
+            }); 
+		    
 		});
 
   		// post the data

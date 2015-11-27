@@ -38,10 +38,10 @@ function trytestcase(req, res, next) {
         req.session.apiId=null;
     }
 
-    //var slackMsg = "Andy Test"; 
-    //slackbot.sendMsg(slackMsg, function(sucess, result){
-            //console.log("slack: " + result);
-    //});
+    var slackMsg = "Andy Test"; 
+    slackbot.sendMsg(slackMsg, function(sucess, result){
+        console.log("slack: " + result);
+    });
 
     //console.log("req: " + JSON.stringify(req.body));
     var deployid = 'ui_test01';
