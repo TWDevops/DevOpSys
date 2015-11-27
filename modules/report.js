@@ -181,7 +181,7 @@ function receive(req, res, next) {
                         process.exit(0);
                     }
 
-                    slackbot.sendMsg("Test Server Result:" + req.body, function(sucess, result){
+                    slackbot.sendMsg("DepolyID: " + req.body.API[0].deployid + ", Test Result:" + req.body.API[0].Error === ''?"OK":"Fail" , function(sucess, result){
                         console.log(result);
                     });
 
@@ -225,6 +225,9 @@ function receive(req, res, next) {
                                 rdAction = 'getfile';
                             }
                             console.log("rundeck status: " + result.notification.$.status);
+                            
+                       
+
                             if(result.notification.$.status === 'running'){
                                 queryObj.taskStatus = 1;
                                 updateObj.taskStatus = 2;
@@ -236,11 +239,6 @@ function receive(req, res, next) {
                                 queryObj.taskStatus = 2;
                                 updateObj.taskStatus = 0;
                                 updateObj.endDate = new Date();
-
-                                slackbot.sendMsg("Rundeck Status: " + result.notification.$.status, function(sucess, result){
-                                    console.log(result);
-                                });
-
                             }else{
                                 queryObj.taskStatus = {$lt:3};
                                 updateObj.taskStatus = 9;
@@ -253,6 +251,12 @@ function receive(req, res, next) {
                                     break;
                                 }
                             }
+
+                            //To slack //Andy
+                            slackbot.sendMsg("DepolyID: " + queryObj.taskNo +", Rundeck Status: " + result.notification.$.status, function(sucess, result){
+                                    console.log(result);
+                            });
+
                             //queryObj.taskNo = rdDeployId;
                             queryObj.rdExecId = result.notification.$.executionId;
                             devopsDb.collection('task', function(error, taskColl){
