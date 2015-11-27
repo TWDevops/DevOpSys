@@ -169,7 +169,7 @@ function receive(req, res, next) {
             });
         },
         'test' : function(){
-            sendData.info = JSON.stringify(req.body);
+            sendData.info = req.body;
             db.open(function(error, devopsDb) {
                 if(error){
                     console.log(error.stack);
@@ -180,8 +180,9 @@ function receive(req, res, next) {
                         console.log(error.stack);
                         process.exit(0);
                     }
-
-                    slackbot.sendMsg("DepolyID: " + req.body.API[0].deployid + ", Test Result:" + req.body.API[0].Error === ''?"OK":"Fail" , function(sucess, result){
+                    var testRes = JSON.parser(req.body);
+                    onsole.log("Test server res: " +testRes);
+                    slackbot.sendMsg("DepolyID: " + testRes.API[0].deployid + ", Test Result:" + testRes.API[0].Error === ''?"OK":"Fail" , function(sucess, result){
                         console.log(result);
                     });
 
@@ -253,7 +254,7 @@ function receive(req, res, next) {
                             }
 
                             //To slack //Andy
-                            slackbot.sendMsg("DepolyID: " + queryObj.taskNo +", Rundeck Status: " + result.notification.$.status, function(sucess, result){
+                            slackbot.sendMsg("Rundeck Status: " + result.notification.$.status +", DepolyID: " + queryObj.taskNo , function(sucess, result){
                                     console.log(result);
                             });
 
