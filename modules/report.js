@@ -181,7 +181,7 @@ function receive(req, res, next) {
                         process.exit(0);
                     }
 
-                    slackbot.sendMsg(JSON.stringify(sendData), function(sucess, result){
+                    slackbot.sendMsg("Test Server Result:" + req.body, function(sucess, result){
                         console.log(result);
                     });
 
@@ -236,6 +236,11 @@ function receive(req, res, next) {
                                 queryObj.taskStatus = 2;
                                 updateObj.taskStatus = 0;
                                 updateObj.endDate = new Date();
+
+                                slackbot.sendMsg("Rundeck Status: " + result.notification.$.status, function(sucess, result){
+                                    console.log(result);
+                                });
+
                             }else{
                                 queryObj.taskStatus = {$lt:3};
                                 updateObj.taskStatus = 9;
