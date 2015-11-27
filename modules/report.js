@@ -181,7 +181,7 @@ function receive(req, res, next) {
                         process.exit(0);
                     }
 
-                    slackbot.sendMsg(sendData, function(sucess, result){
+                    slackbot.sendMsg(JSON.stringify(sendData), function(sucess, result){
                         console.log(result);
                     });
 
