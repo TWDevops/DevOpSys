@@ -16,7 +16,7 @@ module.exports = {
 	      	//port: '80',
 	      	path: '/services/T06AJQFL1/B0F5ZN62G/GdS0WAT7ejw8fEHNfxVBEiqv',
 	      	method: 'POST',
-	      	rejectUnauthorized: false,
+	      	//rejectUnauthorized: false,
 	      	headers: {
 	          	//'Content-Type': 'application/x-www-form-urlencoded',
 	          	'Content-Length': Buffer.byteLength(post_data)
@@ -26,6 +26,9 @@ module.exports = {
 		  // Set up the request
 		var body = '';
 		var post_req = https.request(post_options, function(res) {
+		    console.log('Slack STATUS: ' + res.statusCode);
+  			console.log('Slack HEADERS: ' + JSON.stringify(res.headers));
+
 		    res.setEncoding('utf8');
 		    res.on('data', function (chunk) {
 		    	body += chunk;
@@ -34,9 +37,9 @@ module.exports = {
 		    });
 
 		    res.on('end', function() {
-		    	 console.log("Slack Response: ", body);
+		    	console.log("Slack Response: ", body);
 		    }).on('error', function(e) {
-                    console.log("Got error: ", e);
+                console.log("Slack error: ", e);
             }); 
 		    
 		});
