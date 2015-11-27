@@ -181,7 +181,7 @@ function receive(req, res, next) {
                         process.exit(0);
                     }
                     var testRes = JSON.parser(req.body);
-                    onsole.log("Test server res: " +testRes);
+                    console.log("Test server res: " +testRes);
                     slackbot.sendMsg("DepolyID: " + testRes.API[0].deployid + ", Test Result:" + testRes.API[0].Error === ''?"OK":"Fail" , function(sucess, result){
                         console.log(result);
                     });
