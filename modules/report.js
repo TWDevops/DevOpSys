@@ -253,14 +253,24 @@ function receive(req, res, next) {
                                     break;
                                 }
                             }
-
-                            //To slack //Andy
-                            slackbot.sendMsg("Rundeck Status: " + result.notification.$.status +", \tDepolyID: " + queryObj.taskNo , function(sucess, result){
-                                    console.log(result);
-                            });
-
+                            
                             //queryObj.taskNo = rdDeployId;
                             queryObj.rdExecId = result.notification.$.executionId;
+                            
+                            //To slack //Andy
+                            dbase.getBuildDataByDeployId(queryObj.taskNo,function(buildDoc){
+                                slackbot.sendMsg("Project Name: " + buildDoc.apiName +
+                                                 ",\nRundeck Job: " + result.notification.executions[0].execution[0].job[0].name[0] +
+                                                 ",\nRundeck Status: " + result.notification.$.status +
+                                                 ",\nDepolyID: " + queryObj.taskNo ,
+                                                 function(sucess, result){
+                                    console.log(result);
+                                });
+                            });
+                            /*slackbot.sendMsg("Rundeck Status: " + result.notification.$.status +", \tDepolyID: " + queryObj.taskNo , function(sucess, result){
+                                console.log(result);
+                            });*/
+                            
                             devopsDb.collection('task', function(error, taskColl){
                                 if(error){
                                     console.log(error.stack);
