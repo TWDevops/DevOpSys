@@ -183,7 +183,7 @@ function receive(req, res, next) {
                     //var testRes = JSON.parse(req.body);
                     //console.log("Test server res: " +testRes);
                     //slackbot.sendMsg("DepolyID: " + testRes.API[0].deployid + ", Test Result:" + testRes.API[0].Error === ''?"OK":"Fail" , function(sucess, result){
-                    slackbot.sendMsg("Test Result: " + JSON.stringify(req.body) , function(sucess, result){
+                    slackbot.sendMsg("Test Result: " + JSON.stringify(req.body) , null, function(sucess, result){
                         console.log(result);
                     });
 
@@ -223,6 +223,7 @@ function receive(req, res, next) {
                             var updateObj = {};
                             var isAutoDeploy = false;
                             var rdAction = 'deploy';
+                            var slackIcon = null;
                             if(result.notification.executions[0].execution[0].job[0].$.id === config.get("RUNDECK_OL_AUTO_GET_FILE")){
                                 rdAction = 'getfile';
                             }
@@ -245,6 +246,7 @@ function receive(req, res, next) {
                                 queryObj.taskStatus = {$lt:3};
                                 updateObj.taskStatus = 9;
                                 updateObj.endDate = new Date();
+                                slackIcon = ":ghost:";
                             }
                             var rdOption = result.notification.executions[0].execution[0].job[0].options[0].option;
                             for(var i =0; i < rdOption.length; i++){
@@ -263,6 +265,7 @@ function receive(req, res, next) {
                                                  ",\nRundeck Job: " + result.notification.executions[0].execution[0].job[0].name[0] +
                                                  ",\nRundeck Status: " + result.notification.$.status +
                                                  ",\nDepolyID: " + queryObj.taskNo ,
+                                                 slackIcon,
                                                  function(sucess, result){
                                     console.log(result);
                                 });
