@@ -5,9 +5,12 @@ module.exports = {
 
     sendMsg : function(message, icon, callback){
         console.log("sendMsg: " + JSON.stringify(message));
+		if(!icon){
+			icon = ":monkey_face:";
+		}
         var msgFormat = {
-            text: message,
-			"icon_emoji": (icon? icon : ":monkey_face:")
+            "text": message,
+			"icon_emoji": icon
         };
         var post_data = JSON.stringify(msgFormat);
         //https://hooks.slack.com/services/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
