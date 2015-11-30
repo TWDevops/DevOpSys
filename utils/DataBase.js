@@ -55,8 +55,8 @@ DataBase.prototype.getBuildDataByDeployId = function(deployId, callback){
                     console.log(error.stack);
                     process.exit(0);
                 }
-                db.close();
                 callback(buildDoc);
+                db.close();
             });
         });
     });
