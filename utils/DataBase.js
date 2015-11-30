@@ -39,8 +39,8 @@ DataBase.prototype.ObjectID = function(o_id){
 };
 
 DataBase.prototype.getBuildDataByDeployId = function(deployId, callback){
-    var mdb = DataBase.prototype.getDb();
-    mdb.open(function(error, apiDb) {
+    var db = DataBase.prototype.getDb();
+    db.open(function(error, apiDb) {
         if(error){
             console.log(error.stack);
             process.exit(0);
@@ -55,7 +55,7 @@ DataBase.prototype.getBuildDataByDeployId = function(deployId, callback){
                     console.log(error.stack);
                     process.exit(0);
                 }
-                mdb.close();
+                //db.close();
                 callback(buildDoc);
             });
         });
@@ -76,8 +76,8 @@ DataBase.prototype.getApiList = function(apiId, callBack){
         queryObj = {"_id": DataBase.prototype.ObjectID(apiId)};
         fn = callBack;
     }
-    var mdb = DataBase.prototype.getDb();
-    mdb.open(function(error, devopsDb){
+    var db = DataBase.prototype.getDb();
+    db.open(function(error, devopsDb){
         if(error){
             console.log(error.stack);
             process.exit(0);
@@ -98,7 +98,7 @@ DataBase.prototype.getApiList = function(apiId, callBack){
                     console.log(doc['_id'].toString());
                     apiList[doc['_id'].toString()]= doc;
                 } else{
-                    mdb.close();
+                    //db.close();
                     console.log(apiList);
                     fn(apiList);
                     /*res.render('apilist',{
@@ -113,8 +113,8 @@ DataBase.prototype.getApiList = function(apiId, callBack){
 
 
 DataBase.prototype.getApiLocation = function(apiName, apiBranch, callback){
-    var mdb = DataBase.prototype.getDb();
-    mdb.open(function(error, devopsDb) {
+    var db = DataBase.prototype.getDb();
+    db.open(function(error, devopsDb) {
         if(error){
             console.log(error.stack);
             callback(error,null);
@@ -130,7 +130,7 @@ DataBase.prototype.getApiLocation = function(apiName, apiBranch, callback){
                     callback(error, null);
                 }
                 var apiLoc = apiDoc.apiLocation[apiBranch];
-                mdb.close();
+                //db.close();
                 callback( null, apiLoc);
             });
         });
@@ -139,8 +139,8 @@ DataBase.prototype.getApiLocation = function(apiName, apiBranch, callback){
 
 DataBase.prototype.getApiAllow = function(callback){
     var allowList = {};
-    var mdb = DataBase.prototype.getDb();
-    mdb.open(function(error, apiDb) {
+    var db = DataBase.prototype.getDb();
+    db.open(function(error, apiDb) {
         if(error){
             console.log(error.stack);
             process.exit(0);
@@ -162,7 +162,7 @@ DataBase.prototype.getApiAllow = function(callback){
                     allowList[doc['apiName'].toString()]= doc;
                 } else{
                     //console.log(allowList);
-                    mdb.close();
+                    //db.close();
                     callback(allowList);
                 }
             });
@@ -172,8 +172,8 @@ DataBase.prototype.getApiAllow = function(callback){
 
 
 DataBase.prototype.getApiGitRepo = function(apiId, callback){
-    var mdb = DataBase.prototype.getDb();
-    mdb.open(function(error, devopsDb) {
+    var db = DataBase.prototype.getDb();
+    db.open(function(error, devopsDb) {
         if(error){
             console.log(error.stack);
             process.exit(0);
@@ -188,7 +188,7 @@ DataBase.prototype.getApiGitRepo = function(apiId, callback){
                     console.log(error.stack);
                     process.exit(0);
                 }
-                mdb.close();
+                //db.close();
                 if(apiDoc !== null){
                     console.log(apiDoc);
                     callback(apiDoc);
@@ -202,8 +202,8 @@ DataBase.prototype.getApiGitRepo = function(apiId, callback){
 
 
 DataBase.prototype.getDeployList = function(findOpt,callback){
-    var mdb = DataBase.prototype.getDb();
-    mdb.open(function(error, devopsDb) {
+    var db = DataBase.prototype.getDb();
+    db.open(function(error, devopsDb) {
         if(error){
             console.log(error.stack);
             process.exit(0);
@@ -224,7 +224,7 @@ DataBase.prototype.getDeployList = function(findOpt,callback){
                     taskList[doc._id] = doc;
                 }else{
                     console.log(taskList);
-                    mdb.close();
+                    //db.close();
                     callback(taskList);
                 }
             });
@@ -246,8 +246,8 @@ DataBase.prototype.getApSerList = function(apSerId, callBack){
         queryObj = {"_id": DataBase.prototype.ObjectID(apSerId)};
         fn = callBack;
     }
-    var mdb = DataBase.prototype.getDb();
-    mdb.open(function(error, devopsDb){
+    var db = DataBase.prototype.getDb();
+    db.open(function(error, devopsDb){
         if(error){
             console.log(error.stack);
             process.exit(0);
@@ -262,7 +262,7 @@ DataBase.prototype.getApSerList = function(apSerId, callBack){
                     console.log(error.stack);
                     process.exit(0);
                 }
-                mdb.close();
+                //db.close();
                 //console.log(sendData);
                 fn(apSerList);
             });
@@ -273,9 +273,9 @@ DataBase.prototype.getApSerList = function(apSerId, callBack){
 
 DataBase.prototype.getDataByApserName = function(serName,callback){
     //console.log("db_apser:1");
-    var mdb = DataBase.prototype.getDb();
+    var db = DataBase.prototype.getDb();
     //console.log("db_apser:2");
-    mdb.open(function(error, devopsDb) {
+    db.open(function(error, devopsDb) {
         //console.log("db_apser:3");
         if(error){
             console.log(error.stack);
@@ -294,7 +294,7 @@ DataBase.prototype.getDataByApserName = function(serName,callback){
                     console.log(error.stack);
                     process.exit(0);
                 }
-                mdb.close();
+                //db.close();
                 if(apSerDoc !== null){
                     console.log(apSerDoc);
                     callback(apSerDoc);
@@ -309,8 +309,8 @@ DataBase.prototype.getDataByApserName = function(serName,callback){
 
 DataBase.prototype.getTask = function(action,callback){
     var taskList = {};
-    var mdb = DataBase.prototype.getDb();
-    mdb.open(function(error, devopsDb) {
+    var db = DataBase.prototype.getDb();
+    db.open(function(error, devopsDb) {
         if(error){
             console.log(error.stack);
             process.exit(0);
@@ -329,7 +329,7 @@ DataBase.prototype.getTask = function(action,callback){
                     taskList = taskDoc;
                 }
                 console.log(taskList);
-                mdb.close();
+                //db.close();
                 callback(taskList);
             });
         });
@@ -341,7 +341,7 @@ DataBase.prototype.getTask = function(action,callback){
 //    callback("test");
 //}
 DataBase.prototype.setTask = function(setOpt, callback){
-    var mdb = DataBase.prototype.getDb();
+    var db = DataBase.prototype.getDb();
     var retData = {};
     //console.log("db:1");
     console.log("SetTask Action:" + setOpt.action);
@@ -377,7 +377,7 @@ DataBase.prototype.setTask = function(setOpt, callback){
                     taskObj.taskLog = ["Preparing to deploy"];
                     taskObj.taskDesc = "Deploy";
                     taskObj.rdExecId = setOpt.rdExecId;
-                    mdb.open(function(error,devopsDb){
+                    db.open(function(error,devopsDb){
                         if(error){
                             console.log(error.stack);
                             process.exit(0);
@@ -392,7 +392,7 @@ DataBase.prototype.setTask = function(setOpt, callback){
                                     console.log(error.stack);
                                     process.exit(0);
                                 }
-                                mdb.close();
+                                //db.close();
                                 if(result){
                                     retData['status'] = 0;
                                     retData['info'] = 'Deploy: Task insert success.';
@@ -409,7 +409,7 @@ DataBase.prototype.setTask = function(setOpt, callback){
                     //}
                 //});                
             }else{
-                mdb.close();
+                //db.close();
                 callback({status:1, error: "No Ap Server."});
             }
         });
@@ -428,7 +428,7 @@ DataBase.prototype.setTask = function(setOpt, callback){
         taskObj.taskLog = ["Put deploy to OL"];
         taskObj.taskDesc = "Put deploy to OL";
         taskObj.rdExecId = setOpt.rdExecId;
-        mdb.open(function(error,devopsDb){
+        db.open(function(error,devopsDb){
             if(error){
                 console.log(error.stack);
                 process.exit(0);
@@ -443,7 +443,7 @@ DataBase.prototype.setTask = function(setOpt, callback){
                         console.log(error.stack);
                         process.exit(0);
                     }
-                    mdb.close();
+                    //db.close();
                     if(result){
                         retData['status'] = 0;
                         retData['info'] = 'Getfile: Task insert success.';
@@ -461,10 +461,10 @@ DataBase.prototype.setTask = function(setOpt, callback){
 
 
 DataBase.prototype.updateTask = function(taskId, updateObj, callback){
-    var mdb = DataBase.prototype.getDb();
+    var db = DataBase.prototype.getDb();
     //var retData = {};
     var taskOid = DataBase.prototype.ObjectID(taskId);
-    mdb.open(function(error,devopsDb){
+    db.open(function(error,devopsDb){
         devopsDb.collection('task', function(error, taskColl){
             taskColl.update({ "_id" : taskOid }, { $set : updateObj }, function(error, result){
                 if(error){
@@ -472,7 +472,7 @@ DataBase.prototype.updateTask = function(taskId, updateObj, callback){
                     process.exit(0);
                 }
                 console.log("updateTask result: " + result);
-                mdb.close();
+                //db.close();
                 callback(result);
             });
         });
@@ -489,7 +489,7 @@ DataBase.prototype.updateTask = function(taskId, updateObj, callback){
  */
 DataBase.prototype.updateTaskStatus = function(taskId, taskSt, callback){
     var resData = {};
-    var mdb = DataBase.prototype.getDb();
+    var db = DataBase.prototype.getDb();
     //if(taskId){
         var taskOid = DataBase.prototype.ObjectID(taskId);
         //var nowTaskSt = 1;
@@ -517,7 +517,7 @@ DataBase.prototype.updateTaskStatus = function(taskId, taskSt, callback){
         //console.log("updateTaskStatus nowTaskSt: " + nowTaskSt);
         console.log("updateTaskStatus nexTaskSt: " + nexTaskSt);
         console.log("updateTaskStatus action: " + taskSt);
-        mdb.open(function(error, devopsDb) {
+        db.open(function(error, devopsDb) {
             if(error){
                 console.log(error.stack);
                 process.exit(0);
@@ -534,7 +534,7 @@ DataBase.prototype.updateTaskStatus = function(taskId, taskSt, callback){
                     }
                     //if(result){
                         console.log("updateTaskStatus result: " + result);
-                        mdb.close();
+                        //db.close();
                         callback(result);
                     /*}else {
                         resData["state"] = 1;
