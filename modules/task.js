@@ -360,12 +360,13 @@ function deploy(req, res, next){
                                 updateObj['apiLocation.lab.$.rdExecId'] = setOpt.rdExecId;
                             }
                             apiColl.update(queryObj,{$set:updateObj});
-                            db.close();
+                            //db.close();
                             if(result.status === 0){
                                 res.send(rkresult);
                             }else{
                                 res.send(result);
                             }
+                            db.close();
                         });
                     });
                     //triggerRundeck();
