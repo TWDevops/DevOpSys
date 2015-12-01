@@ -227,6 +227,7 @@ function receive(req, res, next) {
                             if(result.notification.executions[0].execution[0].job[0].$.id === config.get("RUNDECK_OL_AUTO_GET_FILE")){
                                 rdAction = 'getfile';
                             }
+                            console.log("rundeck action: " + rdAction);
                             console.log("rundeck status: " + result.notification.$.status);
                             
                        
