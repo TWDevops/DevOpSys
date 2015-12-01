@@ -262,6 +262,7 @@ function receive(req, res, next) {
                             //To slack //Andy
                             dbase.getBuildDataByDeployId(queryObj.taskNo,function(buildDoc){
                                 slackbot.sendMsg("Project Name: " + buildDoc.apiName +
+                                                 ",\nProject Branch: " + buildDoc.gitBranch +
                                                  ",\nRundeck Job: " + result.notification.executions[0].execution[0].job[0].name[0] +
                                                  ",\nRundeck Status: " + result.notification.$.status +
                                                  ",\nDepolyID: " + queryObj.taskNo ,
