@@ -318,7 +318,9 @@ function receive(req, res, next) {
                                                     //db.close();
                                                     if(isAutoDeploy){
                                                         dbase.getBuildDataByDeployId(queryObj.taskNo,function(buildDoc){
+                                                            console.log(buildDoc.apiName);
                                                             if(buildDoc.apiName === 'PlusFE' || buildDoc.apiName === 'PlusBE'){
+                                                                console.log("Start Testing.");
                                                                 dbase.getDataByApserName(apiQueryObj['apiLocation.' + branch + '.name'],function(apSerDoc){
                                                                     var Client = require('node-rest-client').Client;
                                                                     var client = new Client();
