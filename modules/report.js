@@ -291,18 +291,22 @@ function receive(req, res, next) {
                                         res.send(sendData);
                                     }
                                     console.log(taskResult);
+                                    console.log("rundeck action 01: " + rdAction);
                                     taskColl.findOne({"taskNo":queryObj.taskNo,"rdExecId":queryObj.rdExecId},{taskParams:1}, function(error, taskDoc){
+                                        console.log("rundeck action 02: " + rdAction);
                                         if(rdAction === 'deploy'){
                                             if(error){
                                                 console.log(error.stack);
                                                 process.exit(0);
                                             }
+                                            console.log("rundeck action 03: " + rdAction);
                                             var branch = taskDoc.taskParams.branch;
                                             devopsDb.collection('api', function(error, apiColl){
                                                 if(error){
                                                     console.log(error.stack);
                                                     process.exit(0);
                                                 }
+                                                console.log("rundeck action 04: " + rdAction);
                                                 var apiQueryObj = {};
                                                 for(var i =0; i < rdOption.length; i++){
                                                     if(rdOption[i].$.name === 'node'){
@@ -315,9 +319,11 @@ function receive(req, res, next) {
                                                 apiUpdateObj['apiLocation.' + branch + '.$.deploy'] = updateObj.taskStatus;
                                                 console.log("apiQueryObj: " + JSON.stringify(apiQueryObj));
                                                 apiColl.update(apiQueryObj, {$set:apiUpdateObj}, function(error, apiResult){
+                                                    console.log("rundeck action 05: " + rdAction);
                                                     console.log(apiResult);
                                                     //db.close();
                                                     if(isAutoDeploy){
+                                                        console.log("rundeck action 06: " + rdAction);
                                                         dbase.getBuildDataByDeployId(queryObj.taskNo,function(buildDoc){
                                                             console.log(buildDoc.apiName);
                                                             if(buildDoc.apiName === 'PlusFE' || buildDoc.apiName === 'PlusBE'){
@@ -388,6 +394,7 @@ function receive(req, res, next) {
                                             res.send(sendData);*/
                                         }else{
                                             //db.close();
+                                            console.log("rundeck action 09: " + rdAction);
                                             sendData.state = 0;
                                             res.send(sendData);
                                         }
