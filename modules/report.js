@@ -268,7 +268,7 @@ function receive(req, res, next) {
                                                  ",\nRundeck Status: " + result.notification.$.status +
                                                  ",\nDepolyID: " + queryObj.taskNo ,
                                                  slackIcon,
-                                                 function(sucess, result){
+                                                 function(){
                                     console.log(result);
                                     devopsDb.collection('task', function(error, taskColl){
                                         if(error){

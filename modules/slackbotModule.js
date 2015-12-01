@@ -51,6 +51,7 @@ module.exports = {
           // post the data
           post_req.write(post_data);
           post_req.end();
+          callback();
     }
 };
 
