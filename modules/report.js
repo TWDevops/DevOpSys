@@ -285,10 +285,10 @@ function receive(req, res, next) {
                                 taskColl.update(queryObj,{$set:updateObj},function(error, taskResult){
                                     if(error){
                                         console.log(error.stack);
-                                        //process.exit(0);
-                                        sendData.state = 1;
-                                        sendData.info = error.stack;
-                                        res.send(sendData);
+                                        process.exit(0);
+                                        //sendData.state = 1;
+                                        //sendData.info = error.stack;
+                                        //res.send(sendData);
                                     }
                                     console.log(taskResult);
                                     console.log("rundeck action 01: " + rdAction);
