@@ -184,18 +184,18 @@ function receive(req, res, next) {
                     //console.log("Test server res: " +testRes);
                     //slackbot.sendMsg("DepolyID: " + testRes.API[0].deployid + ", Test Result:" + testRes.API[0].Error === ''?"OK":"Fail" , function(sucess, result){
                     slackbot.sendMsg("Test Result: " + JSON.stringify(req.body) , null, function(sucess, result){
-                        console.log(result);
+                        logColl.insert(sendData, function(error, data){
+                            if(error){
+                                console.log(error.stack);
+                                process.exit(0);
+                            }
+                            //db.close();
+                            sendData.state = 0;
+                            res.send(sendData);
+                        });
                     });
 
-                    logColl.insert(sendData, function(error, data){
-                        if(error){
-                            console.log(error.stack);
-                            process.exit(0);
-                        }
-                        //db.close();
-                        sendData.state = 0;
-                        res.send(sendData);
-                    });
+                    
                 });
             });
         },
