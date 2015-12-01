@@ -159,7 +159,7 @@ function modify(req, res, next){
                                         sendData.state = 1;
                                     }
                                     sendData.date = new Date();
-                                    db.close();
+                                    //db.close();
                                 });
                                 res.send(sendData);
                             });

@@ -54,7 +54,7 @@ function list(req, res, next) {
                     console.log(doc);
                     sendData[doc.apiName]= doc;
                 } else{
-                    db.close();
+                    //db.close();
                     console.log(sendData);
                     res.send(sendData);
                 }
@@ -95,7 +95,7 @@ function view(req, res, next){
                                         console.log(error.stack);
                                         process.exit(0);
                                     }
-                                    db.close();
+                                    //db.close();
                                     console.log(tcList);
                                     res.render('selecttc',{
                                          title: "Test Case selector",
@@ -132,7 +132,7 @@ function view(req, res, next){
                                 console.log(doc['_id'].toString());
                                 apiList[doc['_id'].toString()]= doc;
                             } else{
-                                db.close();
+                                //db.close();
                                 console.log(apiList);
                                 res.render('selectapi',{
                                      title: "API select",
@@ -192,7 +192,7 @@ function view(req, res, next){
                                             }
                                         }
                                     }
-                                    db.close();
+                                    //db.close();
                                     //console.log(sendData);
                                     res.render('selectapser',{
                                         title: "AP Server Select",
@@ -324,7 +324,7 @@ function modify(req, res, next){
                                     //sendData["UPDATE"] = doc;
                                     sendData["date"] = new Date();
                                     sendData["result"] = result;
-                                    db.close();
+                                    //db.close();
                                     res.send(sendData);
                                 });
                             });
@@ -375,13 +375,13 @@ function modify(req, res, next){
                                     $push:{"apiAllow":req.params.apiId}
                                 },{multi:true},function(error,result){
                                     sendData['2']=result;
-                                    db.close();
+                                    //db.close();
                                     console.log(sendData);
                                     mainWorker.setApiAcls();
                                     res.send(sendData);
                                 });
                             }else{
-                                db.close();
+                                //db.close();
                                 sendData['2']="no api to call";
                                 console.log(sendData);
                                 res.send(sendData);
@@ -504,7 +504,7 @@ function modify(req, res, next){
                                                         console.log('Failed to Insert');
                                                         sendData.state = 1;
                                                     }
-                                                    db.close();
+                                                    //db.close();
                                                     sendData.date = new Date();
                                                     sendData.hookInfo = addHookResult;
                                                     res.send(sendData);
@@ -573,12 +573,12 @@ function modify(req, res, next){
                                         //sendData["UPDATE"] = doc;
                                         sendData["date"] = new Date();
                                         sendData["result"] = result;
-                                        db.close();
+                                        //db.close();
                                         res.send(sendData);
                                     });
                                 //}else{
                                 }else{
-                                    db.close();
+                                    //db.close();
                                     sendData["state"] = 1;
                                     sendData["error"] = "Data not found.";
                                     sendData["date"] = new Date();

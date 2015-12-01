@@ -364,7 +364,7 @@ function deploy(req, res, next){
                                     console.log(error.stack);
                                     process.exit(0);
                                 }
-                                db.close();
+                                //db.close();
                                 if(updateRes.status === 0){
                                     res.send(rkresult);
                                 }else{
@@ -372,7 +372,6 @@ function deploy(req, res, next){
                                 }
                             });
                             //db.close();
-                            
                         });
                     });
                     //triggerRundeck();

@@ -192,7 +192,7 @@ function receive(req, res, next) {
                             console.log(error.stack);
                             process.exit(0);
                         }
-                        db.close();
+                        //db.close();
                         sendData.state = 0;
                         res.send(sendData);
                     });
@@ -314,7 +314,7 @@ function receive(req, res, next) {
                                                 console.log("apiQueryObj: " + JSON.stringify(apiQueryObj));
                                                 apiColl.update(apiQueryObj, {$set:apiUpdateObj}, function(error, apiResult){
                                                     console.log(apiResult);
-                                                    db.close();
+                                                    //db.close();
                                                     if(isAutoDeploy){
                                                         dbase.getBuildDataByDeployId(queryObj.taskNo,function(buildDoc){
                                                             if(buildDoc.apiName === 'PlusFE' || buildDoc.apiName === 'PlusBE'){
@@ -383,7 +383,7 @@ function receive(req, res, next) {
                                             sendData.state = 0;
                                             res.send(sendData);*/
                                         }else{
-                                            db.close();
+                                            //db.close();
                                             sendData.state = 0;
                                             res.send(sendData);
                                         }
@@ -439,7 +439,7 @@ function log(req, res, next){
                     console.log(error.stack);
                     process.exit(0);
                 }
-                db.close();
+                //db.close();
                 console.log(logDocArray);
                 res.render('loglist',{
                      title: "Log",
