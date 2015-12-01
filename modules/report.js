@@ -270,137 +270,136 @@ function receive(req, res, next) {
                                                  slackIcon,
                                                  function(sucess, result){
                                     console.log(result);
-                                });
-                            });
-                            /*slackbot.sendMsg("Rundeck Status: " + result.notification.$.status +", \tDepolyID: " + queryObj.taskNo , function(sucess, result){
-                                console.log(result);
-                            });*/
-                            
-                            devopsDb.collection('task', function(error, taskColl){
-                                if(error){
-                                    console.log(error.stack);
-                                    process.exit(0);
-                                }
-                                console.log("queryObj: " + JSON.stringify(queryObj));
-                                taskColl.update(queryObj,{$set:updateObj},function(error, taskResult){
-                                    if(error){
-                                        console.log(error.stack);
-                                        process.exit(0);
-                                        //sendData.state = 1;
-                                        //sendData.info = error.stack;
-                                        //res.send(sendData);
-                                    }
-                                    console.log(taskResult);
-                                    console.log("rundeck action 01: " + rdAction);
-                                    taskColl.findOne({"taskNo":queryObj.taskNo,"rdExecId":queryObj.rdExecId},{taskParams:1}, function(error, taskDoc){
-                                        console.log("rundeck action 02: " + rdAction);
-                                        if(rdAction === 'deploy'){
+                                    devopsDb.collection('task', function(error, taskColl){
+                                        if(error){
+                                            console.log(error.stack);
+                                            process.exit(0);
+                                        }
+                                        console.log("queryObj: " + JSON.stringify(queryObj));
+                                        taskColl.update(queryObj,{$set:updateObj},function(error, taskResult){
                                             if(error){
                                                 console.log(error.stack);
                                                 process.exit(0);
+                                                //sendData.state = 1;
+                                                //sendData.info = error.stack;
+                                                //res.send(sendData);
                                             }
-                                            console.log("rundeck action 03: " + rdAction);
-                                            var branch = taskDoc.taskParams.branch;
-                                            devopsDb.collection('api', function(error, apiColl){
-                                                if(error){
-                                                    console.log(error.stack);
-                                                    process.exit(0);
-                                                }
-                                                console.log("rundeck action 04: " + rdAction);
-                                                var apiQueryObj = {};
-                                                for(var i =0; i < rdOption.length; i++){
-                                                    if(rdOption[i].$.name === 'node'){
-                                                        apiQueryObj['apiLocation.' + branch + '.name'] = rdOption[i].$.value;
-                                                        break;
+                                            console.log(taskResult);
+                                            console.log("rundeck action 01: " + rdAction);
+                                            taskColl.findOne({"taskNo":queryObj.taskNo,"rdExecId":queryObj.rdExecId},{taskParams:1}, function(error, taskDoc){
+                                                console.log("rundeck action 02: " + rdAction);
+                                                if(rdAction === 'deploy'){
+                                                    if(error){
+                                                        console.log(error.stack);
+                                                        process.exit(0);
                                                     }
-                                                }
-                                                apiQueryObj['apiLocation.' + branch + '.rdExecId'] = queryObj.rdExecId;
-                                                var apiUpdateObj = {};
-                                                apiUpdateObj['apiLocation.' + branch + '.$.deploy'] = updateObj.taskStatus;
-                                                console.log("apiQueryObj: " + JSON.stringify(apiQueryObj));
-                                                apiColl.update(apiQueryObj, {$set:apiUpdateObj}, function(error, apiResult){
-                                                    console.log("rundeck action 05: " + rdAction);
-                                                    console.log(apiResult);
-                                                    //db.close();
-                                                    if(isAutoDeploy){
-                                                        console.log("rundeck action 06: " + rdAction);
-                                                        dbase.getBuildDataByDeployId(queryObj.taskNo,function(buildDoc){
-                                                            console.log(buildDoc.apiName);
-                                                            if(buildDoc.apiName === 'PlusFE' || buildDoc.apiName === 'PlusBE'){
-                                                                console.log("Start Testing.");
-                                                                dbase.getDataByApserName(apiQueryObj['apiLocation.' + branch + '.name'],function(apSerDoc){
-                                                                    var Client = require('node-rest-client').Client;
-                                                                    var client = new Client();
-                                                                    var args = {
-                                                                        data:{"deployid":queryObj.taskNo,"seleniumtaskid":"uuid","selenium":[],"api":[{"url":"http://" + apSerDoc.apSerIntIp + "/ajax/plus/monitor/monitor-entrance?checkKey=plus10400","method":"get","input":"","output":"OK","whiteList":"","blackList":""}]},
-                                                                        headers:{"dps-token":config.get('DPS_TOKEN')}
-                                                                    };
-                                                                    client.post("http://172.19.9.14:8080/qaServer/service/testcase", args, function(data, response){
-                                                                        var testServerRes = JSON.parse(data.toString("UTF-8"));
-                                                                        if(testServerRes.success === 'true'){
-                                                                            sendData.state = 0;
-                                                                        }else{
-                                                                            sendData.state = 1;
-                                                                        }
+                                                    console.log("rundeck action 03: " + rdAction);
+                                                    var branch = taskDoc.taskParams.branch;
+                                                    devopsDb.collection('api', function(error, apiColl){
+                                                        if(error){
+                                                            console.log(error.stack);
+                                                            process.exit(0);
+                                                        }
+                                                        console.log("rundeck action 04: " + rdAction);
+                                                        var apiQueryObj = {};
+                                                        for(var i =0; i < rdOption.length; i++){
+                                                            if(rdOption[i].$.name === 'node'){
+                                                                apiQueryObj['apiLocation.' + branch + '.name'] = rdOption[i].$.value;
+                                                                break;
+                                                            }
+                                                        }
+                                                        apiQueryObj['apiLocation.' + branch + '.rdExecId'] = queryObj.rdExecId;
+                                                        var apiUpdateObj = {};
+                                                        apiUpdateObj['apiLocation.' + branch + '.$.deploy'] = updateObj.taskStatus;
+                                                        console.log("apiQueryObj: " + JSON.stringify(apiQueryObj));
+                                                        apiColl.update(apiQueryObj, {$set:apiUpdateObj}, function(error, apiResult){
+                                                            console.log("rundeck action 05: " + rdAction);
+                                                            console.log(apiResult);
+                                                            //db.close();
+                                                            if(isAutoDeploy){
+                                                                console.log("rundeck action 06: " + rdAction);
+                                                                dbase.getBuildDataByDeployId(queryObj.taskNo,function(buildDoc){
+                                                                    console.log(buildDoc.apiName);
+                                                                    if(buildDoc.apiName === 'PlusFE' || buildDoc.apiName === 'PlusBE'){
+                                                                        console.log("Start Testing.");
+                                                                        dbase.getDataByApserName(apiQueryObj['apiLocation.' + branch + '.name'],function(apSerDoc){
+                                                                            var Client = require('node-rest-client').Client;
+                                                                            var client = new Client();
+                                                                            var args = {
+                                                                                data:{"deployid":queryObj.taskNo,"seleniumtaskid":"uuid","selenium":[],"api":[{"url":"http://" + apSerDoc.apSerIntIp + "/ajax/plus/monitor/monitor-entrance?checkKey=plus10400","method":"get","input":"","output":"OK","whiteList":"","blackList":""}]},
+                                                                                headers:{"dps-token":config.get('DPS_TOKEN')}
+                                                                            };
+                                                                            client.post("http://172.19.9.14:8080/qaServer/service/testcase", args, function(data, response){
+                                                                                var testServerRes = JSON.parse(data.toString("UTF-8"));
+                                                                                if(testServerRes.success === 'true'){
+                                                                                    sendData.state = 0;
+                                                                                }else{
+                                                                                    sendData.state = 1;
+                                                                                }
+                                                                                res.send(sendData);
+                                                                            });
+                                                                        });
+                                                                    }else{
+                                                                        sendData.state = 0;
                                                                         res.send(sendData);
-                                                                    });
+                                                                    }
                                                                 });
                                                             }else{
                                                                 sendData.state = 0;
                                                                 res.send(sendData);
                                                             }
                                                         });
-                                                    }else{
-                                                        sendData.state = 0;
-                                                        res.send(sendData);
-                                                    }
-                                                });
-                                            });
-                                        /*}else if(rdAction === 'getfile'){
-                                            if(updateObj.taskStatus === 0){
-                                                if(taskDoc.taskParams.isDeploy){
-                                                    console.log("Getfile: need to deploy");
-                                                    dbase.getApiLocation(taskDoc.taskParams.apiName, "ol", function(error, apiLocation){
-                                                        if(error){
-                                                            console.log(error.stack);
-                                                            sendData.state = 1;
-                                                            res.send({error: error.stack});
-                                                        }
-                                                        if(apiLocation && apiLocation.length > 0){
-                                                            var Client = require('node-rest-client').Client;
-                                                            var client = new Client();
-                                                            var args = {
-                                                                headers:{"dps-token":config.get('DPS_TOKEN')}
-                                                            };
-                                                            apiLocation.forEach(function(apServer){
-                                                                client.get("http://127.0.0.1:"+ (config.get("HTTP_PORT") || '80') + "/mod/task/deploy/"+ apServer.name + "/" + buildDoc.deployId + "/true", args, function(data, response){
-                                                                    console.log(data);
-                                                                    console.log(response);
-                                                                });
-                                                            });
-                                                            sendData.state = 0;
-                                                            res.send(sendData);
-                                                        }else{
-                                                            sendData.state = 0;
-                                                            res.send(sendData);
-                                                        }
                                                     });
+                                                /*}else if(rdAction === 'getfile'){
+                                                    if(updateObj.taskStatus === 0){
+                                                        if(taskDoc.taskParams.isDeploy){
+                                                            console.log("Getfile: need to deploy");
+                                                            dbase.getApiLocation(taskDoc.taskParams.apiName, "ol", function(error, apiLocation){
+                                                                if(error){
+                                                                    console.log(error.stack);
+                                                                    sendData.state = 1;
+                                                                    res.send({error: error.stack});
+                                                                }
+                                                                if(apiLocation && apiLocation.length > 0){
+                                                                    var Client = require('node-rest-client').Client;
+                                                                    var client = new Client();
+                                                                    var args = {
+                                                                        headers:{"dps-token":config.get('DPS_TOKEN')}
+                                                                    };
+                                                                    apiLocation.forEach(function(apServer){
+                                                                        client.get("http://127.0.0.1:"+ (config.get("HTTP_PORT") || '80') + "/mod/task/deploy/"+ apServer.name + "/" + buildDoc.deployId + "/true", args, function(data, response){
+                                                                            console.log(data);
+                                                                            console.log(response);
+                                                                        });
+                                                                    });
+                                                                    sendData.state = 0;
+                                                                    res.send(sendData);
+                                                                }else{
+                                                                    sendData.state = 0;
+                                                                    res.send(sendData);
+                                                                }
+                                                            });
+                                                        }else{
+                                                            console.log("Getfile: does't deploy");
+                                                        }
+                                                    }
+                                                    db.close();
+                                                    sendData.state = 0;
+                                                    res.send(sendData);*/
                                                 }else{
-                                                    console.log("Getfile: does't deploy");
+                                                    //db.close();
+                                                    console.log("rundeck action 09: " + rdAction);
+                                                    sendData.state = 0;
+                                                    res.send(sendData);
                                                 }
-                                            }
-                                            db.close();
-                                            sendData.state = 0;
-                                            res.send(sendData);*/
-                                        }else{
-                                            //db.close();
-                                            console.log("rundeck action 09: " + rdAction);
-                                            sendData.state = 0;
-                                            res.send(sendData);
-                                        }
+                                            });
+                                        });
                                     });
                                 });
                             });
+                            /*slackbot.sendMsg("Rundeck Status: " + result.notification.$.status +", \tDepolyID: " + queryObj.taskNo , function(sucess, result){
+                                console.log(result);
+                            });*/
                         });
                         /*db.close();
                         sendData.state = 0;
