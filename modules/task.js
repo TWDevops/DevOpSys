@@ -359,14 +359,20 @@ function deploy(req, res, next){
                                 updateObj['apiLocation.lab.$.deploy'] = 1;
                                 updateObj['apiLocation.lab.$.rdExecId'] = setOpt.rdExecId;
                             }
-                            apiColl.update(queryObj,{$set:updateObj});
+                            apiColl.update(queryObj,{$set:updateObj},function(error, updateRes){
+                                if(error){
+                                    console.log(error.stack);
+                                    process.exit(0);
+                                }
+                                db.close();
+                                if(updateRes.status === 0){
+                                    res.send(rkresult);
+                                }else{
+                                    res.send(updateRes);
+                                }
+                            });
                             //db.close();
-                            if(result.status === 0){
-                                res.send(rkresult);
-                            }else{
-                                res.send(result);
-                            }
-                            db.close();
+                            
                         });
                     });
                     //triggerRundeck();
