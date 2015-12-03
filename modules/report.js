@@ -320,7 +320,7 @@ function receive(req, res, next) {
                                                                 console.log("rundeck action 06: " + rdAction);
                                                                 dbase.getBuildDataByDeployId(queryObj.taskNo,function(buildDoc){
                                                                     console.log(buildDoc.apiName);
-                                                                    if( branch === 'LAB' && (buildDoc.apiName === 'PlusFE' || buildDoc.apiName === 'PlusBE')){
+                                                                    if( branch === 'lab' && (buildDoc.apiName === 'PlusFE' || buildDoc.apiName === 'PlusBE')){
                                                                         console.log("Start Testing.");
                                                                         dbase.getDataByApserName(apiQueryObj['apiLocation.' + branch + '.name'],function(apSerDoc){
                                                                             var Client = require('node-rest-client').Client;
