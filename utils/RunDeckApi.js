@@ -164,9 +164,17 @@ RunDeckApi.prototype.getResources = function(project, callback){
     });
 };
 
-RunDeckApi.prototype.deployTrigger = function(rdJobId, nodeName, deployId, fileUrl, callback ){
+RunDeckApi.prototype.deployTrigger = function(rdJobId, apiType, nodeName, deployId, fileUrl, fileName, ver, callback ){
     var paramObj = {};
-    paramObj.argString= "-node \"" + nodeName + "\" -deployid \"" + deployId + "\" -src \"" + fileUrl +"\"";
+
+    if(apiType === 'aar'){
+        paramObj.argString= "-node \"" + nodeName + "\" -deployid \"" + deployId + "\" -src \"" + fileUrl + "\" -aar \"" + fileName + "\" -ver \"" + ver +"\"";
+    } else if(apiType === 'war'){
+        paramObj.argString= "-node \"" + nodeName + "\" -deployid \"" + deployId + "\" -src \"" + fileUrl + "\"" ;
+    } else {
+        fn({"state":1,"error":"Deploy type error!"},null);
+        return;
+    }
     rundeck('deployFunc', paramObj, rdJobId, function(xmlStr) {
         console.log(xmlStr);
         xml2Json(xmlStr, function(result) {

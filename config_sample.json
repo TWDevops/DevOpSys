@@ -18,13 +18,33 @@
     "ZK_HOST":"127.0.0.1",
     "ZK_PORT":"2181",
     "RUNDECK_LAB_HOST":"172.19.9.62",
+    "RUNDECK_LAB_DEPLOY_ID":{
+        "TOMCAT":{
+            "FULL":"16b7b74c-f732-4d0c-8306-74b77625d9a7",
+            "HALF":"b5b7088f-12f7-4748-8984-e825c7550052"
+        },
+        "WSO2-AS":{
+            "FULL":"",
+            "HALF":""
+        }
+    },
     "RUNDECK_LAB_FULL_AUTO_DEPLOY_ID":"16b7b74c-f732-4d0c-8306-74b77625d9a7",
     "RUNDECK_LAB_HALF_AUTO_DEPLOY_ID":"b5b7088f-12f7-4748-8984-e825c7550052",
     "RUNDECK_LAB_PORT":"8080",
-    "RUNDECK_LAB_TOKEN":"ozRDESshW8KLCo6TPlNViZIdJi7leboJ",
+    "RUNDECK_LAB_TOKEN":"GST8FW6tfEGK27SICUlDhykMElIjqmNl",
     "RUNDECK_OL_HOST":"172.30.12.102",
-    "RUNDECK_OL_FULL_AUTO_DEPLOY_ID":"16b7b74c-f732-4d0c-8306-74b77625d9a7",
-    "RUNDECK_OL_HALF_AUTO_DEPLOY_ID":"b5b7088f-12f7-4748-8984-e825c7550052",
+    "RUNDECK_OL_DEPLOY_ID":{
+        "TOMCAT":{
+            "FULL":"16b7b74c-f732-4d0c-8306-74b77625d9a7",
+            "HALF":"b5b7088f-12f7-4748-8984-e825c7550052"
+        },
+        "WSO2-AS":{
+            "FULL":"",
+            "HALF":""
+        }
+    },
+    "RUNDECK_OL_FULL_AUTO_DEPLOY_ID":"",
+    "RUNDECK_OL_HALF_AUTO_DEPLOY_ID":"",
     "RUNDECK_OL_PORT":"443",
     "RUNDECK_OL_TOKEN":"wwDJqlPHnXjeqDs6PCdxZfEoxCjrW7eY",
     "RUNDECK_OL_AUTO_GET_FILE":"2f1a76ce-a0df-4e3b-b7b7-7dc1f0d272ad",
@@ -32,5 +52,6 @@
     "GITLAB_TOKEN":"SH2DseJMzsYfCk8znwpr",
     "GITLAB_HOOK":"http://172.19.9.57:8080/jenkins/gitlab/build_now",
     "JENKINS_URL":"http://172.19.9.57:8080/jenkins",
-    "JENKINS_BUILDS":"/opt/jk_builds"
+    "JENKINS_BUILDS":"/opt/jk_builds",
+    "SLACK_WH_URL":"https://hooks.slack.com/services/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"
 }

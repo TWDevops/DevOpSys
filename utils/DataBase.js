@@ -62,6 +62,29 @@ DataBase.prototype.getBuildDataByDeployId = function(deployId, callback){
     });
 };
 
+DataBase.prototype.getApiTypeByName = function(apiName, callBack){
+    var db = DataBase.prototype.getDb();
+    db.open(function(error, devopsDB) {
+        if(error){
+            console.log(error.stack);
+            process.exit(0);
+        }
+        devopsDb.collection('api', function(error, apiColl){
+            if(error){
+                console.log(error.stack);
+                process.exit(0);
+            }
+            apiColl.findOne({'apiName':apiName},{'apiType':1},function(error, apiDoc){
+                if(error){
+                    console.log(error.stack);
+                    process.exit(0);
+                }
+                callBack(apiDoc.apiType);
+            });
+        });
+    });
+};
+
 DataBase.prototype.getApiList = function(apiId, callBack){
     var fn = null;
     var queryObj = {};

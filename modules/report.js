@@ -230,14 +230,14 @@ function receive(req, res, next) {
                             console.log("rundeck action: " + rdAction);
                             console.log("rundeck status: " + result.notification.$.status);
                             
-                       
-
                             if(result.notification.$.status === 'running'){
                                 queryObj.taskStatus = 1;
                                 updateObj.taskStatus = 2;
                                 updateObj.startDate = new Date();
                             }else if(result.notification.$.status === 'succeeded'){
-                                if(result.notification.executions[0].execution[0].job[0].$.id === config.get("RUNDECK_LAB_FULL_AUTO_DEPLOY_ID")){
+                                //if(result.notification.executions[0].execution[0].job[0].$.id === config.get("RUNDECK_LAB_FULL_AUTO_DEPLOY_ID")){
+                                if(result.notification.executions[0].execution[0].job[0].$.id === config.get('RUNDECK_LAB_DEPLOY_JOB').war.FULL ||
+                                   result.notification.executions[0].execution[0].job[0].$.id === config.get('RUNDECK_LAB_DEPLOY_JOB').aar.FULL ) {
                                     isAutoDeploy = true;
                                 }
                                 queryObj.taskStatus = 2;
