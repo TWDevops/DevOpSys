@@ -398,7 +398,7 @@ function deploy(req, res, next){
                     });
                 });
             });
-            if(buildData.gitBranch === "origin/lab"){
+            /*if(buildData.gitBranch === "origin/lab"){
                 rundeck = new RunDeckApi(config.get('RUNDECK_LAB_HOST'), config.get('RUNDECK_LAB_PORT'), config.get('RUNDECK_LAB_TOKEN'));
                 fileUrlPrefix = config.get('LAB_DEPLOY_FILE_SERVER');
                 if(req.params.isFull === "true"){
@@ -483,7 +483,7 @@ function deploy(req, res, next){
                         res.send(result);
                     }*/
                 });
-            });
+            });*/
         });
     }else{
         res.send("nothing!!");
