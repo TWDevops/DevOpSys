@@ -167,6 +167,12 @@ RunDeckApi.prototype.getResources = function(project, callback){
 RunDeckApi.prototype.deployTrigger = function(rdJobId, apiType, nodeName, deployId, fileUrl, fileName, ver, callback ){
     var paramObj = {};
 
+    if(!rdJobId){
+        console.log({'status':'error', 'info':'no job uuid.'});
+        callback({'status':'error', 'info':'no job uuid.'},{});
+        return;
+    }
+
     if(apiType === 'aar'){
         paramObj.argString= "-node \"" + nodeName + "\" -deployid \"" + deployId + "\" -src \"" + fileUrl + "\" -aar \"" + fileName + "\" -ver \"" + ver +"\"";
     } else if(apiType === 'war'){

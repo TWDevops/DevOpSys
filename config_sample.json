@@ -18,13 +18,13 @@
     "ZK_HOST":"127.0.0.1",
     "ZK_PORT":"2181",
     "RUNDECK_LAB_HOST":"172.19.9.62",
-    "RUNDECK_LAB_DEPLOY_ID":{
-        "TOMCAT":{
+    "RUNDECK_LAB_DEPLOY_JOB":{
+        "war":{
             "FULL":"16b7b74c-f732-4d0c-8306-74b77625d9a7",
             "HALF":"b5b7088f-12f7-4748-8984-e825c7550052"
         },
-        "WSO2-AS":{
-            "FULL":"",
+        "aar":{
+            "FULL":"a0bdd18c-fc9d-45bc-9d51-2d33a39ab649",
             "HALF":""
         }
     },
@@ -33,12 +33,12 @@
     "RUNDECK_LAB_PORT":"8080",
     "RUNDECK_LAB_TOKEN":"GST8FW6tfEGK27SICUlDhykMElIjqmNl",
     "RUNDECK_OL_HOST":"172.30.12.102",
-    "RUNDECK_OL_DEPLOY_ID":{
-        "TOMCAT":{
+    "RUNDECK_OL_DEPLOY_JOB":{
+        "war":{
             "FULL":"16b7b74c-f732-4d0c-8306-74b77625d9a7",
             "HALF":"b5b7088f-12f7-4748-8984-e825c7550052"
         },
-        "WSO2-AS":{
+        "aar":{
             "FULL":"",
             "HALF":""
         }
