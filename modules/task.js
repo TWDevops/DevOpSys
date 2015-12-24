@@ -477,11 +477,11 @@ function deploy(req, res, next){
                         });
                     });
                     //triggerRundeck();
-                    /*if(result.status === 0){
-                        res.send(rkresult);
-                    }else{
-                        res.send(result);
-                    }*/
+                    //if(result.status === 0){
+                    //    res.send(rkresult);
+                    //}else{
+                    //    res.send(result);
+                    //}
                 });
             });*/
         });
