@@ -325,7 +325,6 @@ function deploy(req, res, next){
                     }
                 }
                 
-                //@2015-12-09 明天繼續修改
                 //for( var fileName in buildData.fileList){
                 for( var fileIdx in buildData.fileList){
                     if(buildData.fileList[fileIdx].length > 4 && (
