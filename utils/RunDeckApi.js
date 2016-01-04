@@ -178,7 +178,7 @@ RunDeckApi.prototype.deployTrigger = function(rdJobId, apiType, nodeName, deploy
     } else if(apiType === 'war'){
         paramObj.argString= "-node \"" + nodeName + "\" -deployid \"" + deployId + "\" -src \"" + fileUrl + "\"" ;
     } else {
-        fn({"state":1,"error":"Deploy type error!"},null);
+        callback({"state":1,"error":"Deploy type error!"},null);
         return;
     }
     rundeck('deployFunc', paramObj, rdJobId, function(xmlStr) {
