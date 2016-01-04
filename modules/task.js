@@ -298,7 +298,7 @@ function deploy(req, res, next){
             //setOpt.fileUrl = config.get('DEPLOY_FILE_SERVER') + setOpt.apiName + "/" + setOpt.taskNo +"/" + buildData.fileList[0];
             console.log("task:1");
             dbase.getApiTypeByName(setOpt.apiName, function(apiType){
-                if(apiType === null || (apiType!=='war' && apiType!=='aar')){
+                if(apiType === null || !(apiType==='war' || apiType==='aar')){
                     res.send({state:1,info:'Project Type is null.'});
                     return;
                 }
@@ -503,27 +503,30 @@ function getDeployFile(req, res, next){
         dbase.getBuildDataByDeployId(req.params.deployId, function(buildData){
             var rdJobId = config.get('RUNDECK_OL_AUTO_GET_FILE');
             setOpt.apiName = buildData.apiName;
-            for( var fileIdx in buildData.fileList){
-                if(buildData.fileList[fileIdx].length > 4 && (buildData.fileList[fileIdx].substr(buildData.fileList[fileIdx].length-4, 4).toLowerCase() === ".war")){
-                    setOpt.fileUrl = config.get('LAB_DEPLOY_FILE_SERVER') + setOpt.apiName + "/" + setOpt.taskNo +"/" + buildData.fileList[fileIdx];
-                    break;
-                }
-            }
-            console.log(setOpt);
-            rundeck = new RunDeckApi(config.get('RUNDECK_OL_HOST'), config.get('RUNDECK_OL_PORT'), config.get('RUNDECK_OL_TOKEN'), 'https');
-            rundeck.deployTrigger(rdJobId, config.get('OL_DEPLOY_FILE_SERVER'), setOpt.taskNo, setOpt.fileUrl, function(error,rkresult){
-                if(error){
-                    console.log("Error:" + JSON.stringify(error));
-                    res.send(error);
-                    return;
-                }
-                setOpt.rdExecId = rkresult.executions.execution[0].$.id;
-                dbase.setTask(setOpt, function(result) {
-                    if(result.status === 0){
-                        res.send(result);
-                    }else{
-                        res.send(result);
+            dbase.getApiTypeByName(setOpt.apiName, function(apiType){
+                for( var fileIdx in buildData.fileList){
+                    if(buildData.fileList[fileIdx].length > 4 && (buildData.fileList[fileIdx].substr(buildData.fileList[fileIdx].length-4, 4).toLowerCase() === ".war")){
+                        setOpt.fileUrl = config.get('LAB_DEPLOY_FILE_SERVER') + setOpt.apiName + "/" + setOpt.taskNo +"/" + buildData.fileList[fileIdx];
+                        setOpt.fileName = buildData.fileList[fileIdx];
+                        break;
                     }
+                }
+                console.log(setOpt);
+                rundeck = new RunDeckApi(config.get('RUNDECK_OL_HOST'), config.get('RUNDECK_OL_PORT'), config.get('RUNDECK_OL_TOKEN'), 'https');
+                rundeck.deployTrigger(rdJobId, apiType, config.get('OL_DEPLOY_FILE_SERVER'), setOpt.taskNo, setOpt.fileUrl, setOpt.fileName, null, function(error,rkresult){
+                    if(error){
+                        console.log("Error:" + JSON.stringify(error));
+                        res.send(error);
+                        return;
+                    }
+                    setOpt.rdExecId = rkresult.executions.execution[0].$.id;
+                    dbase.setTask(setOpt, function(result) {
+                        if(result.status === 0){
+                            res.send(result);
+                        }else{
+                            res.send(result);
+                        }
+                    });
                 });
             });
         });

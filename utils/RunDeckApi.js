@@ -173,7 +173,9 @@ RunDeckApi.prototype.deployTrigger = function(rdJobId, apiType, nodeName, deploy
         return;
     }
 
-    if(apiType === 'aar'){
+    if(rdJobId === config.get('RUNDECK_OL_AUTO_GET_FILE')){
+        paramObj.argString= "-node \"" + nodeName + "\" -deployid \"" + deployId + "\" -src \"" + fileUrl + "\"" ;
+    } else if(apiType === 'aar'){
         paramObj.argString= "-node \"" + nodeName + "\" -deployid \"" + deployId + "\" -src \"" + fileUrl + "\" -aar \"" + fileName + "\" -ver \"" + ver +"\"";
     } else if(apiType === 'war'){
         paramObj.argString= "-node \"" + nodeName + "\" -deployid \"" + deployId + "\" -src \"" + fileUrl + "\"" ;
