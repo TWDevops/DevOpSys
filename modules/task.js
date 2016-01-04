@@ -298,7 +298,7 @@ function deploy(req, res, next){
             //setOpt.fileUrl = config.get('DEPLOY_FILE_SERVER') + setOpt.apiName + "/" + setOpt.taskNo +"/" + buildData.fileList[0];
             console.log("task:1");
             dbase.getApiTypeByName(setOpt.apiName, function(apiType){
-                if(!apiType || apiType!=='war' || apiType!=='aar'){
+                if(apiType === null || (apiType!=='war' && apiType!=='aar')){
                     res.send({state:1,info:'Project Type is null.'});
                     return;
                 }
