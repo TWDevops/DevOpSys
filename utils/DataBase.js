@@ -64,7 +64,7 @@ DataBase.prototype.getBuildDataByDeployId = function(deployId, callback){
 
 DataBase.prototype.getApiTypeByName = function(apiName, callBack){
     var db = DataBase.prototype.getDb();
-    db.open(function(error, devopsDB) {
+    db.open(function(error, devopsDb) {
         if(error){
             console.log(error.stack);
             process.exit(0);
