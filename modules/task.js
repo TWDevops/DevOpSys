@@ -336,7 +336,7 @@ function deploy(req, res, next){
                     }
                 }
                 
-                rundeck.deployTrigger(rdJobId, setOpt.apserName, setOpt.taskNo, setOpt.fileUrl, function(error,rkresult){
+                rundeck.deployTrigger(rdJobId, apiType, setOpt.apserName, setOpt.taskNo, setOpt.fileUrl, setOpt.fileName, ver, function(error,rkresult){
                     if(error){
                         console.log("Error:" + JSON.stringify(error));
                         res.send(error);
