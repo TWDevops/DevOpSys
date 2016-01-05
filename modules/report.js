@@ -82,15 +82,18 @@ function receive(req, res, next) {
                                                 }
                                                 if(apiLocation && apiLocation.length > 0){
                                                     var Client = require('node-rest-client').Client;
-                                                    var client = new Client();
+                                                    //var client = new Client();
                                                     var args = {
                                                         headers:{"dps-token":config.get('DPS_TOKEN')}
                                                     };
                                                     apiLocation.forEach(function(apServer){
-                                                        client.get("http://127.0.0.1:"+ (config.get("HTTP_PORT") || '80') + "/mod/task/deploy/"+ apServer.name + "/" + buildDoc.deployId + "/true", args, function(data, response){
-                                                            console.log(data.toString("UTF-8"));
-                                                            console.log(response);
-                                                        });
+                                                        if(apServer.name!==null && apServer.name !== ""){
+                                                            var client = new Client();
+                                                            client.get("http://127.0.0.1:"+ (config.get("HTTP_PORT") || '80') + "/mod/task/deploy/"+ apServer.name + "/" + buildDoc.deployId + "/true", args, function(data, response){
+                                                                console.log(data.toString("UTF-8"));
+                                                                console.log(response);
+                                                            });
+                                                        }
                                                     });
                                                     sendData.state = 0;
                                                     res.send(sendData);
