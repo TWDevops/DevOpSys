@@ -202,6 +202,32 @@ function receive(req, res, next) {
                 });
             });
         },
+        'qa' : function(){
+            sendData.info =  JSON.stringify(req.body);
+            db.open(function(error, devopsDb) {
+                if(error){
+                    console.log(error.stack);
+                    process.exit(0);
+                }
+                devopsDb.collection('log', function(error, logColl){
+                    if(error){
+                        console.log(error.stack);
+                        process.exit(0);
+                    }
+                    slackbot.sendMsg("QA Result: " + JSON.stringify(req.body) , null, function(sucess, result){
+                        logColl.insert(sendData, function(error, data){
+                            if(error){
+                                console.log(error.stack);
+                                process.exit(0);
+                            }
+                            //db.close();
+                            sendData.state = 0;
+                            res.send(sendData);
+                        });
+                    });
+                });
+            });
+        },
         'rundeck' : function(){
             var parser = new xml2js.Parser();
             sendData.info = req.body;
