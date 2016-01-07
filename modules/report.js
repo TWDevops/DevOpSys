@@ -205,6 +205,32 @@ function receive(req, res, next) {
                 });
             });
         },
+        'qa' : function(){
+            sendData.info =  JSON.stringify(req.body);
+            db.open(function(error, devopsDb) {
+                if(error){
+                    console.log(error.stack);
+                    process.exit(0);
+                }
+                devopsDb.collection('log', function(error, logColl){
+                    if(error){
+                        console.log(error.stack);
+                        process.exit(0);
+                    }
+                    slackbot.sendMsg("QA Result: " + JSON.stringify(req.body) , null, function(sucess, result){
+                        logColl.insert(sendData, function(error, data){
+                            if(error){
+                                console.log(error.stack);
+                                process.exit(0);
+                            }
+                            //db.close();
+                            sendData.state = 0;
+                            res.send(sendData);
+                        });
+                    });
+                });
+            });
+        },
         'rundeck' : function(){
             var parser = new xml2js.Parser();
             sendData.info = req.body;
@@ -230,6 +256,7 @@ function receive(req, res, next) {
                             var isAutoDeploy = false;
                             var rdAction = 'deploy';
                             var slackIcon = null;
+                            var deployNode = '';
                             if(result.notification.executions[0].execution[0].job[0].$.id === config.get("RUNDECK_OL_AUTO_GET_FILE")){
                                 rdAction = 'getfile';
                             }
@@ -261,6 +288,9 @@ function receive(req, res, next) {
                                     queryObj.taskNo = rdOption[i].$.value;
                                     break;
                                 }
+                                if(rdOption[i].$.name === 'node'){
+                                    deployNode = rdOption[i].$.value;
+                                }
                             }
                             
                             //queryObj.taskNo = rdDeployId;
@@ -270,6 +300,7 @@ function receive(req, res, next) {
                             dbase.getBuildDataByDeployId(queryObj.taskNo,function(buildDoc){
                                 slackbot.sendMsg("Project Name: " + buildDoc.apiName +
                                                  ",\nProject Branch: " + buildDoc.gitBranch +
+                                                 ",\nDeploy Node: " + deployNode +
                                                  ",\nRundeck Job: " + result.notification.executions[0].execution[0].job[0].name[0] +
                                                  ",\nRundeck Status: " + result.notification.$.status +
                                                  ",\nDepolyID: " + queryObj.taskNo ,
