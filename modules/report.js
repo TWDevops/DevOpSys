@@ -227,6 +227,7 @@ function receive(req, res, next) {
                             var isAutoDeploy = false;
                             var rdAction = 'deploy';
                             var slackIcon = null;
+                            var deployNode = '';
                             if(result.notification.executions[0].execution[0].job[0].$.id === config.get("RUNDECK_OL_AUTO_GET_FILE")){
                                 rdAction = 'getfile';
                             }
@@ -258,6 +259,9 @@ function receive(req, res, next) {
                                     queryObj.taskNo = rdOption[i].$.value;
                                     break;
                                 }
+                                if(rdOption[i].$.name === 'node'){
+                                    deployNode = rdOption[i].$.value;
+                                }
                             }
                             
                             //queryObj.taskNo = rdDeployId;
@@ -267,6 +271,7 @@ function receive(req, res, next) {
                             dbase.getBuildDataByDeployId(queryObj.taskNo,function(buildDoc){
                                 slackbot.sendMsg("Project Name: " + buildDoc.apiName +
                                                  ",\nProject Branch: " + buildDoc.gitBranch +
+                                                 ",\nDeploy Node: " + deployNode +
                                                  ",\nRundeck Job: " + result.notification.executions[0].execution[0].job[0].name[0] +
                                                  ",\nRundeck Status: " + result.notification.$.status +
                                                  ",\nDepolyID: " + queryObj.taskNo ,
