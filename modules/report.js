@@ -11,6 +11,9 @@ var fse = require('fs-extra');
 
 var xml2js = require('xml2js');
 
+var JenKinsApi = require('../utils/JenKinsApi');
+var jenkins = new JenKinsApi();
+
 var headHander = {};
 var getHandler = {};
 var postHandler = {};
@@ -325,6 +328,19 @@ function receive(req, res, next) {
                                                                     console.log(buildDoc.apiName);
                                                                     if( branch === 'lab' && (buildDoc.apiName === 'PlusFE' || buildDoc.apiName === 'PlusBE')){
                                                                         console.log("Start Testing.");
+                                                                        
+                                                                        var testparms = {testngfile: 'basic'};
+
+                                                                        jenkins.buildwithparams('Plus_lab', testparms, function(result){
+                                                                            console.log(result);
+                                                                            
+                                                                            var sendData.state = 0;
+
+                                                                            res.send(sendData);
+
+                                                                        });
+
+                                                                        /*
                                                                         dbase.getDataByApserName(apiQueryObj['apiLocation.' + branch + '.name'],function(apSerDoc){
                                                                             var Client = require('node-rest-client').Client;
                                                                             var client = new Client();
@@ -342,6 +358,8 @@ function receive(req, res, next) {
                                                                                 res.send(sendData);
                                                                             });
                                                                         });
+                                                                        */
+
                                                                     }else{
                                                                         sendData.state = 0;
                                                                         res.send(sendData);
